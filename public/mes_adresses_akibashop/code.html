@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mes Adresses - AkibaShop</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&amp;family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-tertiary": "#ffffff",
+                "inverse-on-surface": "#f2f0f0",
+                "surface-container-lowest": "#ffffff",
+                "outline-variant": "#c4c7c7",
+                "on-primary-fixed-variant": "#474646",
+                "secondary-fixed-dim": "#fbb887",
+                "surface-container": "#efeded",
+                "on-secondary": "#ffffff",
+                "surface": "#fbf9f8",
+                "on-primary-fixed": "#1c1b1b",
+                "primary-fixed": "#e5e2e1",
+                "on-secondary-fixed-variant": "#693c15",
+                "on-error": "#ffffff",
+                "surface-container-high": "#e9e8e7",
+                "on-error-container": "#93000a",
+                "surface-bright": "#fbf9f8",
+                "inverse-surface": "#303031",
+                "surface-variant": "#e4e2e2",
+                "error": "#ba1a1a",
+                "tertiary-container": "#1c1c1a",
+                "on-tertiary-fixed-variant": "#474745",
+                "on-primary-container": "#858383",
+                "background": "#fbf9f8",
+                "on-background": "#1b1c1c",
+                "on-primary": "#ffffff",
+                "on-secondary-fixed": "#2f1400",
+                "surface-container-highest": "#e4e2e2",
+                "inverse-primary": "#c8c6c5",
+                "primary-fixed-dim": "#c8c6c5",
+                "surface-dim": "#dbdad9",
+                "secondary": "#85532a",
+                "error-container": "#ffdad6",
+                "surface-container-low": "#f5f3f3",
+                "primary-container": "#1c1b1b",
+                "on-tertiary-fixed": "#1c1c1a",
+                "tertiary": "#000000",
+                "on-surface": "#1b1c1c",
+                "on-tertiary-container": "#858481",
+                "primary": "#f4641e",
+                "secondary-fixed": "#ffdcc4",
+                "surface-tint": "#5f5e5e",
+                "on-surface-variant": "#444748",
+                "outline": "#747878",
+                "tertiary-fixed-dim": "#c8c6c3",
+                "tertiary-fixed": "#e5e2df",
+                "secondary-container": "#febb8a",
+                "on-secondary-container": "#794921"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "container-margin-mobile": "20px",
+                "section-gap": "64px",
+                "container-margin-desktop": "80px",
+                "base": "8px",
+                "gutter": "16px"
+        },
+        "fontFamily": {
+                "headline-lg-mobile": [
+                        "Bodoni Moda"
+                ],
+                "label-sm": [
+                        "Hanken Grotesk"
+                ],
+                "headline-xl": [
+                        "Bodoni Moda"
+                ],
+                "headline-md": [
+                        "Bodoni Moda"
+                ],
+                "body-md": [
+                        "Hanken Grotesk"
+                ],
+                "body-lg": [
+                        "Hanken Grotesk"
+                ],
+                "headline-lg": [
+                        "Bodoni Moda"
+                ]
+        },
+        "fontSize": {
+                "headline-lg-mobile": [
+                        "28px",
+                        {
+                                "lineHeight": "34px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-xl": [
+                        "48px",
+                        {
+                                "lineHeight": "56px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "600"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Hide scrollbar for clean aesthetic */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        .atmospheric-shadow {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+        }
+        .atmospheric-shadow-hover:hover {
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen pt-20 pb-32 md:pb-0">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full flex justify-between items-center px-container-margin-mobile md:px-container-margin-desktop py-4 bg-surface/90 backdrop-blur-md z-50">
+<button class="text-on-surface-variant hover:opacity-70 transition-opacity">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<img alt="Logo" class="h-8 md:h-10 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1tc4WprinsAq8p32uOeFSLcBpy-v82Nsape1sdtyvklt0K2lmgmgfSnh_FRZwPKdaU7r11nC7zJYgB9R9Ji5YEsITB_LzID08Jc0ImViR4nCe9ynLjG8DzlIS24QgmtapebAqtOJ3zH3m7rTcN2oz5hUzaybACqfkL_lDg3AMHPbTWeWVa4rDfAuy6hlvoag6paejye38Zqv3_BSouNssDAaoPM88JbKIQQ_MLM45ePFxMzI_qr_mc_s_9r12o4OCEds"/>
+<div class="w-6"></div> <!-- Spacer for centering -->
+</header>
+<main class="max-w-[1440px] mx-auto px-container-margin-mobile md:px-container-margin-desktop mt-section-gap">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-gutter md:mb-section-gap">
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+                Gérez vos adresses de livraison pour faciliter vos prochaines commandes.
+            </p>
+<button class="mt-4 md:mt-0 bg-primary text-on-primary px-8 py-4 rounded-full font-label-sm text-label-sm uppercase hover:bg-on-surface-variant transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                Ajouter une adresse
+            </button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Address Card 1 (Default) -->
+<div class="bg-surface-container-lowest rounded-xl p-6 atmospheric-shadow atmospheric-shadow-hover transition-all duration-300 relative overflow-hidden group border border-surface-variant">
+<div class="absolute top-0 right-0 bg-primary text-on-primary px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-bl-lg z-10">
+                    Par défaut
+                </div>
+<div class="flex items-start justify-between mb-4 mt-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined icon-fill" data-icon="home">home</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">Domicile</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Jean Dupont</p>
+</div>
+</div>
+</div>
+<div class="space-y-2 mb-6">
+<p class="font-body-md text-body-md flex items-start gap-2 text-on-surface">
+<span class="material-symbols-outlined text-[20px] text-outline mt-1" data-icon="location_on">location_on</span>
+<span>Quartier Louis, Villa 42<br/>Libreville, Estuaire</span>
+</p>
+<p class="font-body-md text-body-md flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-[20px] text-outline" data-icon="phone">phone</span>
+                        +241 077 12 34 56
+                    </p>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-surface-variant">
+<button class="text-primary font-label-sm text-label-sm uppercase hover:text-secondary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="edit">edit</span> Modifier
+                    </button>
+<button class="text-error font-label-sm text-label-sm uppercase hover:opacity-70 transition-opacity flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="delete">delete</span> Supprimer
+                    </button>
+</div>
+</div>
+<!-- Address Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-6 atmospheric-shadow atmospheric-shadow-hover transition-all duration-300 relative overflow-hidden group border border-transparent hover:border-surface-variant">
+<div class="flex items-start justify-between mb-4 mt-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="work">work</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">Bureau</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Jean Dupont</p>
+</div>
+</div>
+</div>
+<div class="space-y-2 mb-6">
+<p class="font-body-md text-body-md flex items-start gap-2 text-on-surface">
+<span class="material-symbols-outlined text-[20px] text-outline mt-1" data-icon="location_on">location_on</span>
+<span>Tour Ogooué, 5ème étage<br/>Centre-ville, Libreville</span>
+</p>
+<p class="font-body-md text-body-md flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-[20px] text-outline" data-icon="phone">phone</span>
+                        +241 066 98 76 54
+                    </p>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-surface-variant opacity-0 group-hover:opacity-100 transition-opacity duration-300 md:opacity-100">
+<button class="text-primary font-label-sm text-label-sm uppercase hover:text-secondary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="edit">edit</span> Modifier
+                    </button>
+<button class="text-on-surface-variant font-label-sm text-label-sm uppercase hover:text-primary transition-colors flex items-center gap-1">
+                        Définir par défaut
+                    </button>
+</div>
+</div>
+<!-- Address Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-6 atmospheric-shadow atmospheric-shadow-hover transition-all duration-300 relative overflow-hidden group border border-transparent hover:border-surface-variant">
+<div class="flex items-start justify-between mb-4 mt-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">Maison de campagne</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Marie Dupont</p>
+</div>
+</div>
+</div>
+<div class="space-y-2 mb-6">
+<p class="font-body-md text-body-md flex items-start gap-2 text-on-surface">
+<span class="material-symbols-outlined text-[20px] text-outline mt-1" data-icon="location_on">location_on</span>
+<span>Route du Cap Estérias, Km 15<br/>Akanda, Estuaire</span>
+</p>
+<p class="font-body-md text-body-md flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-[20px] text-outline" data-icon="phone">phone</span>
+                        +241 077 55 44 33
+                    </p>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-surface-variant opacity-0 group-hover:opacity-100 transition-opacity duration-300 md:opacity-100">
+<button class="text-primary font-label-sm text-label-sm uppercase hover:text-secondary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="edit">edit</span> Modifier
+                    </button>
+<button class="text-on-surface-variant font-label-sm text-label-sm uppercase hover:text-primary transition-colors flex items-center gap-1">
+                        Définir par défaut
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full flex justify-around items-center pt-3 pb-6 px-4 bg-surface/95 backdrop-blur-lg shadow-[0_-4px_20px_rgba(0,0,0,0.04)] z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 font-medium hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm">Accueil</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 font-medium hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="grid_view">grid_view</span>
+<span class="font-label-sm text-label-sm">Catégories</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 font-medium hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-label-sm text-label-sm">Nouveautés</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-bold hover:text-primary transition-colors transform -translate-y-[2px]" href="#">
+<span class="material-symbols-outlined mb-1 icon-fill" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Compte</span>
+</a>
+</nav>
+</body></html>

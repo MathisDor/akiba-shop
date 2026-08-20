@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+    Options +FollowSymlinks -MultiViews
+    RewriteEngine On
+
+    # Bloque l'accès direct aux fichiers sensibles à la racine (htdocs)
+    RewriteRule ^\.env - [F,L]
+    RewriteRule ^composer\.(json|lock)$ - [F,L]
+    RewriteRule ^(app|bootstrap|config|database|routes|tests|vendor)/ - [F,L]
+
+    # Sert tout le reste depuis public/ (InfinityFree ne permet pas de
+    # changer le document root du domaine principal vers public/)
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>

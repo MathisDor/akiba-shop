@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AkibaShop - Mon Compte</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&amp;family=Manrope:wght@400..800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "surface": "#fbf9f9",
+                "primary": "#a63b00",
+                "on-surface": "#1b1c1c",
+                "inverse-surface": "#303031",
+                "on-tertiary-container": "#2a2a27",
+                "on-primary": "#ffffff",
+                "error": "#ba1a1a",
+                "on-background": "#1b1c1c",
+                "on-tertiary-fixed": "#1b1c19",
+                "outline-variant": "#e2bfb3",
+                "surface-bright": "#fbf9f9",
+                "error-container": "#ffdad6",
+                "secondary-fixed": "#e5e2e1",
+                "tertiary": "#5e5e5b",
+                "on-error-container": "#93000a",
+                "surface-container-highest": "#e3e2e2",
+                "on-primary-fixed": "#370e00",
+                "tertiary-fixed-dim": "#c8c6c2",
+                "inverse-primary": "#ffb598",
+                "secondary-container": "#e2dfde",
+                "on-primary-fixed-variant": "#7f2b00",
+                "secondary-fixed-dim": "#c8c6c5",
+                "surface-container-low": "#f5f3f3",
+                "secondary": "#5f5e5e",
+                "surface-container": "#efeded",
+                "tertiary-container": "#92918d",
+                "primary-fixed": "#ffdbce",
+                "surface-tint": "#a63b00",
+                "surface-container-lowest": "#ffffff",
+                "primary-container": "#f4641e",
+                "background": "#fbf9f9",
+                "on-secondary-fixed-variant": "#474746",
+                "on-secondary-container": "#636262",
+                "primary-fixed-dim": "#ffb598",
+                "on-secondary-fixed": "#1c1b1b",
+                "on-primary-container": "#501800",
+                "on-error": "#ffffff",
+                "on-tertiary-fixed-variant": "#474744",
+                "outline": "#8d7166",
+                "inverse-on-surface": "#f2f0f0",
+                "surface-container-high": "#e9e8e7",
+                "on-tertiary": "#ffffff",
+                "tertiary-fixed": "#e4e2dd",
+                "surface-variant": "#e3e2e2",
+                "on-secondary": "#ffffff",
+                "on-surface-variant": "#594138",
+                "surface-dim": "#dbdad9"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "container-max": "1280px",
+                "margin-mobile": "20px",
+                "margin-desktop": "64px",
+                "unit": "8px",
+                "gutter": "24px"
+        },
+        "fontFamily": {
+                "body-md": [
+                        "Manrope"
+                ],
+                "headline-lg": [
+                        "Bodoni Moda"
+                ],
+                "headline-md": [
+                        "Bodoni Moda"
+                ],
+                "display-lg-mobile": [
+                        "Bodoni Moda"
+                ],
+                "body-lg": [
+                        "Manrope"
+                ],
+                "label-lg": [
+                        "Manrope"
+                ],
+                "label-sm": [
+                        "Manrope"
+                ],
+                "display-lg": [
+                        "Bodoni Moda"
+                ]
+        },
+        "fontSize": {
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "display-lg-mobile": [
+                        "40px",
+                        {
+                                "lineHeight": "48px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "label-lg": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.02em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "display-lg": [
+                        "64px",
+                        {
+                                "lineHeight": "72px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased overflow-x-hidden min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full flex justify-between items-center px-margin-mobile py-4 bg-surface/90 backdrop-blur-md z-50">
+<button aria-label="Menu" class="text-primary hover:opacity-70 transition-opacity">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="flex-1 flex justify-center items-center">
+<img alt="AkibaShop Logo" class="h-10 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4LUdatePUaLjTRrUFrPS28yNyPJ0mPPktTxrbVMzoIqdd3sDMyDSivXbjGGfPrmC4su1puNpE5pXFwathaVktg2GkawMqWkpyzTZEhSdBCUOi3YcYqrOKZ5MjVLP2_2Jw-9Na-SZekR1u7gVwWMUXgKcG4qSZnuZcNyUFVe9FwQwX-_9BDurpyiN1MBgUSFonftn4YoPhdeJHOgvlGBA7JJj9Kt88JgcZzijREXWYqp8J_CEnesKfDSEAgfBg2VruDkE"/>
+</div>
+<div class="hidden md:flex gap-8 items-center text-on-surface-variant justify-center flex-1">
+<a class="font-label-sm text-label-sm hover:opacity-70 transition-opacity" href="#">Accueil</a>
+<a class="font-label-sm text-label-sm hover:opacity-70 transition-opacity" href="#">Catégories</a>
+<a class="font-label-sm text-label-sm hover:opacity-70 transition-opacity" href="#">Nouveautés</a>
+<a class="font-label-sm text-label-sm text-primary font-bold transition-opacity scale-95 duration-150" href="#">Compte</a>
+</div>
+<button aria-label="Panier" class="text-primary hover:opacity-70 transition-opacity flex-1 flex justify-end">
+<span class="material-symbols-outlined">shopping_bag</span>
+</button>
+</header>
+<!-- Main Canvas -->
+<main class="flex-grow px-margin-mobile md:px-margin-desktop pt-32 pb-40 md:pb-32 max-w-[1440px] w-full mx-auto flex flex-col gap-16">
+<!-- Profile Header Section -->
+<section class="flex flex-col items-center justify-center text-center gap-6">
+<div class="relative group cursor-pointer">
+<div class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.06)] ring-4 ring-surface-container-lowest transition-transform duration-500 hover:scale-105">
+<img alt="Profile avatar" class="w-full h-full object-cover" data-alt="A highly stylized, minimalist portrait of an elegant African man, representing a premium user profile avatar. He is dressed in subtle, high-end fashion, lit with soft, high-key studio lighting that creates a bright, light-mode aesthetic. The background is a pure, pristine white to blend seamlessly with a minimalist luxury UI, emphasizing sophisticated taste and modern Liberville style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-y6DX5sb27H7FJ11cV3wN3MGUBv7DNP1D7eWra3g_aRNtAm7phBA-Pc2vMOG-Idmat_OAlK3U-pvP2O5Fqp92nsVqjykstS73ic91uEW_z2SpXXOi6nmKr4FhyMgyTh4O-xP1ytu7vmzpELMr9sHK3Dy1RRenyMD8rddK-LElL2ItXK1E3lVRuOGvpzQlWMwWdaV7StxzLQ3SClRllAHXrcI1k56vCHhKH9D16SfKtwSu9emHdSmIOQ"/>
+</div>
+<div class="absolute inset-0 bg-black/20 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
+</div>
+</div>
+<div class="flex flex-col gap-2 items-center">
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Jean-Marc Obiang</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">jean.marc@example.com</p>
+</div>
+<button class="mt-2 px-8 py-3 rounded-full bg-primary text-on-primary font-label-sm text-label-sm uppercase tracking-widest hover:bg-primary-container hover:text-on-primary-container transition-colors duration-300 min-w-[48px] min-h-[48px] shadow-sm">
+                Éditer le profil
+            </button>
+</section>
+<!-- Navigation Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-gutter max-w-4xl w-full mx-auto">
+<a class="flex items-center gap-6 p-6 md:p-8 bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 group" href="#">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined">local_shipping</span>
+</div>
+<div class="flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-1">Mes Commandes</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Suivre et gérer vos achats</p>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</a>
+<a class="flex items-center gap-6 p-6 md:p-8 bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 group" href="#">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined">location_on</span>
+</div>
+<div class="flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-1">Mes Adresses</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Carnet d'adresses de livraison</p>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</a>
+<a class="flex items-center gap-6 p-6 md:p-8 bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 group" href="#">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined">favorite_border</span>
+</div>
+<div class="flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-1">Favoris</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Vos articles sauvegardés</p>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</a>
+<a class="flex items-center gap-6 p-6 md:p-8 bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 group" href="#">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</div>
+<div class="flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-1">Paramètres</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Préférences de l'application</p>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</a>
+</section>
+<!-- Logout Section -->
+<section class="flex justify-center max-w-4xl w-full mx-auto mt-4">
+<button class="flex items-center gap-3 px-8 py-4 rounded-xl text-error hover:bg-error-container/50 transition-colors duration-300 w-full md:w-auto justify-center min-w-[48px] min-h-[48px]">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest">Se déconnecter</span>
+</button>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full flex justify-around items-center pt-3 pb-6 px-4 bg-surface/95 backdrop-blur-lg shadow-[0_-4px_20px_rgba(0,0,0,0.04)] z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-medium opacity-60 hover:text-primary hover:opacity-100 transition-colors duration-200 gap-1 w-16" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm" style="font-size: 10px;">Accueil</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-medium opacity-60 hover:text-primary hover:opacity-100 transition-colors duration-200 gap-1 w-16" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-label-sm text-label-sm" style="font-size: 10px;">Catégories</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-medium opacity-60 hover:text-primary hover:opacity-100 transition-colors duration-200 gap-1 w-16" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-label-sm text-label-sm" style="font-size: 10px;">Nouveautés</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-bold translate-y-[-2px] transition-transform duration-200 gap-1 w-16" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-sm text-label-sm" style="font-size: 10px;">Compte</span>
+</a>
+</nav>
+</body></html>
