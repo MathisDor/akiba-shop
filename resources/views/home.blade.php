@@ -37,7 +37,7 @@
                 </div>
                 <div class="flex overflow-x-auto hide-scrollbar gap-3 md:gap-gutter pb-4 -mx-margin-mobile px-margin-mobile md:mx-0 md:px-0">
                     @foreach($section['items'] as $product)
-                        <div class="{{ $section['compact'] ?? false ? 'min-w-[140px] md:min-w-[180px]' : 'min-w-[220px] md:min-w-[280px]' }}">
+                        <div class="{{ $section['compact'] ?? false ? 'min-w-[110px] md:min-w-[150px]' : 'min-w-[220px] md:min-w-[280px]' }}">
                             <x-product-card :product="$product" />
                         </div>
                     @endforeach
