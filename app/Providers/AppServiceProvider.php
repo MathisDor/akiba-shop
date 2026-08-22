@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\CartService;
+use App\Services\Payments\EbillingPaymentGateway;
 use App\Services\Payments\ManualPaymentGateway;
 use App\Services\Payments\PaymentGatewayInterface;
 use Illuminate\Filesystem\LocalFilesystemAdapter;
@@ -24,7 +25,11 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(CartService::class);
-        $this->app->bind(PaymentGatewayInterface::class, ManualPaymentGateway::class);
+        $this->app->bind(PaymentGatewayInterface::class, function ($app) {
+            $configured = config('services.ebilling.username') && config('services.ebilling.shared_key');
+
+            return $configured ? $app->make(EbillingPaymentGateway::class) : $app->make(ManualPaymentGateway::class);
+        });
     }
 
     /**

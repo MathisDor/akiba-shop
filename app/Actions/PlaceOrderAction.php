@@ -121,22 +121,32 @@ class PlaceOrderAction
                 $coupon->increment('used_count');
             }
 
-            $result = $this->paymentGateway->charge($order->fresh('items.variant'));
+            $result = $this->paymentGateway->charge($order->fresh('items.variant'), $paymentPhone);
+
+            $paymentStatus = $result->pending ? 'pending' : ($result->success ? 'paid' : 'failed');
 
             Payment::create([
                 'order_id' => $order->id,
                 'provider' => $paymentMethod,
-                'status' => $result->success ? 'paid' : 'failed',
+                'status' => $paymentStatus,
                 'amount' => $total,
                 'reference' => $result->reference,
                 'raw_payload' => $paymentPhone ? [...$result->raw, 'phone' => $paymentPhone] : $result->raw,
             ]);
 
-            $this->updateOrderStatus->execute(
-                $order,
-                $result->success ? OrderStatus::Payee : OrderStatus::EchecPaiement,
-                $result->success ? 'Paiement confirmé.' : 'Échec du paiement.'
-            );
+            if ($result->pending) {
+                $order->statusHistories()->create([
+                    'status' => OrderStatus::EnAttentePaiement->value,
+                    'note' => 'Paiement mobile money initié, en attente de confirmation de l\'opérateur.',
+                    'created_by' => $user->id,
+                ]);
+            } else {
+                $this->updateOrderStatus->execute(
+                    $order,
+                    $result->success ? OrderStatus::Payee : OrderStatus::EchecPaiement,
+                    $result->success ? 'Paiement confirmé.' : 'Échec du paiement.'
+                );
+            }
 
             $cart->items()->delete();
             session()->forget(['cart.coupon_code', 'checkout']);

@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
  */
 class ManualPaymentGateway implements PaymentGatewayInterface
 {
-    public function charge(Order $order): PaymentResult
+    public function charge(Order $order, ?string $payerPhone = null): PaymentResult
     {
         return new PaymentResult(
             success: true,

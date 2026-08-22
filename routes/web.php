@@ -30,6 +30,7 @@ use App\Livewire\Cart;
 use App\Livewire\Checkout\Informations;
 use App\Livewire\Checkout\Livraison;
 use App\Livewire\Checkout\Paiement;
+use App\Livewire\Checkout\PaymentPending;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -67,6 +68,9 @@ Route::middleware('auth')->prefix('checkout')->name('checkout.')->group(function
 
 Route::middleware('auth')->get('/commande/confirmation/{order:order_number}', OrderConfirmationController::class)
     ->name('checkout.confirmation');
+
+Route::middleware('auth')->get('/commande/{order:order_number}/en-attente', PaymentPending::class)
+    ->name('checkout.pending');
 
 /*
 |--------------------------------------------------------------------------

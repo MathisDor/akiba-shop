@@ -40,4 +40,11 @@ return [
         'chat_id' => env('TELEGRAM_CHAT_ID'),
     ],
 
+    'ebilling' => [
+        'base_url' => env('EBILLING_BASE_URL', 'https://lab.billing-easy.net/api/v1/merchant/'),
+        'username' => env('EBILLING_USERNAME'),
+        'shared_key' => env('EBILLING_SHARED_KEY'),
+        'expiry_minutes' => env('EBILLING_EXPIRY_MINUTES', 60),
+    ],
+
 ];

@@ -3,6 +3,7 @@
 namespace App\Livewire\Checkout;
 
 use App\Actions\PlaceOrderAction;
+use App\Enums\OrderStatus;
 use App\Models\Address;
 use App\Services\CartService;
 use Illuminate\Support\Facades\Auth;
@@ -79,6 +80,10 @@ class Paiement extends Component
             $this->error = $e->getMessage();
 
             return null;
+        }
+
+        if ($order->statusEnum() === OrderStatus::EnAttentePaiement) {
+            return redirect()->route('checkout.pending', $order);
         }
 
         return redirect()->route('checkout.confirmation', $order);
