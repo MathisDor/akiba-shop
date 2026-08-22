@@ -127,6 +127,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/produits', [AdminProductController::class, 'index'])->name('products.index');
             Route::get('/produits/nouveau', [AdminProductController::class, 'create'])->name('products.create');
             Route::get('/produits/{product}/modifier', [AdminProductController::class, 'edit'])->name('products.edit');
+            Route::delete('/produits/en-masse', [AdminProductController::class, 'bulkDestroy'])->name('products.bulk-destroy');
             Route::delete('/produits/{product}', [AdminProductController::class, 'destroy'])->name('products.destroy');
         });
 

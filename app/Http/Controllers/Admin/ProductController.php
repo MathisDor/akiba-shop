@@ -47,4 +47,24 @@ class ProductController extends Controller
 
         return redirect()->route('admin.products.index')->with('status', 'Produit supprimé.');
     }
+
+    public function bulkDestroy(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array', 'min:1'],
+            'ids.*' => ['integer', 'exists:products,id'],
+        ]);
+
+        $products = Product::with('images')->whereIn('id', $validated['ids'])->get();
+
+        foreach ($products as $product) {
+            foreach ($product->images as $image) {
+                Storage::disk('public')->delete($image->path);
+            }
+
+            $product->delete();
+        }
+
+        return redirect()->route('admin.products.index')->with('status', $products->count().' produit(s) supprimé(s).');
+    }
 }
