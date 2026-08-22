@@ -22,7 +22,7 @@
                             <label class="font-label-sm text-label-sm text-on-surface-variant">Numéro Airtel Money</label>
                             <div class="flex items-center border-b border-outline-variant focus-within:border-secondary">
                                 <span class="text-on-surface-variant font-body-md text-body-md pr-2">+241</span>
-                                <input wire:model.live="mobileMoneyPhone" type="tel" inputmode="numeric" maxlength="9" placeholder="076123456" class="flex-1 px-0 py-3 border-0 bg-transparent text-primary placeholder-on-surface-variant focus:ring-0 focus:border-secondary font-body-md text-body-md" />
+                                <input wire:model.live="mobileMoneyPhone" type="tel" inputmode="numeric" maxlength="9" placeholder="076123456" class="flex-1 px-0 py-3 border-0 bg-transparent text-primary placeholder-on-surface-variant/50 focus:ring-0 focus:border-secondary font-body-md text-body-md" />
                             </div>
                             <p class="text-[11px] text-on-surface-variant">Format : 076, 074 ou 077 suivi de 6 chiffres.</p>
                             @error('mobileMoneyPhone') <p class="text-error font-label-sm text-label-sm">{{ $message }}</p> @enderror
@@ -45,7 +45,7 @@
                             <label class="font-label-sm text-label-sm text-on-surface-variant">Numéro Moov Money</label>
                             <div class="flex items-center border-b border-outline-variant focus-within:border-secondary">
                                 <span class="text-on-surface-variant font-body-md text-body-md pr-2">+241</span>
-                                <input wire:model.live="mobileMoneyPhone" type="tel" inputmode="numeric" maxlength="9" placeholder="065123456" class="flex-1 px-0 py-3 border-0 bg-transparent text-primary placeholder-on-surface-variant focus:ring-0 focus:border-secondary font-body-md text-body-md" />
+                                <input wire:model.live="mobileMoneyPhone" type="tel" inputmode="numeric" maxlength="9" placeholder="065123456" class="flex-1 px-0 py-3 border-0 bg-transparent text-primary placeholder-on-surface-variant/50 focus:ring-0 focus:border-secondary font-body-md text-body-md" />
                             </div>
                             <p class="text-[11px] text-on-surface-variant">Format : 065 ou 066 suivi de 6 chiffres.</p>
                             @error('mobileMoneyPhone') <p class="text-error font-label-sm text-label-sm">{{ $message }}</p> @enderror
