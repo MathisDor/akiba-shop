@@ -59,10 +59,12 @@
                     <div class="flex flex-col gap-1 md:col-span-2">
                         <label class="font-label-sm text-label-sm text-on-surface-variant">Nom complet</label>
                         <input wire:model="fullName" type="text" class="w-full bg-surface border-b border-outline-variant py-2 px-0 text-primary focus:border-primary focus:ring-0 font-body-md text-body-md" />
+                        @error('fullName') <p class="text-error font-label-sm text-label-sm">{{ $message }}</p> @enderror
                     </div>
                     <div class="flex flex-col gap-1">
                         <label class="font-label-sm text-label-sm text-on-surface-variant">Téléphone</label>
                         <input wire:model="phone" type="text" class="w-full bg-surface border-b border-outline-variant py-2 px-0 text-primary focus:border-primary focus:ring-0 font-body-md text-body-md" />
+                        @error('phone') <p class="text-error font-label-sm text-label-sm">{{ $message }}</p> @enderror
                     </div>
                     <div class="flex flex-col gap-1">
                         <label class="font-label-sm text-label-sm text-on-surface-variant">Province</label>
@@ -71,10 +73,12 @@
                             <option>Haut-Ogooué</option>
                             <option>Moyen-Ogooué</option>
                         </select>
+                        @error('province') <p class="text-error font-label-sm text-label-sm">{{ $message }}</p> @enderror
                     </div>
                     <div class="flex flex-col gap-1">
                         <label class="font-label-sm text-label-sm text-on-surface-variant">Ville</label>
                         <input wire:model="city" type="text" class="w-full bg-surface border-b border-outline-variant py-2 px-0 text-primary focus:border-primary focus:ring-0 font-body-md text-body-md" />
+                        @error('city') <p class="text-error font-label-sm text-label-sm">{{ $message }}</p> @enderror
                     </div>
                     <div class="flex flex-col gap-1">
                         <label class="font-label-sm text-label-sm text-on-surface-variant">Quartier</label>
@@ -83,6 +87,7 @@
                     <div class="flex flex-col gap-1 md:col-span-2">
                         <label class="font-label-sm text-label-sm text-on-surface-variant">Adresse détaillée</label>
                         <input wire:model="detailedAddress" type="text" placeholder="Ex: Immeuble, rue, numéro..." class="w-full bg-surface border-b border-outline-variant py-2 px-0 text-primary focus:border-primary focus:ring-0 font-body-md text-body-md" />
+                        @error('detailedAddress') <p class="text-error font-label-sm text-label-sm">{{ $message }}</p> @enderror
                     </div>
                     <div class="flex flex-col gap-1 md:col-span-2">
                         <label class="font-label-sm text-label-sm text-on-surface-variant">Point de repère / Précisions</label>
