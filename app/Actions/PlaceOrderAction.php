@@ -32,6 +32,7 @@ class PlaceOrderAction
         ?int $deliveryZoneId,
         string $paymentMethod,
         ?string $couponCode = null,
+        ?string $paymentPhone = null,
     ): Order {
         $cart = $this->cartService->current($user);
         $cart->load('items.variant.product');
@@ -72,7 +73,7 @@ class PlaceOrderAction
         $total = max(0, $subtotal - $discount) + $deliveryFee;
 
         return DB::transaction(function () use (
-            $user, $address, $deliveryMethod, $deliveryZoneId, $paymentMethod,
+            $user, $address, $deliveryMethod, $deliveryZoneId, $paymentMethod, $paymentPhone,
             $cart, $subtotal, $discount, $deliveryFee, $total, $coupon
         ) {
             $order = Order::create([
@@ -128,7 +129,7 @@ class PlaceOrderAction
                 'status' => $result->success ? 'paid' : 'failed',
                 'amount' => $total,
                 'reference' => $result->reference,
-                'raw_payload' => $result->raw,
+                'raw_payload' => $paymentPhone ? [...$result->raw, 'phone' => $paymentPhone] : $result->raw,
             ]);
 
             $this->updateOrderStatus->execute(

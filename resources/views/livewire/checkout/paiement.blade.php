@@ -7,25 +7,51 @@
             </div>
 
             <div class="flex flex-col gap-4">
-                <label class="relative flex items-center p-4 border rounded-lg cursor-pointer hover:bg-surface-container-lowest transition-colors shadow-sm {{ $paymentMethod === 'airtel' ? 'border-primary bg-surface-container-lowest' : 'border-outline-variant' }}">
-                    <input wire:model.live="paymentMethod" value="airtel" type="radio" class="w-5 h-5 text-primary bg-surface border-outline-variant focus:ring-primary focus:ring-2 ml-2" />
-                    <div class="flex items-center flex-1 ml-4">
-                        <div class="w-12 h-8 rounded bg-surface flex items-center justify-center overflow-hidden border border-surface-variant mr-4">
-                            <img src="{{ asset('img/mobilemoney-airtelmoney.png') }}" alt="Airtel Money" class="w-full h-full object-contain" />
+                <div class="border rounded-lg overflow-hidden shadow-sm transition-colors {{ $paymentMethod === 'airtel' ? 'border-primary' : 'border-outline-variant' }}">
+                    <label class="relative flex items-center p-4 cursor-pointer hover:bg-surface-container-lowest bg-surface">
+                        <input wire:model.live="paymentMethod" value="airtel" type="radio" class="w-5 h-5 text-primary bg-surface border-outline-variant focus:ring-primary focus:ring-2 ml-2" />
+                        <div class="flex items-center flex-1 ml-4">
+                            <div class="w-12 h-8 rounded bg-surface flex items-center justify-center overflow-hidden border border-surface-variant mr-4">
+                                <img src="{{ asset('img/mobilemoney-airtelmoney.png') }}" alt="Airtel Money" class="w-full h-full object-contain" />
+                            </div>
+                            <span class="font-body-lg text-body-lg text-primary font-medium">Airtel Money</span>
                         </div>
-                        <span class="font-body-lg text-body-lg text-primary font-medium">Airtel Money</span>
-                    </div>
-                </label>
+                    </label>
+                    @if($paymentMethod === 'airtel')
+                        <div class="p-6 bg-surface-container-lowest border-t border-outline-variant flex flex-col gap-1">
+                            <label class="font-label-sm text-label-sm text-on-surface-variant">Numéro Airtel Money</label>
+                            <div class="flex items-center border-b border-outline-variant focus-within:border-secondary">
+                                <span class="text-on-surface-variant font-body-md text-body-md pr-2">+241</span>
+                                <input wire:model.live="mobileMoneyPhone" type="tel" inputmode="numeric" maxlength="9" placeholder="076123456" class="flex-1 px-0 py-3 border-0 bg-transparent text-primary placeholder-on-surface-variant focus:ring-0 focus:border-secondary font-body-md text-body-md" />
+                            </div>
+                            <p class="text-[11px] text-on-surface-variant">Format : 076, 074 ou 077 suivi de 6 chiffres.</p>
+                            @error('mobileMoneyPhone') <p class="text-error font-label-sm text-label-sm">{{ $message }}</p> @enderror
+                        </div>
+                    @endif
+                </div>
 
-                <label class="relative flex items-center p-4 border rounded-lg cursor-pointer hover:bg-surface-container-lowest transition-colors shadow-sm {{ $paymentMethod === 'moov' ? 'border-primary bg-surface-container-lowest' : 'border-outline-variant' }}">
-                    <input wire:model.live="paymentMethod" value="moov" type="radio" class="w-5 h-5 text-primary bg-surface border-outline-variant focus:ring-primary focus:ring-2 ml-2" />
-                    <div class="flex items-center flex-1 ml-4">
-                        <div class="w-12 h-8 rounded bg-surface flex items-center justify-center overflow-hidden border border-surface-variant mr-4">
-                            <img src="{{ asset('img/mobilemoneyymoov-mooney.png') }}" alt="Moov Money" class="w-full h-full object-contain" />
+                <div class="border rounded-lg overflow-hidden shadow-sm transition-colors {{ $paymentMethod === 'moov' ? 'border-primary' : 'border-outline-variant' }}">
+                    <label class="relative flex items-center p-4 cursor-pointer hover:bg-surface-container-lowest bg-surface">
+                        <input wire:model.live="paymentMethod" value="moov" type="radio" class="w-5 h-5 text-primary bg-surface border-outline-variant focus:ring-primary focus:ring-2 ml-2" />
+                        <div class="flex items-center flex-1 ml-4">
+                            <div class="w-12 h-8 rounded bg-surface flex items-center justify-center overflow-hidden border border-surface-variant mr-4">
+                                <img src="{{ asset('img/mobilemoneyymoov-mooney.png') }}" alt="Moov Money" class="w-full h-full object-contain" />
+                            </div>
+                            <span class="font-body-lg text-body-lg text-primary font-medium">Moov Money</span>
                         </div>
-                        <span class="font-body-lg text-body-lg text-primary font-medium">Moov Money</span>
-                    </div>
-                </label>
+                    </label>
+                    @if($paymentMethod === 'moov')
+                        <div class="p-6 bg-surface-container-lowest border-t border-outline-variant flex flex-col gap-1">
+                            <label class="font-label-sm text-label-sm text-on-surface-variant">Numéro Moov Money</label>
+                            <div class="flex items-center border-b border-outline-variant focus-within:border-secondary">
+                                <span class="text-on-surface-variant font-body-md text-body-md pr-2">+241</span>
+                                <input wire:model.live="mobileMoneyPhone" type="tel" inputmode="numeric" maxlength="9" placeholder="065123456" class="flex-1 px-0 py-3 border-0 bg-transparent text-primary placeholder-on-surface-variant focus:ring-0 focus:border-secondary font-body-md text-body-md" />
+                            </div>
+                            <p class="text-[11px] text-on-surface-variant">Format : 065 ou 066 suivi de 6 chiffres.</p>
+                            @error('mobileMoneyPhone') <p class="text-error font-label-sm text-label-sm">{{ $message }}</p> @enderror
+                        </div>
+                    @endif
+                </div>
 
                 <div class="border rounded-lg overflow-hidden shadow-sm transition-colors {{ $paymentMethod === 'card' ? 'border-primary' : 'border-outline-variant' }}">
                     <label class="relative flex items-center p-4 cursor-pointer hover:bg-surface-container-lowest bg-surface">

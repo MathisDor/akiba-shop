@@ -12,9 +12,16 @@ class Paiement extends Component
 {
     public string $paymentMethod = 'airtel';
 
+    public string $mobileMoneyPhone = '';
+
     public string $error = '';
 
     public bool $processing = false;
+
+    private const MOBILE_MONEY_PREFIXES = [
+        'airtel' => ['074', '076', '077'],
+        'moov' => ['065', '066'],
+    ];
 
     public function mount(): void
     {
@@ -23,8 +30,30 @@ class Paiement extends Component
         }
     }
 
+    public function updatedMobileMoneyPhone(string $value): void
+    {
+        $this->mobileMoneyPhone = substr(preg_replace('/\D/', '', $value), 0, 9);
+    }
+
+    public function updatedPaymentMethod(): void
+    {
+        $this->resetErrorBag('mobileMoneyPhone');
+    }
+
     public function confirmAndPay(PlaceOrderAction $placeOrder)
     {
+        if (array_key_exists($this->paymentMethod, self::MOBILE_MONEY_PREFIXES)) {
+            $prefixes = implode('|', self::MOBILE_MONEY_PREFIXES[$this->paymentMethod]);
+            $label = $this->paymentMethod === 'airtel' ? 'Airtel Money' : 'Moov Money';
+
+            $this->validate([
+                'mobileMoneyPhone' => ['required', 'regex:/^('.$prefixes.')\d{6}$/'],
+            ], [
+                'mobileMoneyPhone.required' => "Veuillez saisir votre numéro {$label}.",
+                'mobileMoneyPhone.regex' => 'Numéro invalide. Format attendu : '.implode(', ', self::MOBILE_MONEY_PREFIXES[$this->paymentMethod]).' suivi de 6 chiffres.',
+            ]);
+        }
+
         $this->processing = true;
         $livraison = session('checkout.livraison');
 
@@ -43,6 +72,7 @@ class Paiement extends Component
                 deliveryZoneId: $livraison['delivery_zone_id'],
                 paymentMethod: $this->paymentMethod,
                 couponCode: session('cart.coupon_code'),
+                paymentPhone: array_key_exists($this->paymentMethod, self::MOBILE_MONEY_PREFIXES) ? $this->mobileMoneyPhone : null,
             );
         } catch (\RuntimeException $e) {
             $this->processing = false;
