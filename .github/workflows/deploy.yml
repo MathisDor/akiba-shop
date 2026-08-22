@@ -9,12 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy over SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          # The deploy key's authorized_keys entry on the server forces this
-          # exact command server-side regardless of what's sent here — kept
-          # for readability, not actually load-bearing.
-          script: cd public_html && bash deploy.sh
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY_B64 }}" | base64 -d > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          # The server's authorized_keys entry for this key forces the deploy
+          # command regardless of what's requested here — no shell, no other
+          # access. StrictHostKeyChecking=accept-new pins the host key on
+          # first connect instead of skipping verification entirely.
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" "true"
