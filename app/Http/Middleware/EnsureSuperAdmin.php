@@ -14,7 +14,7 @@ class EnsureSuperAdmin
         $admin = Auth::guard('admin')->user();
 
         if (! $admin || ! $admin->isSuperAdmin()) {
-            abort(403, "Réservé aux super administrateurs.");
+            abort(403, 'Réservé aux super administrateurs.');
         }
 
         return $next($request);

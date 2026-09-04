@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\User;
@@ -21,7 +22,7 @@ class DashboardController extends Controller
         $ordersToday = Order::whereDate('created_at', $today)->count();
         $ordersPending = Order::where('status', OrderStatus::EnAttentePaiement->value)->count();
         $ordersDelivered = Order::where('status', OrderStatus::Livree->value)->count();
-        $productsSold = \App\Models\OrderItem::whereHas('order', fn ($q) => $q->whereIn('status', ['payee', 'preparation', 'prete_a_expedier', 'en_livraison', 'livree', 'terminee']))->sum('quantity');
+        $productsSold = OrderItem::whereHas('order', fn ($q) => $q->whereIn('status', ['payee', 'preparation', 'prete_a_expedier', 'en_livraison', 'livree', 'terminee']))->sum('quantity');
         $customersCount = User::whereHas('role', fn ($q) => $q->where('slug', 'client'))->count();
         $lowStock = ProductVariant::where('stock', '>', 0)->where('stock', '<=', 5)->with('product', 'color', 'size')->take(8)->get();
 

@@ -66,7 +66,7 @@ class AppServiceProvider extends ServiceProvider
 
             $adapter = new LocalAdapter(
                 $config['root'], $visibility, $config['lock'] ?? LOCK_EX, $links,
-                new ExtensionMimeTypeDetector(),
+                new ExtensionMimeTypeDetector,
             );
 
             $flysystem = new Flysystem($adapter, Arr::only($config, [

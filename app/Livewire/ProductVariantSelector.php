@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Actions\AddToCartAction;
 use App\Models\Product;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Component;
 

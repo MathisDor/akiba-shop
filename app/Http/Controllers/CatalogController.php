@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Size;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -87,7 +88,7 @@ class CatalogController extends Controller
             ->orderBy('name')
             ->get();
 
-        $sizes = \App\Models\Size::orderBy('sort_order')->get();
+        $sizes = Size::orderBy('sort_order')->get();
 
         return view('catalog.index', [
             'products' => $products,

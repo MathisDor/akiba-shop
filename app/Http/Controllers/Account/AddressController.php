@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AddressRequest;
 use App\Models\Address;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,23 +20,9 @@ class AddressController extends Controller
         return view('account.addresses', compact('addresses'));
     }
 
-    private function rules(): array
+    public function store(AddressRequest $request): RedirectResponse
     {
-        return [
-            'label' => ['required', 'string', 'max:255'],
-            'full_name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:30'],
-            'province' => ['required', 'string', 'max:255'],
-            'city' => ['required', 'string', 'max:255'],
-            'commune' => ['nullable', 'string', 'max:255'],
-            'detailed_address' => ['required', 'string', 'max:255'],
-            'landmark' => ['nullable', 'string', 'max:255'],
-        ];
-    }
-
-    public function store(Request $request): RedirectResponse
-    {
-        $validated = $request->validate($this->rules());
+        $validated = $request->validated();
         $user = Auth::guard('web')->user();
 
         $address = $user->addresses()->create($validated + ['is_default' => $user->addresses()->count() === 0]);
@@ -47,11 +34,11 @@ class AddressController extends Controller
         return redirect()->route('account.addresses')->with('status', 'Adresse ajoutée.');
     }
 
-    public function update(Request $request, Address $address): RedirectResponse
+    public function update(AddressRequest $request, Address $address): RedirectResponse
     {
         Gate::authorize('update', $address);
 
-        $address->update($request->validate($this->rules()));
+        $address->update($request->validated());
 
         return redirect()->route('account.addresses')->with('status', 'Adresse mise à jour.');
     }

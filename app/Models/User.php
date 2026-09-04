@@ -21,7 +21,7 @@ use Spatie\Activitylog\Traits\CausesActivity;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, CausesActivity, HasApiTokens;
+    use CausesActivity, HasApiTokens, HasFactory, Notifiable;
 
     /**
      * PHP-side defaults for freshly instantiated models. The `is_active`

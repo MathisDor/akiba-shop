@@ -3,24 +3,21 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function register(Request $request): JsonResponse
+    public function register(RegisterRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'phone' => ['nullable', 'string', 'max:30'],
-            'password' => ['required', Password::defaults()],
-        ]);
+        $validated = $request->validated();
 
         $clientRole = Role::where('slug', 'client')->firstOrFail();
 
@@ -33,26 +30,26 @@ class AuthController extends Controller
         ]);
 
         return response()->json([
-            'user' => ['id' => $user->id, 'name' => $user->name, 'email' => $user->email],
+            'user' => new UserResource($user),
             'token' => $user->createToken('api')->plainTextToken,
         ], 201);
     }
 
-    public function login(Request $request): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        $credentials = $request->validated();
 
-        $user = User::where('email', $credentials['email'])->first();
-
-        if (! $user || ! Auth::guard('web')->getProvider()->validateCredentials($user, $credentials)) {
+        // once() verifies the credentials through the web guard's user provider
+        // without ever starting a session — the correct primitive for a
+        // stateless token API.
+        if (! Auth::guard('web')->once($credentials)) {
             throw ValidationException::withMessages(['email' => 'Identifiants incorrects.']);
         }
 
+        $user = Auth::guard('web')->user();
+
         return response()->json([
-            'user' => ['id' => $user->id, 'name' => $user->name, 'email' => $user->email],
+            'user' => new UserResource($user),
             'token' => $user->createToken('api')->plainTextToken,
         ]);
     }
@@ -66,6 +63,6 @@ class AuthController extends Controller
 
     public function me(Request $request): JsonResponse
     {
-        return response()->json(['user' => $request->user()]);
+        return response()->json(['user' => new UserResource($request->user())]);
     }
 }

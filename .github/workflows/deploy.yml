@@ -1,12 +1,17 @@
 name: Deploy to production
 
+# Runs only after the CI workflow has finished successfully on main, so a
+# regression that fails tests or Pint never reaches production.
 on:
-  push:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
     branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Deploy over SSH
         run: |

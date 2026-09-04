@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -31,7 +32,7 @@ class OrderResource extends JsonResource
             ])),
             'status_history' => $this->whenLoaded('statusHistories', fn () => $this->statusHistories->map(fn ($h) => [
                 'status' => $h->status,
-                'label' => \App\Enums\OrderStatus::from($h->status)->label(),
+                'label' => OrderStatus::from($h->status)->label(),
                 'note' => $h->note,
                 'created_at' => $h->created_at->toIso8601String(),
             ])),

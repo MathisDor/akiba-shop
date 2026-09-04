@@ -5,6 +5,8 @@ namespace App\Livewire\Checkout;
 use App\Actions\PlaceOrderAction;
 use App\Enums\OrderStatus;
 use App\Models\Address;
+use App\Models\Coupon;
+use App\Models\DeliveryZone;
 use App\Services\CartService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -99,11 +101,11 @@ class Paiement extends Component
         $deliveryFee = 0;
 
         if (($livraison['delivery_method'] ?? null) === 'domicile' && ! empty($livraison['delivery_zone_id'])) {
-            $zone = \App\Models\DeliveryZone::find($livraison['delivery_zone_id']);
+            $zone = DeliveryZone::find($livraison['delivery_zone_id']);
             $deliveryFee = $zone?->fee ?? 0;
         }
 
-        $coupon = session('cart.coupon_code') ? \App\Models\Coupon::where('code', session('cart.coupon_code'))->first() : null;
+        $coupon = session('cart.coupon_code') ? Coupon::where('code', session('cart.coupon_code'))->first() : null;
         $discount = ($coupon && $coupon->isValidFor($subtotal)) ? $coupon->discountFor($subtotal) : 0;
 
         return view('livewire.checkout.paiement', [

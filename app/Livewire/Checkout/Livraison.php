@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Checkout;
 
-use App\Models\Address;
 use App\Models\DeliveryZone;
 use App\Services\CartService;
 use Illuminate\Support\Facades\Auth;

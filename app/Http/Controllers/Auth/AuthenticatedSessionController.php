@@ -28,15 +28,19 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
-        $request->session()->regenerate();
-
         $user = Auth::guard('web')->user();
 
+        // Admin accounts sign in through the dedicated admin login only — never
+        // the customer-facing form.
         if ($user->isAdmin()) {
-            Auth::guard('admin')->login($user, $request->boolean('remember'));
+            Auth::guard('web')->logout();
 
-            return redirect()->route('admin.dashboard');
+            throw ValidationException::withMessages([
+                'email' => 'Merci d\'utiliser la connexion administrateur.',
+            ]);
         }
+
+        $request->session()->regenerate();
 
         return redirect()->intended(route('home'));
     }
