@@ -6,7 +6,11 @@
             <div class="flex flex-col gap-4">
                 <p class="inline-flex self-start items-center gap-2 rounded-full bg-primary-fixed text-on-primary-fixed-variant px-3 py-1 text-[12px] font-bold">
                     <span class="w-2 h-2 rounded-full bg-gabon-green"></span>
-                    {{ number_format($listingCount, 0, ',', ' ') }} annonce{{ $listingCount > 1 ? 's' : '' }} en ligne au Gabon
+                    @if($listingCount > 0)
+                        {{ number_format($listingCount, 0, ',', ' ') }} annonce{{ $listingCount > 1 ? 's' : '' }} en ligne au Gabon
+                    @else
+                        Petites annonces gratuites au Gabon
+                    @endif
                 </p>
                 <h1 class="text-display-lg-mobile md:text-display-lg text-on-surface">
                     Achetez et vendez <span class="text-primary">près de chez vous</span>.
