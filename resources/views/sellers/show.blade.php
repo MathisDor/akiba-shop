@@ -1,4 +1,4 @@
-<x-layouts.app :title="$seller->name.' — annonces sur AkibaShop'" :description="'Toutes les annonces de '.$seller->name.' sur AkibaShop, petites annonces au Gabon.'">
+<x-layouts.app :title="$seller->name.' — annonces sur AkibaShop'" :description="'Toutes les annonces de '.$seller->name.' sur AkibaShop.'">
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-6">
         <section class="card p-5 md:p-6 flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
             <span class="w-16 h-16 rounded-full bg-primary-fixed text-on-primary-fixed-variant flex items-center justify-center text-[24px] font-extrabold shrink-0">{{ mb_strtoupper(mb_substr($seller->name, 0, 1)) }}</span>
@@ -14,7 +14,7 @@
                 </h1>
                 <p class="text-[14px] text-on-surface-variant mt-1">
                     {{ $seller->is_pro ? 'Professionnel' : 'Particulier' }}
-                    @if($seller->city) · {{ $seller->city->name }} @endif
+                    @if($seller->location()) · {{ $seller->location() }} @endif
                     · membre depuis {{ $seller->created_at->translatedFormat('F Y') }}
                 </p>
             </div>

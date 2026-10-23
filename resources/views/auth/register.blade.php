@@ -13,10 +13,7 @@
 
         <div>
             <label for="phone" class="field-label">Téléphone</label>
-            <div class="flex items-stretch rounded-xl border border-outline-variant bg-surface-container-lowest focus-within:border-primary focus-within:ring-3 focus-within:ring-primary/15 @error('phone') !border-error @enderror">
-                <span class="flex items-center gap-1.5 px-3 border-r border-outline-variant text-[14px] font-semibold text-on-surface-variant">🇬🇦 +241</span>
-                <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" inputmode="tel" autocomplete="tel-national" placeholder="077 12 34 56" required class="flex-1 min-w-0 bg-transparent border-0 px-3 py-2.5 text-[15px] focus:outline-none focus:ring-0" />
-            </div>
+            <x-phone-input name="phone" country-name="phone_country" :invalid="$errors->has('phone')" />
             @error('phone') <p class="field-error">{{ $message }}</p> @enderror
         </div>
 
@@ -26,14 +23,20 @@
             @error('email') <p class="field-error">{{ $message }}</p> @enderror
         </div>
 
-        <div>
-            <label for="city_id" class="field-label">Ville <span class="font-normal text-on-surface-variant">(facultatif)</span></label>
-            <select id="city_id" name="city_id" class="field">
-                <option value="">—</option>
-                @foreach($cities as $city)
-                    <option value="{{ $city->id }}" @selected((int) old('city_id') === $city->id)>{{ $city->name }}</option>
-                @endforeach
-            </select>
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label for="country_code" class="field-label">Pays</label>
+                <select id="country_code" name="country_code" class="field" required>
+                    @foreach($countries as $code => $countryName)
+                        <option value="{{ $code }}" @selected(old('country_code', config('marketplace.default_country')) === $code)>{{ $countryName }}</option>
+                    @endforeach
+                </select>
+                @error('country_code') <p class="field-error">{{ $message }}</p> @enderror
+            </div>
+            <div>
+                <label for="city" class="field-label">Ville <span class="font-normal text-on-surface-variant">(facultatif)</span></label>
+                <input id="city" name="city" type="text" maxlength="100" value="{{ old('city') }}" autocomplete="address-level2" class="field" />
+            </div>
         </div>
 
         <div class="grid sm:grid-cols-2 gap-4">

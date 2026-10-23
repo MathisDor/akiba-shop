@@ -2,12 +2,12 @@
 
 namespace App\Providers;
 
-use App\Models\City;
 use App\Models\ListingCategory;
 use App\Services\CartService;
 use App\Services\Payments\EbillingPaymentGateway;
 use App\Services\Payments\ManualPaymentGateway;
 use App\Services\Payments\PaymentGatewayInterface;
+use App\Support\Countries;
 use Illuminate\Filesystem\LocalFilesystemAdapter;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
@@ -48,8 +48,10 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer(['layouts.partials.header', 'layouts.partials.footer'], function ($view) {
             $view->with('navCategories', once(fn () => ListingCategory::active()->roots()->get()));
-            $view->with('navCities', once(fn () => City::orderBy('sort_order')->get()));
         });
+
+        // Country pickers appear in the header, home page and search filters.
+        View::share('navCountries', Countries::options());
 
         if (! extension_loaded('fileinfo')) {
             $this->registerLocalDriverWithoutFileinfo();

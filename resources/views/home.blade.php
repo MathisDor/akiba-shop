@@ -5,11 +5,11 @@
         <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-6 md:py-12 grid md:grid-cols-[1.2fr_1fr] gap-6 md:gap-12 items-center">
             <div class="flex flex-col gap-4">
                 <p class="inline-flex self-start items-center gap-2 rounded-full bg-primary-fixed text-on-primary-fixed-variant px-3 py-1 text-[12px] font-bold">
-                    <span class="w-2 h-2 rounded-full bg-gabon-green"></span>
+                    <span class="w-2 h-2 rounded-full bg-brand"></span>
                     @if($listingCount > 0)
-                        {{ number_format($listingCount, 0, ',', ' ') }} annonce{{ $listingCount > 1 ? 's' : '' }} en ligne au Gabon
+                        {{ number_format($listingCount, 0, ',', ' ') }} annonce{{ $listingCount > 1 ? 's' : '' }} en ligne
                     @else
-                        Petites annonces gratuites au Gabon
+                        Petites annonces gratuites
                     @endif
                 </p>
                 <h1 class="text-display-lg-mobile md:text-display-lg text-on-surface">
@@ -18,11 +18,11 @@
                 <p class="text-body-lg text-on-surface-variant max-w-xl">Voitures, logements, téléphones, meubles, emplois… Publiez gratuitement et discutez directement avec les vendeurs sur WhatsApp.</p>
 
                 <form method="GET" action="{{ route('listings.index') }}" role="search" class="md:hidden flex flex-col gap-2 mt-1">
-                    <label for="hero-city" class="sr-only">Ville</label>
-                    <select id="hero-city" name="ville" class="field">
-                        <option value="">Tout le Gabon</option>
-                        @foreach($cities as $city)
-                            <option value="{{ $city->slug }}">{{ $city->name }}</option>
+                    <label for="hero-country" class="sr-only">Pays</label>
+                    <select id="hero-country" name="pays" class="field">
+                        <option value="">Tous les pays</option>
+                        @foreach($navCountries as $code => $name)
+                            <option value="{{ $code }}">{{ $name }}</option>
                         @endforeach
                     </select>
                     <button type="submit" class="btn btn-primary">
@@ -38,12 +38,12 @@
                 </div>
             </div>
 
-            {{-- Trust points, the Gabonese way of buying: WhatsApp, meet in person, pay on hand-over --}}
+            {{-- Trust points: direct contact, moderation, meet in person and pay on hand-over --}}
             <ul class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-1 gap-3">
                 @foreach([
                     ['whatsapp', 'Contact direct sur WhatsApp', 'Écrivez ou appelez le vendeur en un clic, sans intermédiaire.'],
                     ['verified', 'Annonces vérifiées', 'Chaque annonce est relue par notre équipe avant publication.'],
-                    ['location_on', 'Rencontre en main propre', 'Voyez l’article, puis payez à la remise — en espèces ou Mobile Money.'],
+                    ['location_on', 'Rencontre en main propre', 'Voyez l’article, puis payez à la remise, en main propre.'],
                 ] as [$icon, $title, $text])
                     <li class="flex items-start gap-3 rounded-2xl bg-surface-container-low p-4">
                         <span class="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center {{ $icon === 'whatsapp' ? 'bg-whatsapp text-on-whatsapp' : 'bg-primary text-on-primary' }}">
@@ -102,7 +102,7 @@
         </div>
 
         @if($latest->isEmpty())
-            <x-empty-state icon="megaphone" title="Soyez le premier à publier !" text="AkibaShop vient d’ouvrir ses petites annonces. Déposez la vôtre gratuitement, elle sera vue par tout le Gabon.">
+            <x-empty-state icon="megaphone" title="Soyez le premier à publier !" text="AkibaShop vient d’ouvrir ses petites annonces. Déposez la vôtre gratuitement, elle sera vue par des milliers de visiteurs.">
                 <a href="{{ route('listings.create') }}" class="btn btn-accent"><x-icon name="add_circle" class="text-[20px]" /> Déposer une annonce</a>
             </x-empty-state>
         @else
@@ -120,12 +120,9 @@
     {{-- Sell CTA --}}
     <section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-10 md:pt-16">
         <div class="relative overflow-hidden rounded-3xl bg-primary text-on-primary p-6 md:p-10 grid md:grid-cols-[1fr_auto] gap-6 items-center">
-            <div class="absolute inset-y-0 right-0 w-2 md:w-3 flex flex-col" aria-hidden="true">
-                <span class="flex-1 bg-gabon-green"></span><span class="flex-1 bg-gabon-yellow"></span><span class="flex-1 bg-gabon-blue"></span>
-            </div>
             <div>
                 <h2 class="text-headline-lg">Vous avez quelque chose à vendre ?</h2>
-                <p class="mt-2 text-body-lg text-on-primary/85 max-w-2xl">Prenez quelques photos avec votre téléphone, fixez votre prix en FCFA et publiez en 2 minutes. C’est gratuit.</p>
+                <p class="mt-2 text-body-lg text-on-primary/85 max-w-2xl">Prenez quelques photos avec votre téléphone, fixez votre prix et publiez en 2 minutes. C’est gratuit.</p>
             </div>
             <a href="{{ route('listings.create') }}" class="btn btn-accent h-12 px-6 text-[16px] justify-self-start md:justify-self-end">Publier mon annonce</a>
         </div>

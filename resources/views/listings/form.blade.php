@@ -1,7 +1,7 @@
 @php
     $editing = $listing->exists;
     $selectedCategoryId = (int) old('listing_category_id', $listing->listing_category_id);
-    $selectedCityId = (int) old('city_id', $listing->city_id);
+    $selectedCountry = old('country_code', $listing->country_code ?? config('marketplace.default_country'));
 
     $categoryTree = $categories->map(fn ($root) => [
         'id' => $root->id,
@@ -10,15 +10,11 @@
         'children' => $root->children->map(fn ($child) => ['id' => $child->id, 'name' => $child->name])->values(),
     ])->values();
 
-    $districtsByCity = $cities->mapWithKeys(fn ($city) => [
-        $city->id => $city->districts->map(fn ($d) => ['id' => $d->id, 'name' => $d->name])->values(),
-    ]);
-
     // Re-open the step holding the first validation error.
     $stepFields = [
         1 => ['listing_category_id'],
         2 => ['title', 'description', 'price', 'condition', 'specs'],
-        3 => ['photos', 'remove_images', 'city_id', 'district_id', 'contact_phone'],
+        3 => ['photos', 'remove_images', 'country_code', 'city', 'contact_phone'],
     ];
     $initialStep = 1;
     if ($errors->any()) {
@@ -34,7 +30,6 @@
 
     $maxImages = config('marketplace.max_images');
     $existingImages = $editing ? $listing->images : collect();
-    $phone = old('contact_phone', $listing->contact_phone ? \App\Support\GabonPhone::format($listing->contact_phone) : '');
 @endphp
 
 <x-layouts.app :title="($editing ? 'Modifier mon annonce' : 'Déposer une annonce').' — AkibaShop'" hide-footer>
@@ -43,9 +38,6 @@
             step: {{ $initialStep }},
             tree: @js($categoryTree),
             categoryId: {{ $selectedCategoryId ?: 'null' }},
-            cityId: {{ $selectedCityId ?: 'null' }},
-            districtId: @js(old('district_id', $listing->district_id)),
-            districts: @js($districtsByCity),
             existingCount: {{ $existingImages->count() }},
             maxImages: {{ $maxImages }},
             price: @js(old('price', $listing->price !== null ? number_format($listing->price, 0, ',', ' ') : '')),
@@ -152,7 +144,7 @@
                         <label for="price" class="field-label">Prix</label>
                         <div class="relative">
                             <input id="price" name="price" type="text" inputmode="numeric" x-model="price" @input="price = formatPrice($event.target.value)" placeholder="Laisser vide si à débattre" class="field pr-16" @error('price') aria-invalid="true" @enderror />
-                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-[14px] font-bold text-on-surface-variant">FCFA</span>
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-[14px] font-bold text-on-surface-variant">{{ \App\Support\Price::symbol() }}</span>
                         </div>
                         @error('price') <p class="field-error">{{ $message }}</p> @enderror
                         <label class="mt-2 flex items-center gap-2 text-[14px] text-on-surface" x-show="price !== ''">
@@ -268,34 +260,25 @@
 
                 <div class="grid sm:grid-cols-2 gap-4 border-t border-surface-variant pt-5">
                     <div>
-                        <label for="city_id" class="field-label">Ville</label>
-                        <select id="city_id" name="city_id" class="field" required x-model.number="cityId" @change="districtId = ''" data-message="Choisissez une ville." @error('city_id') aria-invalid="true" @enderror>
-                            <option value="">Choisissez…</option>
-                            @foreach($cities as $city)
-                                <option value="{{ $city->id }}" @selected($selectedCityId === $city->id)>{{ $city->name }}</option>
+                        <label for="country_code" class="field-label">Pays</label>
+                        <select id="country_code" name="country_code" class="field" required data-message="Choisissez un pays." @error('country_code') aria-invalid="true" @enderror>
+                            @foreach($countries as $code => $countryName)
+                                <option value="{{ $code }}" @selected($selectedCountry === $code)>{{ $countryName }}</option>
                             @endforeach
                         </select>
-                        @error('city_id') <p class="field-error">{{ $message }}</p> @enderror
+                        @error('country_code') <p class="field-error">{{ $message }}</p> @enderror
                     </div>
-                    <div x-show="cityDistricts().length">
-                        <label for="district_id" class="field-label">Quartier <span class="font-normal text-on-surface-variant">(facultatif)</span></label>
-                        <select id="district_id" name="district_id" class="field" x-model="districtId" :disabled="!cityDistricts().length">
-                            <option value="">—</option>
-                            <template x-for="district in cityDistricts()" :key="district.id">
-                                <option :value="district.id" x-text="district.name" :selected="String(district.id) === String(districtId)"></option>
-                            </template>
-                        </select>
-                        @error('district_id') <p class="field-error">{{ $message }}</p> @enderror
+                    <div>
+                        <label for="city" class="field-label">Ville</label>
+                        <input id="city" name="city" type="text" required minlength="2" maxlength="100" value="{{ old('city', $listing->city) }}" placeholder="Ex. : Lyon, Dakar, Montréal…" autocomplete="address-level2" class="field" data-message="Indiquez la ville." @error('city') aria-invalid="true" @enderror />
+                        @error('city') <p class="field-error">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
                 <div class="grid sm:grid-cols-2 gap-4">
                     <div>
                         <label for="contact_phone" class="field-label">Téléphone de contact</label>
-                        <div class="flex items-stretch rounded-xl border border-outline-variant bg-surface-container-lowest focus-within:border-primary focus-within:ring-3 focus-within:ring-primary/15 @error('contact_phone') !border-error @enderror">
-                            <span class="flex items-center gap-1.5 px-3 border-r border-outline-variant text-[14px] font-semibold text-on-surface-variant">🇬🇦 +241</span>
-                            <input id="contact_phone" name="contact_phone" type="tel" inputmode="tel" autocomplete="tel-national" required value="{{ $phone }}" placeholder="077 12 34 56" class="flex-1 min-w-0 bg-transparent border-0 px-3 py-2.5 text-[15px] focus:outline-none focus:ring-0" data-message="Indiquez un numéro de téléphone." />
-                        </div>
+                        <x-phone-input name="contact_phone" country-name="contact_phone_country" :value="$listing->contact_phone" :invalid="$errors->has('contact_phone')" />
                         @error('contact_phone') <p class="field-error">{{ $message }}</p> @enderror
                     </div>
                     <label class="flex items-start gap-3 rounded-xl bg-surface-container-low p-3 cursor-pointer sm:self-end">
@@ -358,9 +341,6 @@
                         if (!root) return '';
                         const child = root.children.find((c) => c.id === this.categoryId);
                         return (child ? root.name + ' › ' + child.name : root.name) + ' · modifier';
-                    },
-                    cityDistricts() {
-                        return this.districts[this.cityId] ?? [];
                     },
                     formatPrice(value) {
                         const digits = value.replace(/\D/g, '').replace(/^0+(?=\d)/, '');

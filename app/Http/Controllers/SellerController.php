@@ -13,8 +13,6 @@ class SellerController extends Controller
     {
         abort_if($user->isAdmin() || ! $user->is_active, 404);
 
-        $user->load('city');
-
         return view('sellers.show', [
             'seller' => $user,
             'listings' => (new ListingFilters($request))->paginate(userId: $user->id),

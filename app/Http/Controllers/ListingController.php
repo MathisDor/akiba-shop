@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\City;
 use App\Models\Listing;
 use App\Models\ListingCategory;
 use App\Support\ListingFilters;
@@ -25,10 +24,10 @@ class ListingController extends Controller
         return view('listings.index', [
             'listings' => $filters->paginate($category),
             'currentCategory' => $category?->loadMissing('parent', 'children'),
-            'currentCity' => $filters->city()?->load('districts'),
+            'currentCountry' => $filters->country(),
+            'currentCity' => $filters->city(),
             'activeFilterCount' => $filters->activeCount(),
             'categories' => ListingCategory::active()->roots()->with('children')->get(),
-            'cities' => City::orderBy('sort_order')->get(),
             'sorts' => ListingFilters::SORTS,
         ]);
     }
@@ -38,7 +37,7 @@ class ListingController extends Controller
         $isOwner = Auth::guard('web')->id() === $listing->user_id;
         abort_unless($listing->isVisible() || $isOwner, 404);
 
-        $listing->load(['images', 'category.parent', 'city', 'district', 'favoritedBy', 'user' => fn ($q) => $q->withCount([
+        $listing->load(['images', 'category.parent', 'favoritedBy', 'user' => fn ($q) => $q->withCount([
             'listings as visible_listings_count' => fn ($q) => $q->visible(),
         ])]);
 
@@ -50,7 +49,7 @@ class ListingController extends Controller
         }
 
         $similar = Listing::visible()
-            ->with(['images', 'city', 'district', 'user', 'favoritedBy'])
+            ->with(['images', 'user', 'favoritedBy'])
             ->where('listing_category_id', $listing->listing_category_id)
             ->whereKeyNot($listing->id)
             ->boostedFirst()

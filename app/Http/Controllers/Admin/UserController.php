@@ -14,7 +14,6 @@ class UserController extends Controller
     public function index(Request $request): View
     {
         $query = User::whereHas('role', fn ($q) => $q->where('slug', 'client'))
-            ->with('city')
             ->withCount('listings');
 
         if ($request->filled('q')) {
@@ -36,7 +35,7 @@ class UserController extends Controller
     {
         abort_if($user->isAdmin(), 404);
 
-        $user->load(['city', 'listings' => fn ($q) => $q->with(['images', 'category'])->latest()]);
+        $user->load(['listings' => fn ($q) => $q->with(['images', 'category'])->latest()]);
 
         return view('admin.users.show', ['member' => $user]);
     }

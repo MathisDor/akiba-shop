@@ -1,7 +1,7 @@
 @php($active = $active ?? null)
 
 <header class="sticky top-0 z-40 bg-surface-container-lowest/95 backdrop-blur border-b border-surface-variant">
-    <div class="flag-band"></div>
+    <div class="brand-band"></div>
 
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
         <div class="flex items-center gap-3 md:gap-6 h-[60px] md:h-[72px]">
@@ -14,15 +14,15 @@
                 <label for="header-q" class="sr-only">Que recherchez-vous ?</label>
                 <div class="flex flex-1 items-center gap-2 pl-4 min-w-0">
                     <x-icon name="search" class="text-[20px] text-on-surface-variant" />
-                    <input id="header-q" type="search" name="q" value="{{ request('q') }}" placeholder="Que recherchez-vous ? Voiture, iPhone, studio…" class="w-full min-w-0 bg-transparent border-0 p-0 text-[15px] focus:outline-none focus:ring-0 placeholder:text-outline" />
+                    <input id="header-q" type="search" name="q" value="{{ request('q') }}" placeholder="Que recherchez-vous ? Voiture, téléphone, studio…" class="w-full min-w-0 bg-transparent border-0 p-0 text-[15px] focus:outline-none focus:ring-0 placeholder:text-outline" />
                 </div>
-                <label for="header-city" class="sr-only">Ville</label>
+                <label for="header-country" class="sr-only">Pays</label>
                 <div class="flex items-center gap-1 border-l border-outline-variant pl-3 pr-1">
                     <x-icon name="location_on" class="text-[18px] text-on-surface-variant" />
-                    <select id="header-city" name="ville" class="bg-transparent border-0 py-0 pl-1 pr-6 text-[14px] font-semibold text-on-surface focus:outline-none focus:ring-0 cursor-pointer">
-                        <option value="">Tout le Gabon</option>
-                        @foreach($navCities as $city)
-                            <option value="{{ $city->slug }}" @selected(request('ville') === $city->slug)>{{ $city->name }}</option>
+                    <select id="header-country" name="pays" class="max-w-[160px] bg-transparent border-0 py-0 pl-1 pr-6 text-[14px] font-semibold text-on-surface focus:outline-none focus:ring-0 cursor-pointer">
+                        <option value="">Tous les pays</option>
+                        @foreach($navCountries as $code => $name)
+                            <option value="{{ $code }}" @selected(strtoupper((string) request('pays')) === $code)>{{ $name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -59,8 +59,8 @@
             <div class="flex items-center gap-2 h-11 px-3 rounded-xl bg-surface-container-low border border-transparent focus-within:border-primary focus-within:bg-surface-container-lowest transition-colors">
                 <x-icon name="search" class="text-[20px] text-on-surface-variant" />
                 <input id="header-q-mobile" type="search" name="q" value="{{ request('q') }}" placeholder="Rechercher sur AkibaShop" class="w-full min-w-0 bg-transparent border-0 p-0 text-[15px] focus:outline-none focus:ring-0 placeholder:text-outline" />
-                @if(request('ville'))
-                    <input type="hidden" name="ville" value="{{ request('ville') }}" />
+                @if(request('pays'))
+                    <input type="hidden" name="pays" value="{{ request('pays') }}" />
                 @endif
             </div>
         </form>

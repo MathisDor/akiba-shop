@@ -22,6 +22,19 @@ return [
 
     'per_page' => 24,
 
+    /*
+     * Single site-wide currency. Prices are stored as whole units (no cents).
+     * `symbol_first` puts the symbol before the amount ($ 1 200) instead of after (1 200 €).
+     */
+    'currency' => [
+        'code' => env('MARKETPLACE_CURRENCY', 'EUR'),
+        'symbol' => env('MARKETPLACE_CURRENCY_SYMBOL', '€'),
+        'symbol_first' => (bool) env('MARKETPLACE_CURRENCY_SYMBOL_FIRST', false),
+    ],
+
+    // Pre-selected country in forms and the default dialling code for phone numbers.
+    'default_country' => env('MARKETPLACE_DEFAULT_COUNTRY', 'FR'),
+
     // Shown on /contact when set.
     'contact_email' => env('CONTACT_EMAIL'),
     'contact_whatsapp' => env('CONTACT_WHATSAPP'),

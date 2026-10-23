@@ -16,7 +16,7 @@ class FavoriteController extends Controller
     {
         $listings = Auth::guard('web')->user()
             ->favoriteListings()
-            ->with(['images', 'city', 'district', 'user', 'favoritedBy'])
+            ->with(['images', 'user', 'favoritedBy'])
             ->latest('listing_favorites.created_at')
             ->get();
 

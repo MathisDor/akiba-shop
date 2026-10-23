@@ -3,7 +3,6 @@
 namespace App\Support;
 
 use App\Enums\ListingCondition;
-use App\Models\City;
 use App\Models\Listing;
 use App\Models\ListingCategory;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -32,11 +31,20 @@ class ListingFilters
             : null;
     }
 
-    public function city(): ?City
+    /** ISO country code from ?pays=, when it is a known country. */
+    public function country(): ?string
     {
-        $slug = $this->request->query('ville');
+        $code = strtoupper((string) $this->request->query('pays'));
 
-        return is_string($slug) && $slug !== '' ? City::where('slug', $slug)->first() : null;
+        return Countries::exists($code) ? $code : null;
+    }
+
+    /** Free-text city from ?ville=. */
+    public function city(): ?string
+    {
+        $city = trim((string) $this->request->query('ville'));
+
+        return $city === '' ? null : mb_substr($city, 0, 100);
     }
 
     public function paginate(?ListingCategory $category = null, ?int $userId = null): LengthAwarePaginator
@@ -44,7 +52,7 @@ class ListingFilters
         $category ??= $this->category();
         $query = Listing::query()
             ->visible()
-            ->with(['images', 'city', 'district', 'user', 'favoritedBy']);
+            ->with(['images', 'user', 'favoritedBy']);
 
         if ($userId !== null) {
             $query->where('user_id', $userId);
@@ -54,12 +62,12 @@ class ListingFilters
             $query->whereIn('listing_category_id', $category->selfAndChildrenIds());
         }
 
-        if ($city = $this->city()) {
-            $query->where('city_id', $city->id);
+        if ($country = $this->country()) {
+            $query->where('country_code', $country);
+        }
 
-            if ($this->request->filled('quartier')) {
-                $query->where('district_id', $this->request->integer('quartier'));
-            }
+        if ($city = $this->city()) {
+            $query->where('city', 'like', '%'.addcslashes($city, '%_\\').'%');
         }
 
         $term = trim((string) $this->request->query('q', ''));
@@ -91,7 +99,7 @@ class ListingFilters
     /** Number of filters the visitor applied (badge on the mobile "Filtres" button). */
     public function activeCount(): int
     {
-        return collect(['ville', 'prix_min', 'prix_max', 'etat'])
+        return collect(['pays', 'ville', 'prix_min', 'prix_max', 'etat'])
             ->filter(fn ($key) => $this->request->filled($key))
             ->count();
     }

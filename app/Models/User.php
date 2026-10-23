@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Support\Countries;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -16,7 +17,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Activitylog\Traits\CausesActivity;
 
-#[Fillable(['name', 'email', 'password', 'phone', 'role_id', 'city_id', 'is_pro'])]
+#[Fillable(['name', 'email', 'password', 'phone', 'role_id', 'country_code', 'city', 'is_pro'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -82,9 +83,10 @@ class User extends Authenticatable
             : $this->permissions()->where('slug', $slug)->exists();
     }
 
-    public function city(): BelongsTo
+    /** "Lyon, France" — empty when the member gave no location. */
+    public function location(): string
     {
-        return $this->belongsTo(City::class);
+        return collect([$this->city, Countries::name($this->country_code)])->filter()->implode(', ');
     }
 
     public function listings(): HasMany

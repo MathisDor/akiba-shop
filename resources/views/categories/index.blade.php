@@ -1,4 +1,4 @@
-<x-layouts.app active="listings" title="Toutes les catégories — AkibaShop" description="Toutes les catégories de petites annonces au Gabon : véhicules, immobilier, téléphones, maison, mode, emploi, animaux et plus.">
+<x-layouts.app active="listings" title="Toutes les catégories — AkibaShop" description="Toutes les catégories de petites annonces : véhicules, immobilier, téléphones, maison, mode, emploi, animaux et plus.">
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-6">
         <h1 class="text-headline-lg text-on-surface mb-6">Toutes les catégories</h1>
 

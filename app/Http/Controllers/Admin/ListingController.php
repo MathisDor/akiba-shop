@@ -16,7 +16,7 @@ class ListingController extends Controller
     {
         $status = ListingStatus::tryFrom((string) $request->query('statut', ListingStatus::EnAttente->value));
 
-        $query = Listing::with(['images', 'user', 'category', 'city'])->withCount('reports');
+        $query = Listing::with(['images', 'user', 'category'])->withCount('reports');
 
         if ($status) {
             $query->where('status', $status->value);
@@ -42,7 +42,7 @@ class ListingController extends Controller
 
     public function show(Listing $listing): View
     {
-        $listing->load(['images', 'category.parent', 'city', 'district', 'reports.user', 'user' => fn ($q) => $q->withCount('listings')]);
+        $listing->load(['images', 'category.parent', 'reports.user', 'user' => fn ($q) => $q->withCount('listings')]);
 
         return view('admin.listings.show', compact('listing'));
     }

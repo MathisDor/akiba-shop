@@ -18,7 +18,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-background text-on-surface antialiased min-h-screen flex flex-col">
-    <div class="flag-band"></div>
+    <div class="brand-band"></div>
     <header class="w-full flex justify-center items-center py-6 md:py-8">
         <a href="{{ route('home') }}" aria-label="AkibaShop — accueil"><x-logo /></a>
     </header>

@@ -6,7 +6,7 @@ use App\Enums\ListingCondition;
 use App\Models\Listing;
 use App\Models\ListingCategory;
 use App\Services\ListingImageStore;
-use App\Support\GabonPhone;
+use App\Support\Phone;
 use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -24,7 +24,8 @@ class ListingRequest extends FormRequest
 
         $this->merge([
             'price' => $price === '' ? null : $price,
-            'contact_phone' => GabonPhone::normalize($this->input('contact_phone')) ?? $this->input('contact_phone'),
+            'contact_phone' => Phone::normalize($this->input('contact_phone'), $this->input('contact_phone_country') ?: $this->input('country_code')) ?? $this->input('contact_phone'),
+            'city' => trim((string) $this->input('city')),
             'is_negotiable' => $this->boolean('is_negotiable'),
             'accepts_whatsapp' => $this->boolean('accepts_whatsapp'),
         ]);
@@ -50,9 +51,9 @@ class ListingRequest extends FormRequest
             'price' => ['nullable', 'integer', 'min:0', 'max:99999999999'],
             'is_negotiable' => ['boolean'],
             'condition' => ['nullable', Rule::enum(ListingCondition::class)],
-            'city_id' => ['required', 'integer', 'exists:cities,id'],
-            'district_id' => ['nullable', 'integer', Rule::exists('districts', 'id')->where('city_id', $this->integer('city_id'))],
-            'contact_phone' => ['required', 'regex:/^0\d{7,8}$/'],
+            'country_code' => ['required', Rule::in(array_keys(config('countries')))],
+            'city' => ['required', 'string', 'min:2', 'max:100'],
+            'contact_phone' => ['required', 'regex:/^\+\d{8,15}$/'],
             'accepts_whatsapp' => ['boolean'],
             'specs' => ['nullable', 'array'],
             'specs.*' => ['nullable', 'string', 'max:100'],
@@ -75,19 +76,20 @@ class ListingRequest extends FormRequest
             'description.required' => 'Décrivez ce que vous proposez.',
             'description.min' => 'La description doit faire au moins 20 caractères.',
             'listing_category_id.required' => 'Choisissez une catégorie.',
-            'city_id.required' => 'Choisissez une ville.',
+            'country_code.required' => 'Choisissez un pays.',
+            'city.required' => 'Indiquez la ville.',
             'contact_phone.required' => 'Indiquez un numéro de téléphone.',
-            'contact_phone.regex' => 'Numéro gabonais invalide (ex. : 077 12 34 56).',
+            'contact_phone.regex' => 'Numéro de téléphone invalide pour ce pays.',
             'photos.max' => 'Vous pouvez mettre au maximum '.config('marketplace.max_images').' photos par annonce.',
             'photos.*.max' => 'Chaque photo doit faire moins de '.intdiv(config('marketplace.max_image_kb'), 1024).' Mo.',
-            'price.integer' => 'Le prix doit être un nombre (en FCFA).',
+            'price.integer' => 'Le prix doit être un nombre entier.',
         ];
     }
 
     /** Validated attributes ready for Listing::fill(), with specs restricted to the category's fields. */
     public function listingAttributes(): array
     {
-        $data = $this->safe()->except(['photos', 'remove_images', 'specs']);
+        $data = $this->safe()->except(['photos', 'remove_images', 'specs', 'contact_phone_country']);
         $category = ListingCategory::with('parent')->find($data['listing_category_id']);
 
         $allowed = collect($category->fields())->pluck('key');

@@ -4,7 +4,9 @@ namespace App\Models;
 
 use App\Enums\ListingCondition;
 use App\Enums\ListingStatus;
-use App\Support\GabonPhone;
+use App\Support\Countries;
+use App\Support\Phone;
+use App\Support\Price;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +17,7 @@ use Illuminate\Support\Str;
 
 #[Fillable([
     'user_id', 'listing_category_id', 'title', 'slug', 'description', 'price', 'is_negotiable',
-    'condition', 'specs', 'city_id', 'district_id', 'contact_phone', 'accepts_whatsapp',
+    'condition', 'specs', 'country_code', 'city', 'contact_phone', 'accepts_whatsapp',
     'status', 'rejection_reason', 'boosted_until', 'published_at', 'expires_at',
 ])]
 class Listing extends Model
@@ -53,16 +55,6 @@ class Listing extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(ListingCategory::class, 'listing_category_id');
-    }
-
-    public function city(): BelongsTo
-    {
-        return $this->belongsTo(City::class);
-    }
-
-    public function district(): BelongsTo
-    {
-        return $this->belongsTo(District::class);
     }
 
     public function images(): HasMany
@@ -127,12 +119,12 @@ class Listing extends Model
             return 'Gratuit';
         }
 
-        return number_format($this->price, 0, ',', ' ').' FCFA';
+        return Price::format($this->price);
     }
 
     public function location(): string
     {
-        return collect([$this->district?->name, $this->city?->name])->filter()->implode(', ');
+        return collect([$this->city, Countries::name($this->country_code)])->filter()->implode(', ');
     }
 
     public function coverImage(): ?ListingImage
@@ -142,19 +134,19 @@ class Listing extends Model
 
     public function telUrl(): string
     {
-        return GabonPhone::telUrl($this->contact_phone);
+        return Phone::telUrl($this->contact_phone);
     }
 
     public function whatsappUrl(): string
     {
         $message = "Bonjour, je suis intéressé(e) par votre annonce « {$this->title} » sur AkibaShop : ".route('listings.show', $this);
 
-        return GabonPhone::whatsappUrl($this->contact_phone, $message);
+        return Phone::whatsappUrl($this->contact_phone, $message);
     }
 
     public function formattedPhone(): string
     {
-        return GabonPhone::format($this->contact_phone);
+        return Phone::format($this->contact_phone);
     }
 
     /**

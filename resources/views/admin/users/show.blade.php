@@ -11,8 +11,8 @@
         <section class="card p-5 flex flex-col gap-2 text-[14px]">
             <p class="text-[18px] font-extrabold">{{ $member->name }}</p>
             <p class="text-on-surface-variant">{{ $member->email }}</p>
-            <p>{{ $member->phone ? \App\Support\GabonPhone::format($member->phone) : 'Pas de téléphone' }}</p>
-            <p class="text-on-surface-variant">{{ $member->city?->name ?? 'Ville non renseignée' }} · {{ $member->is_pro ? 'Professionnel' : 'Particulier' }}</p>
+            <p>{{ $member->phone ? \App\Support\Phone::format($member->phone) : 'Pas de téléphone' }}</p>
+            <p class="text-on-surface-variant">{{ $member->location() ?: 'Localisation non renseignée' }} · {{ $member->is_pro ? 'Professionnel' : 'Particulier' }}</p>
             <p class="text-on-surface-variant">Inscrit le {{ $member->created_at->format('d/m/Y') }}</p>
 
             <div class="flex flex-col gap-2 pt-3 mt-1 border-t border-surface-variant">

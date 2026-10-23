@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Support\GabonPhone;
+use App\Models\User;
+use App\Support\Phone;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,11 +26,11 @@ class AuthenticatedSessionController extends Controller
             'login.required' => 'Indiquez votre email ou votre numéro de téléphone.',
         ]);
 
-        // Members sign in with either their email or their Gabonese phone number.
+        // Members sign in with either their email or their phone number.
         $login = trim($validated['login']);
         $credentials = str_contains($login, '@')
             ? ['email' => $login]
-            : ['phone' => GabonPhone::normalize($login) ?? $login];
+            : ['phone' => $this->resolvePhone($login)];
 
         if (! Auth::guard('web')->attempt([...$credentials, 'password' => $validated['password']], $request->boolean('remember'))) {
             throw ValidationException::withMessages([
@@ -60,6 +61,29 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         return redirect()->intended(route('home'));
+    }
+
+    /**
+     * Numbers typed with their dialling code (+33…, 0033…) are matched exactly.
+     * A local number ("06 12 34 56 78") is tried against the default country,
+     * then against the national digits of any member's number when that is unambiguous.
+     */
+    private function resolvePhone(string $login): string
+    {
+        $normalized = Phone::normalize($login);
+        if ($normalized && User::where('phone', $normalized)->exists()) {
+            return $normalized;
+        }
+
+        $digits = ltrim(preg_replace('/\D+/', '', $login), '0');
+        if (! str_starts_with(trim($login), '+') && strlen($digits) >= 7) {
+            $matches = User::where('phone', 'like', '%'.$digits)->limit(2)->pluck('phone');
+            if ($matches->count() === 1) {
+                return $matches->first();
+            }
+        }
+
+        return $normalized ?? $login;
     }
 
     public function destroy(Request $request): RedirectResponse

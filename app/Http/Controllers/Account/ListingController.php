@@ -6,10 +6,10 @@ use App\Enums\ListingCondition;
 use App\Enums\ListingStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ListingRequest;
-use App\Models\City;
 use App\Models\Listing;
 use App\Models\ListingCategory;
 use App\Services\ListingImageStore;
+use App\Support\Countries;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +23,7 @@ class ListingController extends Controller
     {
         $listings = Auth::guard('web')->user()
             ->listings()
-            ->with(['images', 'city', 'category'])
+            ->with(['images', 'category'])
             ->latest()
             ->paginate(20);
 
@@ -35,7 +35,8 @@ class ListingController extends Controller
         $user = Auth::guard('web')->user();
 
         return $this->form(new Listing([
-            'city_id' => $user->city_id,
+            'country_code' => $user->country_code ?? config('marketplace.default_country'),
+            'city' => $user->city,
             'contact_phone' => $user->phone,
             'accepts_whatsapp' => true,
         ]));
@@ -140,7 +141,7 @@ class ListingController extends Controller
         return view('listings.form', [
             'listing' => $listing,
             'categories' => ListingCategory::active()->roots()->with(['children' => fn ($q) => $q->active()])->get(),
-            'cities' => City::with('districts')->orderBy('sort_order')->get(),
+            'countries' => Countries::options(),
             'conditions' => ListingCondition::cases(),
             'categoryFields' => config('marketplace.category_fields'),
         ]);

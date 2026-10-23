@@ -1,6 +1,6 @@
 /**
  * Shrinks a photo in the browser before upload: phone pictures are often 4–8 MB,
- * which is slow and costly on Gabonese mobile data. The server re-encodes again,
+ * which is slow and costly on mobile data. The server re-encodes again,
  * so this only needs to be "good enough" and must never block the upload.
  */
 window.compressImage = async function compressImage(file, maxDimension = 1600, quality = 0.82) {

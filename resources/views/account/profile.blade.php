@@ -1,5 +1,3 @@
-@php($phone = old('phone', $user->phone ? \App\Support\GabonPhone::format($user->phone) : ''))
-
 <x-layouts.app active="account" title="Mon compte — AkibaShop">
     <div class="max-w-4xl mx-auto px-margin-mobile md:px-margin-desktop pt-6">
         <div class="flex items-center gap-4 mb-5">
@@ -49,18 +47,23 @@
                     @error('email') <p class="field-error">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label for="phone" class="field-label">Téléphone (+241)</label>
-                    <input id="phone" name="phone" type="tel" inputmode="tel" value="{{ $phone }}" placeholder="077 12 34 56" required class="field" />
+                    <label for="phone" class="field-label">Téléphone</label>
+                    <x-phone-input name="phone" country-name="phone_country" :value="$user->phone" :invalid="$errors->has('phone')" />
                     @error('phone') <p class="field-error">{{ $message }}</p> @enderror
                 </div>
-                <div>
-                    <label for="city_id" class="field-label">Ville</label>
-                    <select id="city_id" name="city_id" class="field">
-                        <option value="">—</option>
-                        @foreach($cities as $city)
-                            <option value="{{ $city->id }}" @selected((int) old('city_id', $user->city_id) === $city->id)>{{ $city->name }}</option>
-                        @endforeach
-                    </select>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label for="country_code" class="field-label">Pays</label>
+                        <select id="country_code" name="country_code" class="field" required>
+                            @foreach($countries as $code => $countryName)
+                                <option value="{{ $code }}" @selected(old('country_code', $user->country_code ?? config('marketplace.default_country')) === $code)>{{ $countryName }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label for="city" class="field-label">Ville</label>
+                        <input id="city" name="city" type="text" maxlength="100" value="{{ old('city', $user->city) }}" class="field" />
+                    </div>
                 </div>
                 <label class="sm:col-span-2 flex items-center gap-3 text-[14px] text-on-surface">
                     <input type="checkbox" name="is_pro" value="1" @checked(old('is_pro', $user->is_pro)) class="w-5 h-5 rounded accent-[var(--color-primary)]" />

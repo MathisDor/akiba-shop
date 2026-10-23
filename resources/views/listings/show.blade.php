@@ -10,7 +10,7 @@
 @endphp
 
 <x-layouts.app
-    :title="$listing->title.' — '.$listing->formattedPrice().' · '.$listing->city->name.' | AkibaShop'"
+    :title="$listing->title.' — '.$listing->formattedPrice().' · '.$listing->city.' | AkibaShop'"
     :description="\Illuminate\Support\Str::limit(preg_replace('/\s+/', ' ', $listing->description), 155)"
     :og-image="$images->first()?->url()"
 >
@@ -251,7 +251,7 @@
                     <ul class="mt-2 flex flex-col gap-1.5 text-[13px] leading-5 list-disc pl-5">
                         <li>Rencontrez le vendeur dans un lieu public, de jour.</li>
                         <li>Vérifiez l’article avant de payer.</li>
-                        <li>N’envoyez jamais d’argent (Airtel Money, Moov Money) avant d’avoir vu l’article.</li>
+                        <li>N’envoyez jamais d’argent (virement, paiement mobile, mandat) avant d’avoir vu l’article.</li>
                     </ul>
                     <a href="{{ route('pages.safety') }}" class="mt-2 inline-block text-[13px] font-bold underline">Tous nos conseils</a>
                 </section>
@@ -297,10 +297,10 @@
             'offers' => array_filter([
                 '@type' => 'Offer',
                 'url' => $shareUrl,
-                'priceCurrency' => 'XAF',
+                'priceCurrency' => config('marketplace.currency.code'),
                 'price' => $listing->price,
                 'availability' => $listing->isVisible() ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
-                'areaServed' => $listing->city->name,
+                'areaServed' => $listing->location(),
                 'seller' => ['@type' => $seller->is_pro ? 'Organization' : 'Person', 'name' => $seller->name],
             ], fn ($value) => $value !== null),
         ], fn ($value) => $value !== null), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>

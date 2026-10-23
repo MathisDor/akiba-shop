@@ -1,6 +1,7 @@
 @php
     $heading = $currentCategory?->name ?? (request('q') ? 'Résultats pour « '.request('q').' »' : 'Toutes les annonces');
-    $where = $currentCity ? ' à '.$currentCity->name : ' au Gabon';
+    $place = collect([$currentCity, \App\Support\Countries::name($currentCountry)])->filter()->implode(', ');
+    $where = $place !== '' ? ' — '.$place : '';
     $pageTitle = ($currentCategory?->name ?? 'Petites annonces').$where.' — AkibaShop';
     $rootCategory = $currentCategory?->parent ?? $currentCategory;
     $active = $rootCategory ? 'cat-'.$rootCategory->slug : 'listings';
@@ -99,29 +100,23 @@
                         </select>
                     </div>
 
-                    <div x-data="{ city: @js(request('ville', '')) }">
-                        <label for="f-city" class="field-label">Ville</label>
-                        <select id="f-city" name="ville" class="field" x-model="city">
-                            <option value="">Tout le Gabon</option>
-                            @foreach($cities as $city)
-                                <option value="{{ $city->slug }}">{{ $city->name }}</option>
+                    <div>
+                        <label for="f-country" class="field-label">Pays</label>
+                        <select id="f-country" name="pays" class="field">
+                            <option value="">Tous les pays</option>
+                            @foreach($navCountries as $code => $name)
+                                <option value="{{ $code }}" @selected($currentCountry === $code)>{{ $name }}</option>
                             @endforeach
                         </select>
-                        @if($currentCity && $currentCity->districts->isNotEmpty())
-                            <div class="mt-3" x-show="city === @js($currentCity->slug)">
-                                <label for="f-district" class="field-label">Quartier</label>
-                                <select id="f-district" name="quartier" class="field" :disabled="city !== @js($currentCity->slug)">
-                                    <option value="">Tous les quartiers</option>
-                                    @foreach($currentCity->districts as $district)
-                                        <option value="{{ $district->id }}" @selected((int) request('quartier') === $district->id)>{{ $district->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        @endif
+                    </div>
+
+                    <div>
+                        <label for="f-city" class="field-label">Ville</label>
+                        <input id="f-city" type="text" name="ville" value="{{ $currentCity }}" maxlength="100" placeholder="Toutes les villes" class="field" />
                     </div>
 
                     <fieldset>
-                        <legend class="field-label">Prix (FCFA)</legend>
+                        <legend class="field-label">Prix ({{ \App\Support\Price::symbol() }})</legend>
                         <div class="grid grid-cols-2 gap-2">
                             <label class="sr-only" for="f-min">Prix minimum</label>
                             <input id="f-min" type="number" inputmode="numeric" min="0" step="1000" name="prix_min" value="{{ request('prix_min') }}" placeholder="Min" class="field" />

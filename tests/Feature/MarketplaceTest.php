@@ -7,7 +7,8 @@ use App\Enums\ReportStatus;
 use App\Models\Listing;
 use App\Models\ListingCategory;
 use App\Models\Role;
-use App\Support\GabonPhone;
+use App\Support\Phone;
+use App\Support\Price;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -27,7 +28,8 @@ class MarketplaceTest extends TestCase
             $this->get($url)->assertOk();
         }
 
-        $this->get('/annonces?q=Corolla&ville=libreville')->assertOk()->assertSee('Toyota Corolla 2014');
+        $this->get('/annonces?q=Corolla&pays=FR&ville=lyon')->assertOk()->assertSee('Toyota Corolla 2014');
+        $this->get('/annonces?pays=BE')->assertOk()->assertDontSee('Toyota Corolla 2014');
     }
 
     public function test_pending_and_suspended_listings_are_hidden_from_visitors(): void
@@ -57,8 +59,10 @@ class MarketplaceTest extends TestCase
 
         $listing = Listing::firstOrFail();
         $this->assertSame(ListingStatus::EnAttente, $listing->status);
-        $this->assertSame(8900000, $listing->price);
-        $this->assertSame('077123456', $listing->contact_phone);
+        $this->assertSame(14900, $listing->price);
+        $this->assertSame('+32470123456', $listing->contact_phone);
+        $this->assertSame('BE', $listing->country_code);
+        $this->assertSame('Bruxelles', $listing->city);
         // Only fields belonging to the category are kept.
         $this->assertSame(['marque' => 'Hyundai', 'annee' => '2017'], $listing->specs);
         $this->assertCount(1, $listing->images);
@@ -68,13 +72,13 @@ class MarketplaceTest extends TestCase
         $this->assertLessThanOrEqual(config('marketplace.image_max_dimension'), $width);
     }
 
-    public function test_publishing_requires_a_sub_category_and_a_gabonese_phone(): void
+    public function test_publishing_requires_a_sub_category_a_valid_phone_and_a_city(): void
     {
         $parent = ListingCategory::where('slug', 'vehicules')->value('id');
 
         $this->actingAs($this->makeClient())
-            ->post('/publier', $this->listingPayload(['listing_category_id' => $parent, 'contact_phone' => '12']))
-            ->assertSessionHasErrors(['listing_category_id', 'contact_phone']);
+            ->post('/publier', $this->listingPayload(['listing_category_id' => $parent, 'contact_phone' => '12', 'city' => '']))
+            ->assertSessionHasErrors(['listing_category_id', 'contact_phone', 'city']);
 
         $this->assertSame(0, Listing::count());
     }
@@ -118,7 +122,7 @@ class MarketplaceTest extends TestCase
     {
         $listing = $this->makeListing($this->makeClient());
 
-        $this->post('/annonce/'.$listing->slug.'/signaler', ['reason' => 'arnaque', 'details' => 'Demande un dépôt Airtel Money.'])
+        $this->post('/annonce/'.$listing->slug.'/signaler', ['reason' => 'arnaque', 'details' => 'Demande un acompte par virement.'])
             ->assertSessionHasNoErrors();
 
         $report = $listing->reports()->firstOrFail();
@@ -150,9 +154,14 @@ class MarketplaceTest extends TestCase
 
     public function test_members_can_sign_in_with_their_phone_number(): void
     {
-        $member = $this->makeClient(['phone' => '074112233', 'password' => 'secret-pass']);
+        $member = $this->makeClient(['phone' => '+221771234567', 'password' => 'secret-pass']);
 
-        $this->post('/connexion', ['login' => '+241 74 11 22 33', 'password' => 'secret-pass'])->assertRedirect();
+        $this->post('/connexion', ['login' => '+221 77 123 45 67', 'password' => 'secret-pass'])->assertRedirect();
+        $this->assertAuthenticatedAs($member);
+
+        // A local number without dialling code is matched when unambiguous.
+        $this->post('/deconnexion');
+        $this->post('/connexion', ['login' => '77 123 45 67', 'password' => 'secret-pass'])->assertRedirect();
         $this->assertAuthenticatedAs($member);
     }
 
@@ -169,25 +178,40 @@ class MarketplaceTest extends TestCase
         Role::firstOrCreate(['slug' => 'client'], ['name' => 'Client']);
 
         $this->post('/inscription', [
-            'name' => 'Aurélie Mba',
-            'email' => 'aurelie@example.com',
-            'phone' => '+241 077 12 34 56',
+            'name' => 'Claire Martin',
+            'email' => 'claire@example.com',
+            'country_code' => 'FR',
+            'city' => 'Lyon',
+            'phone_country' => 'FR',
+            'phone' => '06 12 34 56 78',
             'password' => 'password1234',
             'password_confirmation' => 'password1234',
             'terms' => '1',
         ])->assertRedirect();
 
-        $this->assertDatabaseHas('users', ['email' => 'aurelie@example.com', 'phone' => '077123456']);
+        $this->assertDatabaseHas('users', ['email' => 'claire@example.com', 'phone' => '+33612345678', 'country_code' => 'FR', 'city' => 'Lyon']);
     }
 
-    public function test_gabon_phone_helper(): void
+    public function test_phone_helper(): void
     {
-        $this->assertSame('077123456', GabonPhone::normalize('077 12 34 56'));
-        $this->assertSame('077123456', GabonPhone::normalize('+241 77 12 34 56'));
-        $this->assertSame('07123456', GabonPhone::normalize('00241 07 12 34 56'));
-        $this->assertNull(GabonPhone::normalize('12345'));
-        $this->assertSame('077 12 34 56', GabonPhone::format('077123456'));
-        $this->assertSame('https://wa.me/241077123456', GabonPhone::whatsappUrl('077123456'));
+        $this->assertSame('+33612345678', Phone::normalize('06 12 34 56 78', 'FR'));
+        $this->assertSame('+33612345678', Phone::normalize('+33 6 12 34 56 78', 'BE'));
+        $this->assertSame('+33612345678', Phone::normalize('0033 6 12 34 56 78'));
+        $this->assertSame('+2250701020304', Phone::normalize('07 01 02 03 04', 'CI'));
+        $this->assertNull(Phone::normalize('12345', 'FR'));
+        $this->assertSame('FR', Phone::countryOf('+33612345678'));
+        $this->assertSame('+33 6 12 34 56 78', Phone::format('+33612345678'));
+        $this->assertSame('0612345678', Phone::national('+33612345678'));
+        $this->assertSame('https://wa.me/33612345678', Phone::whatsappUrl('+33612345678'));
+    }
+
+    public function test_prices_use_the_configured_currency(): void
+    {
+        config(['marketplace.currency' => ['code' => 'USD', 'symbol' => '$', 'symbol_first' => true]]);
+        $this->assertSame('$ 1 500', Price::format(1500));
+
+        config(['marketplace.currency' => ['code' => 'EUR', 'symbol' => '€', 'symbol_first' => false]]);
+        $this->assertSame('1 500 €', Price::format(1500));
     }
 
     public function test_old_shop_urls_redirect(): void

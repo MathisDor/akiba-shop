@@ -1,13 +1,13 @@
-<x-page title="À propos d’AkibaShop" intro="AkibaShop est un site de petites annonces pensé pour le Gabon : simple, rapide sur mobile et tourné vers le contact direct entre Gabonais.">
+<x-page title="À propos d’AkibaShop" intro="AkibaShop est un site de petites annonces gratuites : simple, rapide sur mobile et tourné vers le contact direct entre acheteurs et vendeurs.">
     <h2>Notre mission</h2>
-    <p>Permettre à chacun — particulier ou professionnel — d’acheter et de vendre facilement près de chez soi : voitures, logements, téléphones, meubles, vêtements, emplois, produits vivriers…</p>
+    <p>Permettre à chacun — particulier ou professionnel — d’acheter et de vendre facilement près de chez soi : voitures, logements, téléphones, meubles, vêtements, emplois…</p>
 
     <h2>Comment ça marche ?</h2>
     <ul>
-        <li><strong>Publiez gratuitement</strong> : quelques photos, un prix en FCFA, votre ville et votre quartier.</li>
+        <li><strong>Publiez gratuitement</strong> : quelques photos, un prix, votre pays et votre ville.</li>
         <li><strong>Nous vérifions</strong> chaque annonce avant sa mise en ligne pour limiter les arnaques et le spam.</li>
         <li><strong>Les acheteurs vous contactent directement</strong> par WhatsApp ou par téléphone.</li>
-        <li><strong>Vous vous rencontrez</strong> et réglez la transaction en main propre, en espèces ou par Mobile Money.</li>
+        <li><strong>Vous vous rencontrez</strong> et réglez la transaction en main propre, selon le moyen de paiement convenu entre vous.</li>
     </ul>
 
     <h2>Léger et économe</h2>

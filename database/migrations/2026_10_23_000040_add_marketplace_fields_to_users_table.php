@@ -1,6 +1,6 @@
 <?php
 
-use App\Support\GabonPhone;
+use App\Support\Phone;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -16,9 +16,9 @@ return new class extends Migration
             $table->boolean('is_verified')->default(false)->after('is_pro');
         });
 
-        // Phones are now stored as national digits so members can sign in with them.
+        // Phones are stored normalised so members can sign in with them.
         DB::table('users')->whereNotNull('phone')->orderBy('id')->each(function ($user) {
-            $normalized = GabonPhone::normalize($user->phone);
+            $normalized = Phone::normalize($user->phone, 'GA');
             if ($normalized !== null && $normalized !== $user->phone) {
                 DB::table('users')->where('id', $user->id)->update(['phone' => $normalized]);
             }

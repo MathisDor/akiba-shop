@@ -1,7 +1,7 @@
 @props(['active' => null, 'title' => null, 'description' => null, 'ogImage' => null, 'hideFooter' => false, 'canonical' => null])
 @php
-    $pageTitle = $title ?? 'AkibaShop — Petites annonces au Gabon';
-    $pageDescription = $description ?? 'AkibaShop, les petites annonces gratuites au Gabon : véhicules, immobilier, téléphones, maison, mode, emploi… Achetez et vendez près de chez vous à Libreville, Port-Gentil, Franceville et partout au Gabon.';
+    $pageTitle = $title ?? 'AkibaShop — Petites annonces gratuites';
+    $pageDescription = $description ?? 'AkibaShop, les petites annonces gratuites : véhicules, immobilier, téléphones, maison, mode, emploi… Achetez et vendez près de chez vous, entre particuliers et professionnels.';
 @endphp
 <!DOCTYPE html>
 <html lang="fr" class="{{ request()->cookie('eco') === '1' ? 'eco' : '' }}">
@@ -14,7 +14,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link rel="canonical" href="{{ $canonical ?? url()->current() }}" />
     <meta property="og:site_name" content="AkibaShop" />
-    <meta property="og:locale" content="fr_GA" />
+    <meta property="og:locale" content="fr_FR" />
     <meta property="og:title" content="{{ $pageTitle }}" />
     <meta property="og:description" content="{{ $pageDescription }}" />
     <meta property="og:type" content="website" />

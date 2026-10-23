@@ -2,7 +2,7 @@
     <h2>Données collectées</h2>
     <ul>
         <li><strong>Compte</strong> : nom, adresse email, numéro de téléphone, ville, mot de passe (stocké chiffré).</li>
-        <li><strong>Annonces</strong> : contenu, photos, ville et quartier, numéro de contact.</li>
+        <li><strong>Annonces</strong> : contenu, photos, pays et ville, numéro de contact.</li>
         <li><strong>Utilisation</strong> : favoris, signalements, nombre de vues des annonces.</li>
     </ul>
 

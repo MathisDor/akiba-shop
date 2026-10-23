@@ -4,9 +4,9 @@
 @source '../../storage/framework/views/*.php';
 
 /*
- * AkibaShop design system — "Marché gabonais"
- * Clean classifieds UI (dense cards, strong search) with the national colours:
- * green #009639 (brand), yellow #FCD116 (highlights), blue #3A75C4 (links/info).
+ * AkibaShop design system
+ * Clean classifieds UI (dense cards, strong search): green brand colour,
+ * amber for highlights (publish button, featured badges), blue for links/info.
  * Text-bearing greens are darkened to keep WCAG AA contrast on white.
  * Token names are shared with the admin panel, which re-themes with them.
  */
@@ -76,10 +76,9 @@
     --spacing-container-max: 1240px;
     --spacing-section-gap: 48px;
 
-    /* National colours (decorative — use the role tokens below for text) */
-    --color-gabon-green: #009639;
-    --color-gabon-yellow: #fcd116;
-    --color-gabon-blue: #3a75c4;
+    /* Brand accents (decorative — use the role tokens below for text) */
+    --color-brand: #009639;
+    --color-brand-accent: #ffb020;
     --color-whatsapp: #25d366;
     --color-on-whatsapp: #08341a;
 
@@ -123,14 +122,14 @@
     --color-on-secondary-fixed: #0b2550;
     --color-on-secondary-fixed-variant: #1b4583;
 
-    --color-tertiary: #fcd116;
-    --color-on-tertiary: #2b2300;
-    --color-tertiary-container: #fff4c4;
-    --color-on-tertiary-container: #5b4800;
-    --color-tertiary-fixed: #fff4c4;
-    --color-tertiary-fixed-dim: #f5dc6b;
-    --color-on-tertiary-fixed: #2b2300;
-    --color-on-tertiary-fixed-variant: #5b4800;
+    --color-tertiary: #ffb020;
+    --color-on-tertiary: #2e1d00;
+    --color-tertiary-container: #fff1d6;
+    --color-on-tertiary-container: #5c3a00;
+    --color-tertiary-fixed: #fff1d6;
+    --color-tertiary-fixed-dim: #ffc65a;
+    --color-on-tertiary-fixed: #2e1d00;
+    --color-on-tertiary-fixed-variant: #5c3a00;
 
     --color-error: #ba1a1a;
     --color-on-error: #ffffff;
@@ -207,15 +206,10 @@ body {
 }
 
 @layer components {
-/* The thin green / yellow / blue band — the brand's flag signature */
-.flag-band {
-    height: 4px;
-    background: linear-gradient(
-        90deg,
-        var(--color-gabon-green) 0 33.33%,
-        var(--color-gabon-yellow) 33.33% 66.66%,
-        var(--color-gabon-blue) 66.66% 100%
-    );
+/* Thin brand-green line along the top of every page */
+.brand-band {
+    height: 3px;
+    background-color: var(--color-brand);
 }
 
 /* Boxed form fields (publish form, auth, account, filters) */

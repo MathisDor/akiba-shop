@@ -1,6 +1,6 @@
 <x-page title="Conditions d’utilisation" intro="Les règles qui s’appliquent à toute personne qui consulte AkibaShop ou y publie une annonce.">
     <h2>1. Le service</h2>
-    <p>AkibaShop met en relation des particuliers et des professionnels qui souhaitent vendre, louer, acheter ou proposer des biens et services au Gabon. AkibaShop n’est pas partie aux transactions conclues entre utilisateurs.</p>
+    <p>AkibaShop met en relation des particuliers et des professionnels qui souhaitent vendre, louer, acheter ou proposer des biens et services. AkibaShop n’est pas partie aux transactions conclues entre utilisateurs.</p>
 
     <h2>2. Compte</h2>
     <p>La publication d’annonces nécessite un compte. Vous vous engagez à fournir des informations exactes, notamment un numéro de téléphone sur lequel vous êtes joignable, et à garder votre mot de passe confidentiel.</p>
@@ -8,7 +8,7 @@
     <h2>3. Annonces</h2>
     <ul>
         <li>Chaque annonce doit décrire un bien ou un service réel, disponible, que vous êtes en droit de proposer.</li>
-        <li>Le prix est indiqué en francs CFA (FCFA). Les photos doivent correspondre à l’article proposé.</li>
+        <li>Le prix est indiqué dans la devise du site ({{ config('marketplace.currency.code') }}). Les photos doivent correspondre à l’article proposé.</li>
         <li>Sont interdits : les produits illégaux, contrefaits ou dangereux, les annonces trompeuses, les doublons et les contenus offensants.</li>
         <li>Les annonces sont relues avant publication. AkibaShop peut refuser, retirer une annonce ou suspendre un compte qui ne respecte pas ces règles.</li>
         <li>Une annonce reste en ligne {{ config('marketplace.listing_lifetime_days') }} jours et peut être renouvelée.</li>

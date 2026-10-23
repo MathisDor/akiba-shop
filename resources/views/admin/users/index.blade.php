@@ -19,7 +19,7 @@
                     <tr>
                         <th class="px-4 py-3">Membre</th>
                         <th class="px-4 py-3 hidden md:table-cell">Téléphone</th>
-                        <th class="px-4 py-3 hidden md:table-cell">Ville</th>
+                        <th class="px-4 py-3 hidden md:table-cell">Localisation</th>
                         <th class="px-4 py-3">Annonces</th>
                         <th class="px-4 py-3 hidden sm:table-cell">Inscrit</th>
                     </tr>
@@ -36,8 +36,8 @@
                                 </span>
                                 <span class="block text-[12px] text-on-surface-variant">{{ $user->email }}</span>
                             </td>
-                            <td class="px-4 py-3 hidden md:table-cell">{{ $user->phone ? \App\Support\GabonPhone::format($user->phone) : '—' }}</td>
-                            <td class="px-4 py-3 hidden md:table-cell">{{ $user->city?->name ?? '—' }}</td>
+                            <td class="px-4 py-3 hidden md:table-cell">{{ $user->phone ? \App\Support\Phone::format($user->phone) : '—' }}</td>
+                            <td class="px-4 py-3 hidden md:table-cell">{{ $user->location() ?: '—' }}</td>
                             <td class="px-4 py-3">{{ $user->listings_count }}</td>
                             <td class="px-4 py-3 hidden sm:table-cell text-on-surface-variant">{{ $user->created_at->format('d/m/Y') }}</td>
                         </tr>

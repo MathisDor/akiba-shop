@@ -45,7 +45,7 @@
                             @endif
                         </span>
                         <span class="block text-[13px] font-semibold text-on-surface">{{ $listing->formattedPrice() }}</span>
-                        <span class="block text-[12px] text-on-surface-variant truncate">{{ $listing->category->name }} · {{ $listing->city->name }} · {{ $listing->user->name }} · {{ $listing->created_at->diffForHumans() }}</span>
+                        <span class="block text-[12px] text-on-surface-variant truncate">{{ $listing->category->name }} · {{ $listing->location() }} · {{ $listing->user->name }} · {{ $listing->created_at->diffForHumans() }}</span>
                     </span>
                     <x-icon name="chevron_right" class="text-[18px] text-outline" />
                 </a>

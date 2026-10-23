@@ -39,7 +39,7 @@
                             <a href="{{ route('listings.show', $listing) }}" class="text-[15px] font-bold text-on-surface hover:text-primary truncate">{{ $listing->title }}</a>
                             <p class="text-[14px] font-extrabold text-on-surface">{{ $listing->formattedPrice() }}</p>
                             <p class="text-[12px] text-on-surface-variant">
-                                {{ $listing->city->name }} · {{ number_format($listing->views, 0, ',', ' ') }} vue{{ $listing->views > 1 ? 's' : '' }}
+                                {{ $listing->location() }} · {{ number_format($listing->views, 0, ',', ' ') }} vue{{ $listing->views > 1 ? 's' : '' }}
                                 @if($listing->status === ListingStatus::Publiee && $listing->expires_at)
                                     · {{ $listing->isExpired() ? 'expirée' : 'expire' }} {{ $listing->expires_at->diffForHumans() }}
                                 @endif
