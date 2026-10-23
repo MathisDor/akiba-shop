@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Support\GabonPhone;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,26 +18,42 @@ class AuthenticatedSessionController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
+        $validated = $request->validate([
+            'login' => ['required', 'string', 'max:255'],
             'password' => ['required'],
+        ], [
+            'login.required' => 'Indiquez votre email ou votre numéro de téléphone.',
         ]);
 
-        if (! Auth::guard('web')->attempt($credentials, $request->boolean('remember'))) {
+        // Members sign in with either their email or their Gabonese phone number.
+        $login = trim($validated['login']);
+        $credentials = str_contains($login, '@')
+            ? ['email' => $login]
+            : ['phone' => GabonPhone::normalize($login) ?? $login];
+
+        if (! Auth::guard('web')->attempt([...$credentials, 'password' => $validated['password']], $request->boolean('remember'))) {
             throw ValidationException::withMessages([
-                'email' => 'Identifiants incorrects.',
+                'login' => 'Identifiants incorrects.',
             ]);
         }
 
         $user = Auth::guard('web')->user();
 
         // Admin accounts sign in through the dedicated admin login only — never
-        // the customer-facing form.
+        // the member-facing form.
         if ($user->isAdmin()) {
             Auth::guard('web')->logout();
 
             throw ValidationException::withMessages([
-                'email' => 'Merci d\'utiliser la connexion administrateur.',
+                'login' => 'Merci d\'utiliser la connexion administrateur.',
+            ]);
+        }
+
+        if (! $user->is_active) {
+            Auth::guard('web')->logout();
+
+            throw ValidationException::withMessages([
+                'login' => 'Ce compte a été suspendu. Contactez-nous si vous pensez qu\'il s\'agit d\'une erreur.',
             ]);
         }
 

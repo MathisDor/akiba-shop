@@ -10,19 +10,20 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            ['slug' => 'products.manage', 'name' => 'Produits', 'group' => 'Boutique'],
-            ['slug' => 'categories.manage', 'name' => 'Catégories', 'group' => 'Boutique'],
-            ['slug' => 'collections.manage', 'name' => 'Collections', 'group' => 'Boutique'],
-            ['slug' => 'orders.manage', 'name' => 'Commandes', 'group' => 'Ventes'],
-            ['slug' => 'customers.view', 'name' => 'Clients', 'group' => 'Ventes'],
-            ['slug' => 'promotions.manage', 'name' => 'Promotions', 'group' => 'Ventes'],
-            ['slug' => 'coupons.manage', 'name' => 'Coupons', 'group' => 'Ventes'],
-            ['slug' => 'delivery.manage', 'name' => 'Livraison', 'group' => 'Logistique'],
-            ['slug' => 'reviews.moderate', 'name' => 'Avis clients', 'group' => 'Contenu'],
+            ['slug' => 'listings.moderate', 'name' => 'Modération des annonces', 'group' => 'Annonces'],
+            ['slug' => 'reports.manage', 'name' => 'Signalements', 'group' => 'Annonces'],
+            ['slug' => 'categories.manage', 'name' => 'Catégories', 'group' => 'Annonces'],
+            ['slug' => 'users.manage', 'name' => 'Utilisateurs', 'group' => 'Communauté'],
         ];
 
         foreach ($permissions as $permission) {
             Permission::updateOrCreate(['slug' => $permission['slug']], $permission);
         }
+
+        // Permissions of the former fashion shop back-office, retired with the marketplace pivot.
+        Permission::whereIn('slug', [
+            'products.manage', 'collections.manage', 'orders.manage', 'customers.view',
+            'promotions.manage', 'coupons.manage', 'delivery.manage', 'reviews.moderate',
+        ])->delete();
     }
 }

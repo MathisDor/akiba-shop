@@ -1,144 +1,143 @@
-<x-layouts.app active="home" title="AkibaShop — La mode qui vous ressemble" description="Découvrez notre sélection de vêtements tendance pour hommes et femmes au Gabon. Livraison à Libreville, paiement Airtel Money et Moov Money.">
+<x-layouts.app active="home">
 
-    {{-- Hero --}}
-    <section class="relative w-full h-[440px] sm:h-[520px] md:h-[720px] bg-surface-container-highest overflow-hidden">
-        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ asset('img/hero-home.jpeg') }}')"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-        <div class="absolute bottom-0 left-0 w-full px-margin-mobile md:px-margin-desktop pb-8 sm:pb-12 md:pb-24 flex flex-col items-start">
-            <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-primary mb-3 md:mb-4 max-w-2xl drop-shadow-lg">La mode qui vous ressemble</h1>
-            <p class="font-body-lg text-body-lg text-surface-container-low mb-5 md:mb-8 max-w-xl">Découvrez notre sélection de vêtements tendance pour hommes et femmes.</p>
-            <div class="flex flex-col sm:flex-row gap-3 md:gap-4 w-full sm:w-auto">
-                <a href="{{ route('catalog.index') }}" class="bg-primary-container text-on-primary-container font-label-lg text-label-lg uppercase py-4 px-8 rounded-full hover:bg-surface-tint hover:text-on-primary transition-colors w-full sm:w-auto text-center min-h-[48px] flex items-center justify-center">
-                    Découvrir la collection
-                </a>
-                <a href="{{ route('catalog.index', ['sort' => 'nouveautes']) }}" class="bg-transparent border border-surface-container-low text-on-primary font-label-lg text-label-lg uppercase py-4 px-8 rounded-full hover:bg-white/10 transition-colors w-full sm:w-auto text-center min-h-[48px] backdrop-blur-sm flex items-center justify-center">
-                    Voir les nouveautés
-                </a>
-            </div>
-        </div>
-    </section>
+    {{-- Hero: one job — get people searching or publishing --}}
+    <section class="bg-surface-container-lowest border-b border-surface-variant">
+        <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-6 md:py-12 grid md:grid-cols-[1.2fr_1fr] gap-6 md:gap-12 items-center">
+            <div class="flex flex-col gap-4">
+                <p class="inline-flex self-start items-center gap-2 rounded-full bg-primary-fixed text-on-primary-fixed-variant px-3 py-1 text-[12px] font-bold">
+                    <span class="w-2 h-2 rounded-full bg-gabon-green"></span>
+                    {{ number_format($listingCount, 0, ',', ' ') }} annonce{{ $listingCount > 1 ? 's' : '' }} en ligne au Gabon
+                </p>
+                <h1 class="text-display-lg-mobile md:text-display-lg text-on-surface">
+                    Achetez et vendez <span class="text-primary">près de chez vous</span>.
+                </h1>
+                <p class="text-body-lg text-on-surface-variant max-w-xl">Voitures, logements, téléphones, meubles, emplois… Publiez gratuitement et discutez directement avec les vendeurs sur WhatsApp.</p>
 
-    @php
-        $sections = [
-            ['title' => 'Nouveautés', 'items' => $newArrivals, 'link' => route('catalog.index', ['sort' => 'nouveautes'])],
-            ['title' => 'Femme', 'items' => $femme, 'link' => route('catalog.gender', 'femme')],
-            ['title' => 'Homme', 'items' => $homme, 'link' => route('catalog.gender', 'homme')],
-            ['title' => 'Tendances', 'items' => $trending, 'link' => route('catalog.index')],
-            ['title' => 'Promotions', 'items' => $promotions, 'link' => route('catalog.index', ['promo' => 1]), 'compact' => true],
-        ];
-    @endphp
+                <form method="GET" action="{{ route('listings.index') }}" role="search" class="md:hidden flex flex-col gap-2 mt-1">
+                    <label for="hero-city" class="sr-only">Ville</label>
+                    <select id="hero-city" name="ville" class="field">
+                        <option value="">Tout le Gabon</option>
+                        @foreach($cities as $city)
+                            <option value="{{ $city->slug }}">{{ $city->name }}</option>
+                        @endforeach
+                    </select>
+                    <button type="submit" class="btn btn-primary">
+                        <x-icon name="search" class="text-[20px]" /> Voir les annonces
+                    </button>
+                </form>
 
-    @foreach($sections as $section)
-        @if($section['items']->isNotEmpty())
-            <section class="py-8 md:py-14 px-margin-mobile md:px-margin-desktop">
-                <div class="flex justify-between items-end mb-4 md:mb-8">
-                    <h2 class="font-headline-md text-headline-md text-on-background">{{ $section['title'] }}</h2>
-                    <a class="font-label-sm text-label-sm text-primary hover:underline uppercase" href="{{ $section['link'] }}">Tout voir</a>
-                </div>
-                <div class="flex overflow-x-auto hide-scrollbar gap-3 md:gap-gutter pb-4 -mx-margin-mobile px-margin-mobile md:mx-0 md:px-0">
-                    @foreach($section['items'] as $product)
-                        <div class="{{ $section['compact'] ?? false ? 'min-w-[110px] md:min-w-[150px]' : 'min-w-[220px] md:min-w-[280px]' }}">
-                            <x-product-card :product="$product" />
-                        </div>
-                    @endforeach
-                </div>
-            </section>
-        @endif
-    @endforeach
-
-    @if($collections->isNotEmpty())
-        @php
-            $collectionImages = [
-                'ete' => 'collection-été.jpeg',
-                'soiree' => 'collection-soirée.jpeg',
-                'streetwear' => 'collection-streetwear.jpeg',
-            ];
-            $collectionImageFallbacks = array_values($collectionImages);
-        @endphp
-        <section class="py-8 md:py-14 px-margin-mobile md:px-margin-desktop bg-surface-container-low">
-            <div class="flex justify-between items-end mb-4 md:mb-8">
-                <h2 class="font-headline-md text-headline-md text-on-background">Collections</h2>
-                <a class="font-label-sm text-label-sm text-primary hover:underline uppercase" href="{{ route('catalog.index') }}">Tout voir</a>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
-                @foreach($collections as $i => $collection)
-                    @php
-                        $image = $collectionImages[$collection->slug] ?? $collectionImageFallbacks[$i % count($collectionImageFallbacks)];
-                    @endphp
-                    <a href="{{ route('catalog.index', ['collection' => $collection->slug]) }}" class="group relative aspect-[4/3] rounded-xl overflow-hidden bg-surface-container-highest flex items-end p-6 hover-lift">
-                        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" style="background-image: url('{{ asset('img/'.$image) }}')"></div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
-                        <h3 class="relative font-headline-md text-headline-md text-on-primary z-10">{{ $collection->name }}</h3>
+                <div class="hidden md:flex items-center gap-3 mt-2">
+                    <a href="{{ route('listings.create') }}" class="btn btn-accent h-12 px-6 text-[16px]">
+                        <x-icon name="add_circle" class="text-[22px]" /> Déposer une annonce gratuite
                     </a>
-                @endforeach
+                    <a href="{{ route('listings.index') }}" class="btn btn-outline h-12 px-6 text-[16px]">Parcourir les annonces</a>
+                </div>
             </div>
-        </section>
-    @endif
 
-    {{-- Testimonials --}}
-    @if($reviews->isNotEmpty())
-        <section class="py-8 md:py-14 px-margin-mobile md:px-margin-desktop">
-            <h2 class="font-headline-md text-headline-md text-on-background mb-4 md:mb-8">Ce que disent nos clients</h2>
-            <div class="flex overflow-x-auto hide-scrollbar gap-3 md:gap-gutter pb-4 -mx-margin-mobile px-margin-mobile md:mx-0 md:px-0">
-                @foreach($reviews as $review)
-                    <div class="min-w-[260px] md:min-w-[320px] flex flex-col gap-3 p-6 rounded-xl bg-surface-container-lowest border border-surface-variant">
-                        <div class="flex gap-0.5">
-                            @for($i = 1; $i <= 5; $i++)
-<x-icon name="star" class="text-[16px] {{ $i <= $review->rating ? 'text-primary' : 'text-outline-variant' }}" :filled="$i <= $review->rating" />
-                            @endfor
+            {{-- Trust points, the Gabonese way of buying: WhatsApp, meet in person, pay on hand-over --}}
+            <ul class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-1 gap-3">
+                @foreach([
+                    ['whatsapp', 'Contact direct sur WhatsApp', 'Écrivez ou appelez le vendeur en un clic, sans intermédiaire.'],
+                    ['verified', 'Annonces vérifiées', 'Chaque annonce est relue par notre équipe avant publication.'],
+                    ['location_on', 'Rencontre en main propre', 'Voyez l’article, puis payez à la remise — en espèces ou Mobile Money.'],
+                ] as [$icon, $title, $text])
+                    <li class="flex items-start gap-3 rounded-2xl bg-surface-container-low p-4">
+                        <span class="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center {{ $icon === 'whatsapp' ? 'bg-whatsapp text-on-whatsapp' : 'bg-primary text-on-primary' }}">
+                            <x-icon :name="$icon" class="text-[20px]" />
+                        </span>
+                        <div>
+                            <p class="text-[15px] font-bold text-on-surface">{{ $title }}</p>
+                            <p class="text-[13px] leading-5 text-on-surface-variant">{{ $text }}</p>
                         </div>
-                        <p class="font-body-md text-body-md text-on-surface line-clamp-4">« {{ $review->comment }} »</p>
-                        <div class="mt-auto pt-2 border-t border-surface-variant">
-                            <p class="font-label-lg text-label-lg text-on-surface">
-                                {{ \Illuminate\Support\Str::before($review->user?->name ?? 'Client AkibaShop', ' ') }}
-                                {{ \Illuminate\Support\Str::substr(\Illuminate\Support\Str::after($review->user?->name ?? '', ' '), 0, 1) }}.
-                            </p>
-                            <p class="font-label-sm text-[11px] text-on-surface-variant">{{ $review->product?->name }}</p>
-                        </div>
-                    </div>
+                    </li>
                 @endforeach
-            </div>
-        </section>
-    @endif
-
-    {{-- FAQ --}}
-    <section class="py-8 md:py-14 px-margin-mobile md:px-margin-desktop bg-surface-container-low">
-        <div class="max-w-2xl mx-auto">
-            <h2 class="font-headline-md text-headline-md text-on-background mb-4 md:mb-8 text-center">Questions fréquentes</h2>
-            <div x-data="{ open: 0 }" class="flex flex-col gap-2">
-                @php
-                    $faqs = [
-                        ['q' => 'Quels sont les délais de livraison à Libreville ?', 'a' => 'Vos commandes sont livrées sous 7 à 14 jours à Libreville et ses environs. Un SMS vous informe dès que le livreur est en route.'],
-                        ['q' => 'Quels moyens de paiement acceptez-vous ?', 'a' => 'Nous acceptons Airtel Money, Moov Money et les cartes bancaires (Visa/Mastercard) via un paiement 100% sécurisé.'],
-                        ['q' => 'Puis-je retourner ou échanger un article ?', 'a' => 'Oui, les articles non portés et avec étiquette peuvent être échangés ou retournés sous 7 jours après réception.'],
-                        ['q' => 'Comment suivre ma commande ?', 'a' => 'Rendez-vous dans "Mon compte > Mes commandes" pour suivre le statut de votre commande en temps réel.'],
-                        ['q' => 'Comment choisir ma taille ?', 'a' => 'Chaque fiche produit indique les mensurations disponibles. En cas de doute, contactez-nous avant de commander.'],
-                    ];
-                @endphp
-                @foreach($faqs as $index => $faq)
-                    <div class="rounded-xl bg-surface-container-lowest border border-surface-variant overflow-hidden">
-                        <button
-                            type="button"
-                            @click="open = open === {{ $index }} ? null : {{ $index }}"
-                            class="w-full flex items-center justify-between gap-4 p-4 md:p-5 text-left"
-                        >
-                            <span class="font-label-lg text-label-lg normal-case text-on-surface">{{ $faq['q'] }}</span>
-<x-icon name="expand_more" class="text-primary transition-transform duration-300 shrink-0" x-bind:class="open === {{ $index }} ? 'rotate-180' : ''" />
-                        </button>
-                        <div
-                            x-show="open === {{ $index }}"
-                            x-transition:enter="transition ease-out duration-200"
-                            x-transition:enter-start="opacity-0 -translate-y-1"
-                            x-transition:enter-end="opacity-100 translate-y-0"
-                            x-cloak
-                            class="px-4 md:px-5 pb-4 md:pb-5"
-                        >
-                            <p class="font-body-md text-body-md text-on-surface-variant">{{ $faq['a'] }}</p>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+            </ul>
         </div>
     </section>
 
+    {{-- Categories --}}
+    <section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-8 md:pt-12">
+        <div class="flex items-end justify-between mb-4">
+            <h2 class="text-headline-md text-on-surface">Catégories</h2>
+            <a href="{{ route('categories.index') }}" class="text-[14px] font-semibold text-secondary hover:underline">Tout voir</a>
+        </div>
+        <div class="grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-10 gap-2 md:gap-3">
+            @foreach($categories as $category)
+                <a href="{{ route('categories.show', $category) }}" class="group flex flex-col items-center gap-2 rounded-2xl p-2 md:p-3 text-center hover:bg-surface-container-lowest transition-colors">
+                    <span class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-surface-container-lowest border border-surface-variant flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary group-hover:border-primary transition-colors">
+                        <x-icon :name="$category->icon ?? 'package'" class="text-[26px]" />
+                    </span>
+                    <span class="text-[12px] leading-4 font-semibold text-on-surface line-clamp-2">{{ $category->name }}</span>
+                </a>
+            @endforeach
+        </div>
+    </section>
+
+    @if($featured->isNotEmpty())
+        <section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-8 md:pt-12">
+            <div class="flex items-end justify-between mb-4">
+                <h2 class="text-headline-md text-on-surface flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg bg-tertiary text-on-tertiary flex items-center justify-center"><x-icon name="boost" class="text-[18px]" :filled="true" /></span>
+                    À la une
+                </h2>
+            </div>
+            <div class="flex gap-3 overflow-x-auto hide-scrollbar -mx-margin-mobile px-margin-mobile md:mx-0 md:px-0 pb-2 snap-x">
+                @foreach($featured as $listing)
+                    <div class="w-[46%] sm:w-[30%] md:w-[calc(25%-9px)] shrink-0 snap-start">
+                        <x-listing-card :listing="$listing" />
+                    </div>
+                @endforeach
+            </div>
+        </section>
+    @endif
+
+    <section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-8 md:pt-12">
+        <div class="flex items-end justify-between mb-4">
+            <h2 class="text-headline-md text-on-surface">Annonces récentes</h2>
+            <a href="{{ route('listings.index') }}" class="text-[14px] font-semibold text-secondary hover:underline">Voir tout</a>
+        </div>
+
+        @if($latest->isEmpty())
+            <x-empty-state icon="megaphone" title="Soyez le premier à publier !" text="AkibaShop vient d’ouvrir ses petites annonces. Déposez la vôtre gratuitement, elle sera vue par tout le Gabon.">
+                <a href="{{ route('listings.create') }}" class="btn btn-accent"><x-icon name="add_circle" class="text-[20px]" /> Déposer une annonce</a>
+            </x-empty-state>
+        @else
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                @foreach($latest as $listing)
+                    <x-listing-card :listing="$listing" />
+                @endforeach
+            </div>
+            <div class="flex justify-center mt-6">
+                <a href="{{ route('listings.index') }}" class="btn btn-outline">Voir toutes les annonces <x-icon name="arrow_forward" class="text-[18px]" /></a>
+            </div>
+        @endif
+    </section>
+
+    {{-- Sell CTA --}}
+    <section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-10 md:pt-16">
+        <div class="relative overflow-hidden rounded-3xl bg-primary text-on-primary p-6 md:p-10 grid md:grid-cols-[1fr_auto] gap-6 items-center">
+            <div class="absolute inset-y-0 right-0 w-2 md:w-3 flex flex-col" aria-hidden="true">
+                <span class="flex-1 bg-gabon-green"></span><span class="flex-1 bg-gabon-yellow"></span><span class="flex-1 bg-gabon-blue"></span>
+            </div>
+            <div>
+                <h2 class="text-headline-lg">Vous avez quelque chose à vendre ?</h2>
+                <p class="mt-2 text-body-lg text-on-primary/85 max-w-2xl">Prenez quelques photos avec votre téléphone, fixez votre prix en FCFA et publiez en 2 minutes. C’est gratuit.</p>
+            </div>
+            <a href="{{ route('listings.create') }}" class="btn btn-accent h-12 px-6 text-[16px] justify-self-start md:justify-self-end">Publier mon annonce</a>
+        </div>
+    </section>
+
+    @push('head')
+        <script type="application/ld+json">{!! json_encode([
+            '@context' => 'https://schema.org',
+            '@type' => 'WebSite',
+            'name' => 'AkibaShop',
+            'url' => route('home'),
+            'potentialAction' => [
+                '@type' => 'SearchAction',
+                'target' => route('listings.index').'?q={search_term_string}',
+                'query-input' => 'required name=search_term_string',
+            ],
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+    @endpush
 </x-layouts.app>

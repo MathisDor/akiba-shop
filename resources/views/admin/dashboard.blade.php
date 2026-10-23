@@ -1,85 +1,77 @@
-@php
-    $tiles = [
-        ['label' => 'Chiffre d\'affaires', 'value' => number_format($revenue, 0, ',', ' ').' FCFA', 'icon' => 'payments'],
-        ['label' => 'Commandes du jour', 'value' => $ordersToday, 'icon' => 'today'],
-        ['label' => 'En attente de paiement', 'value' => $ordersPending, 'icon' => 'hourglass_empty'],
-        ['label' => 'Commandes livrées', 'value' => $ordersDelivered, 'icon' => 'local_shipping'],
-        ['label' => 'Produits vendus', 'value' => $productsSold, 'icon' => 'inventory_2'],
-        ['label' => 'Clients', 'value' => $customersCount, 'icon' => 'group'],
-    ];
-
-    $maxSale = $salesByDay->max('total') ?: 1;
-    $days = collect(range(6, 0))->map(fn ($i) => \Illuminate\Support\Carbon::today()->subDays($i));
-@endphp
-
 <x-layouts.admin active="dashboard" title="Tableau de bord">
-    <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 md:gap-4 mb-6 md:mb-8">
-        @foreach($tiles as $tile)
-            <div class="bg-surface-container-lowest rounded-xl p-4 md:p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-                <div class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-2 md:mb-3">
-                    <span class="material-symbols-outlined text-[18px] md:text-[20px]">{{ $tile['icon'] }}</span>
-                </div>
-                <p class="font-headline-md text-headline-md text-on-surface truncate">{{ $tile['value'] }}</p>
-                <p class="font-label-sm text-[10px] md:text-label-sm text-on-surface-variant uppercase tracking-wide mt-1">{{ $tile['label'] }}</p>
-            </div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
+        @foreach([
+            ['À valider', $stats['pending'], 'listings', route('admin.listings.index'), $stats['pending'] > 0],
+            ['Signalements ouverts', $stats['openReports'], 'report', route('admin.reports.index'), $stats['openReports'] > 0],
+            ['Annonces en ligne', $stats['online'], 'check_circle', route('admin.listings.index', ['statut' => 'publiee']), false],
+            ['Membres', $stats['members'], 'group', route('admin.users.index'), false],
+        ] as [$label, $value, $icon, $link, $highlight])
+            <a href="{{ $link }}" class="card p-4 md:p-5 flex flex-col gap-2 hover:border-primary transition-colors {{ $highlight ? '!bg-tertiary-container !border-tertiary' : '' }}">
+                <x-icon :name="$icon" class="text-[22px] {{ $highlight ? 'text-on-tertiary-container' : 'text-primary' }}" />
+                <p class="text-[28px] leading-none font-extrabold text-on-surface">{{ number_format($value, 0, ',', ' ') }}</p>
+                <p class="text-[13px] text-on-surface-variant">{{ $label }}</p>
+            </a>
         @endforeach
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
-        <div class="lg:col-span-2 bg-surface-container-lowest rounded-xl p-4 md:p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-            <h2 class="font-headline-md text-headline-md text-on-surface mb-1">Ventes des 7 derniers jours</h2>
-            <p class="font-label-sm text-label-sm text-on-surface-variant mb-4 md:mb-6">Chiffre d'affaires (FCFA), commandes payées et au-delà</p>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 text-[14px]">
+        <div class="card p-4"><span class="font-extrabold text-on-surface">{{ $stats['newMembers'] }}</span> <span class="text-on-surface-variant">inscriptions (7 j)</span></div>
+        <div class="card p-4"><span class="font-extrabold text-on-surface">{{ number_format($stats['views'], 0, ',', ' ') }}</span> <span class="text-on-surface-variant">vues d’annonces</span></div>
+        <div class="card p-4"><span class="font-extrabold text-on-surface">{{ $stats['boosted'] }}</span> <span class="text-on-surface-variant">à la une</span></div>
+        <div class="card p-4"><span class="font-extrabold text-on-surface">{{ $stats['sold'] }}</span> <span class="text-on-surface-variant">marquées vendues</span></div>
+    </div>
 
-            <div class="flex items-end gap-1.5 md:gap-3 h-40 md:h-48" role="img" aria-label="Graphique des ventes des 7 derniers jours">
+    <div class="grid lg:grid-cols-[1.4fr_1fr] gap-4 md:gap-6">
+        <section class="card p-5">
+            <h2 class="text-[16px] font-extrabold text-on-surface mb-4">Nouvelles annonces (14 jours)</h2>
+            @php($max = max(1, $days->max('total')))
+            <div class="flex items-end gap-1.5 h-40" role="img" aria-label="Nombre d’annonces déposées par jour sur 14 jours">
                 @foreach($days as $day)
-                    @php
-                        $amount = (int) ($salesByDay->firstWhere('day', $day->toDateString())->total ?? 0);
-                        $heightPct = max(4, round(($amount / $maxSale) * 100));
-                    @endphp
-                    <div class="flex-1 flex flex-col items-center justify-end h-full gap-1.5 md:gap-2 group">
-                        <span class="font-label-sm text-[9px] md:text-[10px] text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">{{ number_format($amount, 0, ',', ' ') }}</span>
-                        <div class="w-full bg-primary/15 rounded-t-md relative" style="height: {{ $heightPct }}%">
-                            <div class="absolute inset-0 bg-primary rounded-t-md" style="opacity: 0.85"></div>
-                        </div>
-                        <span class="font-label-sm text-[9px] md:text-[10px] text-on-surface-variant uppercase">{{ $day->translatedFormat('D') }}</span>
+                    <div class="flex-1 flex flex-col items-center gap-1 h-full justify-end" title="{{ $day['label'] }} : {{ $day['total'] }}">
+                        <span class="text-[10px] font-semibold text-on-surface-variant">{{ $day['total'] ?: '' }}</span>
+                        <div class="w-full rounded-t-md bg-primary-container" style="height: {{ max(2, $day['total'] / $max * 100) }}%"></div>
+                        <span class="text-[9px] text-on-surface-variant whitespace-nowrap">{{ $day['label'] }}</span>
                     </div>
                 @endforeach
             </div>
-        </div>
+        </section>
 
-        <div class="bg-surface-container-lowest rounded-xl p-4 md:p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-            <h2 class="font-headline-md text-headline-md text-on-surface mb-4">Stock faible</h2>
-            @if($lowStock->isEmpty())
-                <p class="font-body-md text-body-md text-on-surface-variant">Aucune alerte de stock pour le moment.</p>
-            @else
-                <ul class="flex flex-col gap-3">
-                    @foreach($lowStock as $variant)
-                        <li class="flex items-center justify-between font-body-md text-body-md gap-2">
-                            <span class="text-on-surface truncate">{{ $variant->product->name }} — {{ $variant->color?->name }} / {{ $variant->size?->name ?? 'Unique' }}</span>
-                            <span class="text-error font-bold shrink-0">{{ $variant->stock }}</span>
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
-        </div>
+        <section class="card p-5">
+            <h2 class="text-[16px] font-extrabold text-on-surface mb-4">Catégories les plus actives</h2>
+            @php($maxCat = max(1, $topCategories->max('total')))
+            <ul class="flex flex-col gap-3">
+                @foreach($topCategories as $category)
+                    <li>
+                        <div class="flex justify-between text-[13px] mb-1"><span class="text-on-surface">{{ $category['name'] }}</span><span class="font-bold text-on-surface">{{ $category['total'] }}</span></div>
+                        <div class="h-2 rounded-full bg-surface-container"><div class="h-2 rounded-full bg-secondary" style="width: {{ $category['total'] / $maxCat * 100 }}%"></div></div>
+                    </li>
+                @endforeach
+            </ul>
+        </section>
     </div>
 
-    <div class="bg-surface-container-lowest rounded-xl p-4 md:p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] mt-4 md:mt-6">
-        <h2 class="font-headline-md text-headline-md text-on-surface mb-4">Produits les plus vendus</h2>
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
-            @forelse($bestSellers as $product)
-                <div class="text-center">
-                    <div class="aspect-square rounded-lg overflow-hidden bg-surface-container mb-2">
-                        @if($product->images->first())
-                            <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($product->images->first()->path) }}" class="w-full h-full object-cover" alt="{{ $product->name }}" />
-                        @endif
-                    </div>
-                    <p class="font-label-sm text-label-sm text-on-surface truncate">{{ $product->name }}</p>
-                    <p class="font-label-sm text-[11px] text-on-surface-variant">{{ (int) $product->sold }} vendus</p>
-                </div>
-            @empty
-                <p class="font-body-md text-body-md text-on-surface-variant col-span-full">Pas encore de ventes.</p>
-            @endforelse
+    <section class="card p-5 mt-4 md:mt-6">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-[16px] font-extrabold text-on-surface">En attente de validation</h2>
+            <a href="{{ route('admin.listings.index') }}" class="text-[13px] font-semibold text-secondary hover:underline">Tout voir</a>
         </div>
-    </div>
+        @forelse($pendingListings as $listing)
+            <a href="{{ route('admin.listings.show', $listing) }}" class="flex items-center gap-3 py-2.5 border-t border-surface-variant first:border-t-0 hover:bg-surface-container-low -mx-2 px-2 rounded-lg">
+                <span class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container-low shrink-0 flex items-center justify-center">
+                    @if($cover = $listing->coverImage())
+                        <img src="{{ $cover->url() }}" alt="" class="w-full h-full object-cover" />
+                    @else
+                        <x-icon name="image" class="text-[20px] text-outline" />
+                    @endif
+                </span>
+                <span class="flex-1 min-w-0">
+                    <span class="block text-[14px] font-semibold text-on-surface truncate">{{ $listing->title }}</span>
+                    <span class="block text-[12px] text-on-surface-variant">{{ $listing->category->name }} · {{ $listing->user->name }} · {{ $listing->created_at->diffForHumans() }}</span>
+                </span>
+                <x-icon name="chevron_right" class="text-[18px] text-outline" />
+            </a>
+        @empty
+            <p class="text-[14px] text-on-surface-variant">Rien à valider. 🎉</p>
+        @endforelse
+    </section>
 </x-layouts.admin>

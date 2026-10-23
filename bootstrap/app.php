@@ -16,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Read client-side for the data-saver toggle, so it can't be encrypted.
+        $middleware->encryptCookies(except: ['eco']);
+
         $middleware->alias([
             'admin' => EnsureUserIsAdmin::class,
             'super_admin' => EnsureSuperAdmin::class,

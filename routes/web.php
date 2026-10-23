@@ -1,118 +1,103 @@
 <?php
 
-use App\Http\Controllers\Account\AddressController;
 use App\Http\Controllers\Account\FavoriteController;
-use App\Http\Controllers\Account\OrderController as AccountOrderController;
+use App\Http\Controllers\Account\ListingController as AccountListingController;
 use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\Auth\AdminAuthenticatedSessionController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
-use App\Http\Controllers\Admin\CollectionController as AdminCollectionController;
-use App\Http\Controllers\Admin\CouponController as AdminCouponController;
-use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
-use App\Http\Controllers\Admin\DeliveryZoneController as AdminDeliveryZoneController;
-use App\Http\Controllers\Admin\OrderController as AdminOrderController;
-use App\Http\Controllers\Admin\ProductController as AdminProductController;
-use App\Http\Controllers\Admin\PromotionController as AdminPromotionController;
-use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
+use App\Http\Controllers\Admin\ListingController as AdminListingController;
+use App\Http\Controllers\Admin\ReportController as AdminReportController;
+use App\Http\Controllers\Admin\UserController as AdminMemberController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\OrderConfirmationController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\SearchController;
+use App\Http\Controllers\ListingController;
+use App\Http\Controllers\ListingReportController;
+use App\Http\Controllers\SellerController;
 use App\Http\Controllers\SitemapController;
-use App\Livewire\Cart;
-use App\Livewire\Checkout\Informations;
-use App\Livewire\Checkout\Livraison;
-use App\Livewire\Checkout\Paiement;
-use App\Livewire\Checkout\PaymentPending;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Public storefront
+| Public marketplace
 |--------------------------------------------------------------------------
 */
 
 Route::get('/', HomeController::class)->name('home');
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
-Route::get('/recherche', SearchController::class)->name('search');
-Route::get('/categories', CategoriesController::class)->name('categories.index');
-Route::get('/catalogue', [CatalogController::class, 'index'])->name('catalog.index');
-Route::get('/{gender}', [CatalogController::class, 'gender'])
-    ->whereIn('gender', ['femme', 'homme'])
-    ->name('catalog.gender');
-Route::get('/{gender}/{category}', [CatalogController::class, 'category'])
-    ->whereIn('gender', ['femme', 'homme'])
-    ->name('catalog.category');
-Route::get('/produit/{product}', ProductController::class)->name('products.show');
+Route::get('/annonces', [ListingController::class, 'index'])->name('listings.index');
+Route::get('/annonce/{listing}', [ListingController::class, 'show'])->name('listings.show');
+Route::get('/categories', [CategoriesController::class, 'index'])->name('categories.index');
+Route::get('/categories/{category}', [CategoriesController::class, 'show'])->name('categories.show');
+Route::get('/vendeur/{user}', SellerController::class)->name('sellers.show');
+
+Route::post('/annonce/{listing}/signaler', [ListingReportController::class, 'store'])
+    ->middleware('throttle:10,60')
+    ->name('listings.report');
+
+Route::view('/a-propos', 'pages.about')->name('pages.about');
+Route::view('/contact', 'pages.contact')->name('pages.contact');
+Route::view('/cgu', 'pages.terms')->name('pages.terms');
+Route::view('/confidentialite', 'pages.privacy')->name('pages.privacy');
+Route::view('/conseils-securite', 'pages.safety')->name('pages.safety');
+
+// URLs of the former fashion shop, kept alive for bookmarks and search engines.
+Route::permanentRedirect('/recherche', '/annonces');
+Route::permanentRedirect('/catalogue', '/annonces');
+Route::permanentRedirect('/panier', '/');
+Route::get('/{gender}/{category?}', fn () => redirect()->route('categories.show', 'mode-beaute', 301))
+    ->whereIn('gender', ['femme', 'homme']);
+Route::get('/produit/{any}', fn () => redirect()->route('listings.index', [], 301))->where('any', '.*');
 
 /*
 |--------------------------------------------------------------------------
-| Cart & Checkout
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/panier', Cart::class)->name('cart.index');
-
-Route::middleware('auth')->prefix('checkout')->name('checkout.')->group(function () {
-    Route::get('/informations', Informations::class)->name('informations');
-    Route::get('/livraison', Livraison::class)->name('livraison');
-    Route::get('/paiement', Paiement::class)->name('paiement');
-});
-
-Route::middleware('auth')->get('/commande/confirmation/{order:order_number}', OrderConfirmationController::class)
-    ->name('checkout.confirmation');
-
-Route::middleware('auth')->get('/commande/{order:order_number}/en-attente', PaymentPending::class)
-    ->name('checkout.pending');
-
-/*
-|--------------------------------------------------------------------------
-| Guest / Client authentication
+| Guest / member authentication
 |--------------------------------------------------------------------------
 */
 
 Route::middleware('guest')->group(function () {
     Route::get('/connexion', [AuthenticatedSessionController::class, 'create'])->name('login');
-    Route::post('/connexion', [AuthenticatedSessionController::class, 'store'])->name('login.store');
+    Route::post('/connexion', [AuthenticatedSessionController::class, 'store'])->middleware('throttle:10,1')->name('login.store');
     Route::get('/inscription', [RegisteredUserController::class, 'create'])->name('register');
-    Route::post('/inscription', [RegisteredUserController::class, 'store'])->name('register.store');
+    Route::post('/inscription', [RegisteredUserController::class, 'store'])->middleware('throttle:10,1')->name('register.store');
 });
 
 Route::middleware('auth')->post('/deconnexion', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
 /*
 |--------------------------------------------------------------------------
-| Customer account area
+| Member area
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('auth')->prefix('compte')->name('account.')->group(function () {
-    Route::get('/', [ProfileController::class, 'show'])->name('profile');
-    Route::put('/', [ProfileController::class, 'update'])->name('profile.update');
+Route::middleware('auth')->group(function () {
+    Route::get('/publier', [AccountListingController::class, 'create'])->name('listings.create');
+    Route::post('/publier', [AccountListingController::class, 'store'])->middleware('throttle:20,60')->name('listings.store');
 
-    Route::get('/adresses', [AddressController::class, 'index'])->name('addresses');
-    Route::post('/adresses', [AddressController::class, 'store'])->name('addresses.store');
-    Route::put('/adresses/{address}', [AddressController::class, 'update'])->name('addresses.update');
-    Route::delete('/adresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
-    Route::patch('/adresses/{address}/defaut', [AddressController::class, 'makeDefault'])->name('addresses.default');
+    Route::post('/annonce/{listing}/favori', [FavoriteController::class, 'toggle'])->name('listings.favorite');
 
-    Route::get('/commandes', [AccountOrderController::class, 'index'])->name('orders');
-    Route::get('/commandes/{order:order_number}', [AccountOrderController::class, 'show'])->name('orders.show');
+    Route::prefix('compte')->name('account.')->group(function () {
+        Route::get('/', [ProfileController::class, 'show'])->name('profile');
+        Route::put('/', [ProfileController::class, 'update'])->name('profile.update');
 
-    Route::get('/favoris', [FavoriteController::class, 'index'])->name('favorites');
-    Route::post('/favoris/{product}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+        Route::get('/annonces', [AccountListingController::class, 'index'])->name('listings');
+        Route::get('/annonces/{listing}/modifier', [AccountListingController::class, 'edit'])->name('listings.edit');
+        Route::put('/annonces/{listing}', [AccountListingController::class, 'update'])->name('listings.update');
+        Route::delete('/annonces/{listing}', [AccountListingController::class, 'destroy'])->name('listings.destroy');
+        Route::patch('/annonces/{listing}/renouveler', [AccountListingController::class, 'renew'])->name('listings.renew');
+        Route::patch('/annonces/{listing}/vendue', [AccountListingController::class, 'markSold'])->name('listings.sold');
+
+        Route::get('/favoris', [FavoriteController::class, 'index'])->name('favorites');
+    });
 });
 
 /*
 |--------------------------------------------------------------------------
-| Admin dashboard
+| Admin back-office
 |--------------------------------------------------------------------------
 */
 
@@ -127,48 +112,32 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('admin')->group(function () {
         Route::get('/', AdminDashboardController::class)->name('dashboard');
 
-        Route::middleware('permission:products.manage')->group(function () {
-            Route::get('/produits', [AdminProductController::class, 'index'])->name('products.index');
-            Route::get('/produits/nouveau', [AdminProductController::class, 'create'])->name('products.create');
-            Route::get('/produits/{product}/modifier', [AdminProductController::class, 'edit'])->name('products.edit');
-            Route::delete('/produits/en-masse', [AdminProductController::class, 'bulkDestroy'])->name('products.bulk-destroy');
-            Route::delete('/produits/{product}', [AdminProductController::class, 'destroy'])->name('products.destroy');
+        Route::middleware('permission:listings.moderate')->group(function () {
+            Route::get('/annonces', [AdminListingController::class, 'index'])->name('listings.index');
+            Route::get('/annonces/{listing:id}', [AdminListingController::class, 'show'])->name('listings.show');
+            Route::patch('/annonces/{listing:id}/approuver', [AdminListingController::class, 'approve'])->name('listings.approve');
+            Route::patch('/annonces/{listing:id}/refuser', [AdminListingController::class, 'reject'])->name('listings.reject');
+            Route::patch('/annonces/{listing:id}/booster', [AdminListingController::class, 'boost'])->name('listings.boost');
+            Route::delete('/annonces/{listing:id}', [AdminListingController::class, 'destroy'])->name('listings.destroy');
+        });
+
+        Route::middleware('permission:reports.manage')->group(function () {
+            Route::get('/signalements', [AdminReportController::class, 'index'])->name('reports.index');
+            Route::patch('/signalements/{report}', [AdminReportController::class, 'update'])->name('reports.update');
         });
 
         Route::middleware('permission:categories.manage')->group(function () {
-            Route::resource('categories', AdminCategoryController::class)->except(['show'])->names('categories');
+            Route::resource('categories', AdminCategoryController::class)
+                ->except(['show'])
+                ->parameters(['categories' => 'category:id'])
+                ->names('categories');
         });
 
-        Route::middleware('permission:collections.manage')->group(function () {
-            Route::resource('collections', AdminCollectionController::class)->except(['show'])->names('collections');
-        });
-
-        Route::middleware('permission:promotions.manage')->group(function () {
-            Route::resource('promotions', AdminPromotionController::class)->except(['show'])->names('promotions');
-        });
-
-        Route::middleware('permission:coupons.manage')->group(function () {
-            Route::resource('coupons', AdminCouponController::class)->except(['show'])->names('coupons');
-        });
-
-        Route::middleware('permission:delivery.manage')->group(function () {
-            Route::resource('zones-livraison', AdminDeliveryZoneController::class)->except(['show'])->parameters(['zones-livraison' => 'deliveryZone'])->names('delivery-zones');
-        });
-
-        Route::middleware('permission:orders.manage')->group(function () {
-            Route::get('/commandes', [AdminOrderController::class, 'index'])->name('orders.index');
-            Route::get('/commandes/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
-            Route::patch('/commandes/{order}/statut', [AdminOrderController::class, 'updateStatus'])->name('orders.status');
-        });
-
-        Route::middleware('permission:customers.view')->group(function () {
-            Route::get('/clients', [AdminCustomerController::class, 'index'])->name('customers.index');
-            Route::get('/clients/{user}', [AdminCustomerController::class, 'show'])->name('customers.show');
-        });
-
-        Route::middleware('permission:reviews.moderate')->group(function () {
-            Route::get('/avis', [AdminReviewController::class, 'index'])->name('reviews.index');
-            Route::patch('/avis/{review}/moderer', [AdminReviewController::class, 'moderate'])->name('reviews.moderate');
+        Route::middleware('permission:users.manage')->group(function () {
+            Route::get('/utilisateurs', [AdminMemberController::class, 'index'])->name('users.index');
+            Route::get('/utilisateurs/{user}', [AdminMemberController::class, 'show'])->name('users.show');
+            Route::patch('/utilisateurs/{user}/verification', [AdminMemberController::class, 'toggleVerified'])->name('users.verify');
+            Route::patch('/utilisateurs/{user}/statut', [AdminMemberController::class, 'toggleActive'])->name('users.toggle-active');
         });
 
         Route::middleware('super_admin')->group(function () {

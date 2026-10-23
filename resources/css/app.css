@@ -4,132 +4,148 @@
 @source '../../storage/framework/views/*.php';
 
 /*
- * AkibaShop design system — "Vibrant Luxury Marketplace"
- * Source of truth: public/vibrant_luxury_marketplace/DESIGN.md, reconciled
- * against the concrete tokens used across the 12 approved HTML mockups.
+ * AkibaShop design system — "Marché gabonais"
+ * Clean classifieds UI (dense cards, strong search) with the national colours:
+ * green #009639 (brand), yellow #FCD116 (highlights), blue #3A75C4 (links/info).
+ * Text-bearing greens are darkened to keep WCAG AA contrast on white.
+ * Token names are shared with the admin panel, which re-themes with them.
  */
 @theme {
-    /* Fonts */
-    --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
-    --font-body-md: 'Manrope', sans-serif;
-    --font-body-lg: 'Manrope', sans-serif;
-    --font-label-lg: 'Manrope', sans-serif;
-    --font-label-sm: 'Manrope', sans-serif;
-    --font-headline-md: 'Bodoni Moda', serif;
-    --font-headline-lg: 'Bodoni Moda', serif;
-    --font-headline-xl: 'Bodoni Moda', serif;
-    --font-display-lg: 'Bodoni Moda', serif;
-    --font-display-lg-mobile: 'Bodoni Moda', serif;
+    /* Fonts — a single variable family keeps the page light on slow connections */
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-body-md: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-body-lg: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-label-lg: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-label-sm: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-headline-md: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-headline-lg: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-headline-xl: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-display-lg: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-display-lg-mobile: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
     --font-material: 'Material Symbols Outlined';
 
     /* Type scale (size / line-height / weight / tracking) */
-    --text-body-md: 16px;
-    --text-body-md--line-height: 24px;
+    --text-body-md: 15px;
+    --text-body-md--line-height: 22px;
     --text-body-md--font-weight: 400;
 
-    --text-body-lg: 18px;
-    --text-body-lg--line-height: 28px;
+    --text-body-lg: 17px;
+    --text-body-lg--line-height: 26px;
     --text-body-lg--font-weight: 400;
 
     --text-label-lg: 14px;
     --text-label-lg--line-height: 20px;
     --text-label-lg--font-weight: 600;
-    --text-label-lg--letter-spacing: 0.05em;
+    --text-label-lg--letter-spacing: 0;
 
     --text-label-sm: 12px;
     --text-label-sm--line-height: 16px;
     --text-label-sm--font-weight: 500;
-    --text-label-sm--letter-spacing: 0.02em;
+    --text-label-sm--letter-spacing: 0;
 
-    --text-headline-md: 24px;
-    --text-headline-md--line-height: 32px;
-    --text-headline-md--font-weight: 600;
+    --text-headline-md: 20px;
+    --text-headline-md--line-height: 28px;
+    --text-headline-md--font-weight: 700;
+    --text-headline-md--letter-spacing: -0.01em;
 
-    --text-headline-lg: 32px;
-    --text-headline-lg--line-height: 40px;
-    --text-headline-lg--font-weight: 600;
+    --text-headline-lg: 28px;
+    --text-headline-lg--line-height: 36px;
+    --text-headline-lg--font-weight: 800;
+    --text-headline-lg--letter-spacing: -0.02em;
 
-    --text-headline-xl: 48px;
-    --text-headline-xl--line-height: 56px;
-    --text-headline-xl--font-weight: 700;
+    --text-headline-xl: 40px;
+    --text-headline-xl--line-height: 48px;
+    --text-headline-xl--font-weight: 800;
     --text-headline-xl--letter-spacing: -0.02em;
 
-    --text-display-lg-mobile: 40px;
-    --text-display-lg-mobile--line-height: 48px;
-    --text-display-lg-mobile--font-weight: 700;
-    --text-display-lg-mobile--letter-spacing: -0.01em;
+    --text-display-lg-mobile: 30px;
+    --text-display-lg-mobile--line-height: 38px;
+    --text-display-lg-mobile--font-weight: 800;
+    --text-display-lg-mobile--letter-spacing: -0.02em;
 
-    --text-display-lg: 64px;
-    --text-display-lg--line-height: 72px;
-    --text-display-lg--font-weight: 700;
-    --text-display-lg--letter-spacing: -0.02em;
+    --text-display-lg: 48px;
+    --text-display-lg--line-height: 56px;
+    --text-display-lg--font-weight: 800;
+    --text-display-lg--letter-spacing: -0.03em;
 
     /* Spacing tokens (named, in addition to the numeric scale) */
     --spacing-unit: 8px;
-    --spacing-gutter: 24px;
-    --spacing-margin-mobile: 20px;
-    --spacing-margin-desktop: 64px;
-    --spacing-container-max: 1280px;
-    --spacing-section-gap: 64px;
+    --spacing-gutter: 16px;
+    --spacing-margin-mobile: 16px;
+    --spacing-margin-desktop: 32px;
+    --spacing-container-max: 1240px;
+    --spacing-section-gap: 48px;
+
+    /* National colours (decorative — use the role tokens below for text) */
+    --color-gabon-green: #009639;
+    --color-gabon-yellow: #fcd116;
+    --color-gabon-blue: #3a75c4;
+    --color-whatsapp: #25d366;
+    --color-on-whatsapp: #08341a;
 
     /* Color system */
-    --color-surface: #fbf9f9;
-    --color-surface-dim: #dbdad9;
-    --color-surface-bright: #fbf9f9;
+    --color-surface: #f5f7f4;
+    --color-surface-dim: #d7dcd5;
+    --color-surface-bright: #ffffff;
     --color-surface-container-lowest: #ffffff;
-    --color-surface-container-low: #f5f3f3;
-    --color-surface-container: #efeded;
-    --color-surface-container-high: #e9e8e7;
-    --color-surface-container-highest: #e3e2e2;
-    --color-surface-variant: #e3e2e2;
-    --color-surface-tint: #a63b00;
+    --color-surface-container-low: #eff2ee;
+    --color-surface-container: #e9ede8;
+    --color-surface-container-high: #e2e7e1;
+    --color-surface-container-highest: #dbe1da;
+    --color-surface-variant: #e4e9e3;
+    --color-surface-tint: #007a2f;
 
-    --color-on-surface: #1b1c1c;
-    --color-on-surface-variant: #594138;
+    --color-on-surface: #15201a;
+    --color-on-surface-variant: #4c5a51;
 
-    --color-inverse-surface: #303031;
-    --color-inverse-on-surface: #f2f0f0;
-    --color-inverse-primary: #ffb598;
+    --color-inverse-surface: #14261b;
+    --color-inverse-on-surface: #eaf1eb;
+    --color-inverse-primary: #7fdc9f;
 
-    --color-background: #fbf9f9;
-    --color-on-background: #1b1c1c;
+    --color-background: #f5f7f4;
+    --color-on-background: #15201a;
 
-    --color-primary: #a63b00;
+    --color-primary: #007a2f;
     --color-on-primary: #ffffff;
-    --color-primary-container: #f4641e;
-    --color-on-primary-container: #501800;
-    --color-primary-fixed: #ffdbce;
-    --color-primary-fixed-dim: #ffb598;
-    --color-on-primary-fixed: #370e00;
-    --color-on-primary-fixed-variant: #7f2b00;
+    --color-primary-container: #009639;
+    --color-on-primary-container: #ffffff;
+    --color-primary-fixed: #d9f5e2;
+    --color-primary-fixed-dim: #a5e3b9;
+    --color-on-primary-fixed: #002610;
+    --color-on-primary-fixed-variant: #005a22;
 
-    --color-secondary: #5f5e5e;
+    --color-secondary: #2f64ad;
     --color-on-secondary: #ffffff;
-    --color-secondary-container: #e2dfde;
-    --color-on-secondary-container: #636262;
-    --color-secondary-fixed: #e5e2e1;
-    --color-secondary-fixed-dim: #c8c6c5;
-    --color-on-secondary-fixed: #1c1b1b;
-    --color-on-secondary-fixed-variant: #474746;
+    --color-secondary-container: #e1ebf9;
+    --color-on-secondary-container: #1b4583;
+    --color-secondary-fixed: #e1ebf9;
+    --color-secondary-fixed-dim: #b6cdee;
+    --color-on-secondary-fixed: #0b2550;
+    --color-on-secondary-fixed-variant: #1b4583;
 
-    --color-tertiary: #5e5e5b;
-    --color-on-tertiary: #ffffff;
-    --color-tertiary-container: #92918d;
-    --color-on-tertiary-container: #2a2a27;
-    --color-tertiary-fixed: #e4e2dd;
-    --color-tertiary-fixed-dim: #c8c6c2;
-    --color-on-tertiary-fixed: #1b1c19;
-    --color-on-tertiary-fixed-variant: #474744;
+    --color-tertiary: #fcd116;
+    --color-on-tertiary: #2b2300;
+    --color-tertiary-container: #fff4c4;
+    --color-on-tertiary-container: #5b4800;
+    --color-tertiary-fixed: #fff4c4;
+    --color-tertiary-fixed-dim: #f5dc6b;
+    --color-on-tertiary-fixed: #2b2300;
+    --color-on-tertiary-fixed-variant: #5b4800;
 
     --color-error: #ba1a1a;
     --color-on-error: #ffffff;
     --color-error-container: #ffdad6;
     --color-on-error-container: #93000a;
 
-    --color-outline: #8d7166;
-    --color-outline-variant: #e2bfb3;
+    --color-outline: #74827a;
+    --color-outline-variant: #d3dbd4;
 }
 
+/*
+ * Component classes live in a cascade layer so Tailwind utilities (sizes,
+ * responsive display…) can still override them.
+ */
+@layer components {
 /* SVG icons (client-facing UI) — sized in em so existing text-[Npx] utilities keep working */
 .icon {
     display: inline-block;
@@ -139,6 +155,7 @@
     line-height: 1;
     vertical-align: middle;
     flex-shrink: 0;
+}
 }
 
 /* Material Symbols baseline — admin panel only */
@@ -171,19 +188,6 @@
         'opsz' 24;
 }
 
-.shadow-atmospheric {
-    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
-}
-.hover-lift {
-    transition:
-        transform 0.3s ease,
-        box-shadow 0.3s ease;
-}
-.hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
-}
-
 .hide-scrollbar::-webkit-scrollbar {
     display: none;
 }
@@ -192,46 +196,161 @@
     scrollbar-width: none;
 }
 
+[x-cloak] {
+    display: none !important;
+}
+
 body {
     background-color: var(--color-background);
     color: var(--color-on-background);
+    font-family: var(--font-sans);
 }
 
-/* Floating-label underline inputs (checkout, login, register) */
-.input-underline {
-    border: none;
-    border-bottom: 1px solid var(--color-outline-variant);
-    border-radius: 0;
-    padding-left: 0;
-    padding-right: 0;
-    background-color: transparent;
-    transition: border-color 0.3s ease;
-    box-shadow: none !important;
+@layer components {
+/* The thin green / yellow / blue band — the brand's flag signature */
+.flag-band {
+    height: 4px;
+    background: linear-gradient(
+        90deg,
+        var(--color-gabon-green) 0 33.33%,
+        var(--color-gabon-yellow) 33.33% 66.66%,
+        var(--color-gabon-blue) 66.66% 100%
+    );
+}
+
+/* Boxed form fields (publish form, auth, account, filters) */
+.field {
+    display: block;
     width: 100%;
+    min-height: 46px;
+    padding: 10px 14px;
+    border: 1px solid var(--color-outline-variant);
+    border-radius: 12px;
+    background-color: var(--color-surface-container-lowest);
+    color: var(--color-on-surface);
+    font-size: 15px;
+    line-height: 22px;
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
 }
-.input-underline:focus {
-    outline: none;
-    border-bottom: 1px solid var(--color-primary);
-}
-.relative-input-group {
-    position: relative;
-    margin-bottom: 1.5rem;
-    padding-top: 1rem;
-}
-.relative-input-group label {
-    position: absolute;
-    top: 24px;
-    left: 0;
-    pointer-events: none;
-    transition: 0.2s ease all;
+.field::placeholder {
     color: var(--color-outline);
 }
-.relative-input-group input:focus ~ label,
-.relative-input-group input:not(:placeholder-shown) ~ label {
-    top: 0;
-    font-size: 11px;
-    color: var(--color-on-surface-variant);
+.field:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent);
+}
+.field[aria-invalid='true'] {
+    border-color: var(--color-error);
+}
+select.field {
+    appearance: none;
+    padding-right: 40px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234c5a51' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+}
+.field-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    line-height: 18px;
     font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    color: var(--color-on-surface);
+}
+.field-error {
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--color-error);
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 46px;
+    padding: 0 20px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease;
+}
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+.btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+}
+.btn-primary:hover {
+    background-color: var(--color-on-primary-fixed-variant);
+}
+.btn-accent {
+    background-color: var(--color-tertiary);
+    color: var(--color-on-tertiary);
+}
+.btn-accent:hover {
+    background-color: var(--color-tertiary-fixed-dim);
+}
+.btn-whatsapp {
+    background-color: var(--color-whatsapp);
+    color: var(--color-on-whatsapp);
+}
+.btn-whatsapp:hover {
+    background-color: #1fbe5b;
+}
+.btn-outline {
+    border: 1px solid var(--color-outline-variant);
+    background-color: var(--color-surface-container-lowest);
+    color: var(--color-on-surface);
+}
+.btn-outline:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+.btn-sm {
+    min-height: 38px;
+    padding: 0 14px;
+    font-size: 14px;
+    border-radius: 10px;
+}
+
+.card {
+    background-color: var(--color-surface-container-lowest);
+    border: 1px solid var(--color-surface-variant);
+    border-radius: 16px;
+}
+
+/* Skeleton shimmer for image placeholders while photos stream in */
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--color-surface-container) 25%,
+        var(--color-surface-container-low) 50%,
+        var(--color-surface-container) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton 1.4s ease-in-out infinite;
+}
+@keyframes skeleton {
+    to {
+        background-position: -200% 0;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .skeleton {
+        animation: none;
+    }
+}
 }

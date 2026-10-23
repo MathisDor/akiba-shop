@@ -41,11 +41,11 @@ class AdminAccessTest extends TestCase
         $admin = $this->makeAdmin(['password' => 'password1234']);
 
         $response = $this->post('/connexion', [
-            'email' => $admin->email,
+            'login' => $admin->email,
             'password' => 'password1234',
         ]);
 
-        $response->assertSessionHasErrors('email');
+        $response->assertSessionHasErrors('login');
         $this->assertGuest('web');
     }
 }

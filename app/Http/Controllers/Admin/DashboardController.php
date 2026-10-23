@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\OrderStatus;
+use App\Enums\ListingStatus;
+use App\Enums\ReportStatus;
 use App\Http\Controllers\Controller;
-use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\Product;
-use App\Models\ProductVariant;
+use App\Models\Listing;
+use App\Models\ListingCategory;
+use App\Models\ListingReport;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\View\View;
@@ -17,33 +17,42 @@ class DashboardController extends Controller
     public function __invoke(): View
     {
         $today = Carbon::today();
+        $members = fn () => User::whereHas('role', fn ($q) => $q->where('slug', 'client'));
 
-        $revenue = Order::whereIn('status', ['payee', 'preparation', 'prete_a_expedier', 'en_livraison', 'livree', 'terminee'])->sum('total');
-        $ordersToday = Order::whereDate('created_at', $today)->count();
-        $ordersPending = Order::where('status', OrderStatus::EnAttentePaiement->value)->count();
-        $ordersDelivered = Order::where('status', OrderStatus::Livree->value)->count();
-        $productsSold = OrderItem::whereHas('order', fn ($q) => $q->whereIn('status', ['payee', 'preparation', 'prete_a_expedier', 'en_livraison', 'livree', 'terminee']))->sum('quantity');
-        $customersCount = User::whereHas('role', fn ($q) => $q->where('slug', 'client'))->count();
-        $lowStock = ProductVariant::where('stock', '>', 0)->where('stock', '<=', 5)->with('product', 'color', 'size')->take(8)->get();
+        $stats = [
+            'pending' => Listing::where('status', ListingStatus::EnAttente->value)->count(),
+            'online' => Listing::visible()->count(),
+            'openReports' => ListingReport::where('status', ReportStatus::Ouvert->value)->count(),
+            'members' => $members()->count(),
+            'newMembers' => $members()->where('created_at', '>=', $today->copy()->subDays(6))->count(),
+            'views' => (int) Listing::sum('views'),
+            'boosted' => Listing::visible()->where('boosted_until', '>', now())->count(),
+            'sold' => Listing::where('status', ListingStatus::Vendue->value)->count(),
+        ];
 
-        $bestSellers = Product::withSum(['variants as sold' => function ($q) {
-            $q->join('order_items', 'order_items.product_variant_id', '=', 'product_variants.id');
-        }], 'order_items.quantity')
-            ->with('images')
-            ->orderByDesc('sold')
+        $newListingsByDay = Listing::selectRaw('DATE(created_at) as day, COUNT(*) as total')
+            ->where('created_at', '>=', $today->copy()->subDays(13))
+            ->groupBy('day')
+            ->pluck('total', 'day');
+
+        $days = collect(range(13, 0))->map(fn ($ago) => $today->copy()->subDays($ago))
+            ->map(fn (Carbon $day) => ['label' => $day->format('d/m'), 'total' => (int) ($newListingsByDay[$day->toDateString()] ?? 0)]);
+
+        $topCategories = ListingCategory::roots()->with('children')->get()
+            ->map(fn (ListingCategory $category) => [
+                'name' => $category->name,
+                'total' => Listing::visible()->whereIn('listing_category_id', $category->selfAndChildrenIds())->count(),
+            ])
+            ->sortByDesc('total')
+            ->take(6)
+            ->values();
+
+        $pendingListings = Listing::with(['images', 'user', 'category'])
+            ->where('status', ListingStatus::EnAttente->value)
+            ->oldest()
             ->take(5)
             ->get();
 
-        $salesByDay = Order::selectRaw('DATE(created_at) as day, SUM(total) as total')
-            ->where('created_at', '>=', $today->copy()->subDays(6))
-            ->whereIn('status', ['payee', 'preparation', 'prete_a_expedier', 'en_livraison', 'livree', 'terminee'])
-            ->groupBy('day')
-            ->orderBy('day')
-            ->get();
-
-        return view('admin.dashboard', compact(
-            'revenue', 'ordersToday', 'ordersPending', 'ordersDelivered',
-            'productsSold', 'customersCount', 'lowStock', 'bestSellers', 'salesByDay'
-        ));
+        return view('admin.dashboard', compact('stats', 'days', 'topCategories', 'pendingListings'));
     }
 }

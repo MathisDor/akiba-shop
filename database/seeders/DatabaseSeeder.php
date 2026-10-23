@@ -11,14 +11,12 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             PermissionSeeder::class,
-            SizeSeeder::class,
-            ColorSeeder::class,
-            CategorySeeder::class,
-            DeliveryZoneSeeder::class,
             UserSeeder::class,
-            CollectionSeeder::class,
-            CouponSeeder::class,
-            ProductSeeder::class,
+            MarketplaceSeeder::class,
         ]);
+
+        if (app()->environment('local')) {
+            $this->call(DemoListingSeeder::class);
+        }
     }
 }

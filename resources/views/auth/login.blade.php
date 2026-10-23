@@ -1,41 +1,35 @@
 <x-layouts.guest title="Connexion — AkibaShop">
-    <h1 class="font-headline-lg text-headline-lg text-primary mb-2 text-center">Bon retour</h1>
-    <p class="font-body-md text-body-md text-on-surface-variant mb-8 text-center">Connectez-vous pour retrouver votre panier et vos commandes.</p>
+    <h1 class="text-headline-lg text-on-surface text-center">Bon retour !</h1>
+    <p class="text-body-md text-on-surface-variant mt-1 mb-6 text-center">Connectez-vous pour publier et gérer vos annonces.</p>
 
     @session('status')
-        <div class="mb-6 rounded-lg bg-primary-container/10 text-primary px-4 py-3 font-body-md text-body-md">
-            {{ $value }}
-        </div>
+        <div class="mb-5 rounded-xl bg-primary-fixed text-on-primary-fixed px-4 py-3 text-[14px]">{{ $value }}</div>
     @endsession
 
-    <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-6">
+    <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-4">
         @csrf
 
-        <div class="relative-input-group">
-            <input type="email" name="email" id="email" class="input-underline font-body-md text-body-md text-on-surface h-10" placeholder=" " value="{{ old('email') }}" required autofocus />
-            <label for="email" class="font-body-md">Adresse email</label>
-        </div>
-        @error('email')
-            <p class="-mt-4 text-error font-label-sm text-label-sm">{{ $message }}</p>
-        @enderror
-
-        <div class="relative-input-group">
-            <input type="password" name="password" id="password" class="input-underline font-body-md text-body-md text-on-surface h-10" placeholder=" " required />
-            <label for="password" class="font-body-md">Mot de passe</label>
+        <div>
+            <label for="login" class="field-label">Email ou numéro de téléphone</label>
+            <input type="text" name="login" id="login" value="{{ old('login') }}" autocomplete="username" placeholder="vous@exemple.com ou 077 12 34 56" required autofocus class="field" @error('login') aria-invalid="true" @enderror />
+            @error('login') <p class="field-error">{{ $message }}</p> @enderror
         </div>
 
-        <label class="flex items-center gap-2">
-            <input type="checkbox" name="remember" class="w-4 h-4 rounded-sm border-outline-variant text-primary focus:ring-primary" />
-            <span class="font-body-md text-body-md text-on-surface-variant">Se souvenir de moi</span>
+        <div>
+            <label for="password" class="field-label">Mot de passe</label>
+            <input type="password" name="password" id="password" autocomplete="current-password" required class="field" />
+        </div>
+
+        <label class="flex items-center gap-2 text-[14px] text-on-surface-variant">
+            <input type="checkbox" name="remember" class="w-4 h-4 rounded accent-[var(--color-primary)]" />
+            Rester connecté
         </label>
 
-        <button type="submit" class="w-full bg-primary text-on-primary h-12 rounded-full font-label-lg text-label-lg uppercase tracking-widest hover:bg-primary-container transition-colors">
-            Se connecter
-        </button>
+        <button type="submit" class="btn btn-primary w-full h-12">Se connecter</button>
     </form>
 
-    <p class="mt-8 text-center font-body-md text-body-md text-on-surface-variant">
+    <p class="mt-6 text-center text-[14px] text-on-surface-variant">
         Pas encore de compte ?
-        <a href="{{ route('register') }}" class="text-primary font-bold hover:underline">Créer un compte</a>
+        <a href="{{ route('register') }}" class="font-bold text-primary hover:underline">Créer un compte gratuit</a>
     </p>
 </x-layouts.guest>

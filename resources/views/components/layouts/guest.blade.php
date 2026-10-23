@@ -5,35 +5,34 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ $title ?? 'AkibaShop' }}</title>
-    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any" />
-    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}" />
+    <meta name="theme-color" content="#007a2f" />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml" />
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="32x32" />
     <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Manrope:wght@200..800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&display=swap" />
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col">
-    <header class="w-full flex justify-center items-center py-8">
-        <a href="{{ route('home') }}">
-            <img src="{{ asset('logo/logo1.PNG') }}" alt="AkibaShop" class="h-12 w-auto object-contain rounded" />
-        </a>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col">
+    <div class="flag-band"></div>
+    <header class="w-full flex justify-center items-center py-6 md:py-8">
+        <a href="{{ route('home') }}" aria-label="AkibaShop — accueil"><x-logo /></a>
     </header>
 
-    <main class="flex-grow flex items-start justify-center px-margin-mobile pb-16">
-        <div class="w-full max-w-md bg-surface-container-lowest rounded-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] p-8 md:p-10">
+    <main class="flex-grow flex items-start justify-center px-margin-mobile pb-12">
+        <div class="w-full max-w-md card p-6 md:p-8">
             {{ $slot }}
         </div>
     </main>
 
-    <footer class="py-6 flex flex-col items-center gap-2 text-center">
-        <p class="font-label-sm text-[11px] text-outline uppercase tracking-widest">© {{ date('Y') }} AkibaShop Libreville. Tous droits réservés.</p>
-        <p class="font-label-sm text-[11px] text-outline">
-            Développé par
-            <a href="https://dibundiweb.netlify.app/" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline font-semibold">DibundiWeb</a>
-        </p>
+    <footer class="py-6 text-center text-[12px] text-on-surface-variant">
+        © {{ date('Y') }} AkibaShop ·
+        <a href="{{ route('pages.terms') }}" class="hover:text-primary">Conditions d’utilisation</a> ·
+        <a href="{{ route('pages.privacy') }}" class="hover:text-primary">Confidentialité</a>
     </footer>
 </body>
 </html>

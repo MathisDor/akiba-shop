@@ -1,57 +1,69 @@
 <x-layouts.guest title="Créer un compte — AkibaShop">
-    <h1 class="font-headline-lg text-headline-lg text-primary mb-2 text-center">Créer un compte</h1>
-    <p class="font-body-md text-body-md text-on-surface-variant mb-8 text-center">Rejoignez AkibaShop pour commander et suivre vos livraisons.</p>
+    <h1 class="text-headline-lg text-on-surface text-center">Créer un compte</h1>
+    <p class="text-body-md text-on-surface-variant mt-1 mb-6 text-center">Gratuit. Publiez vos annonces et gardez vos favoris.</p>
 
-    <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
+    <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-4">
         @csrf
 
-        <div class="relative-input-group">
-            <input type="text" name="name" id="name" class="input-underline font-body-md text-body-md text-on-surface h-10" placeholder=" " value="{{ old('name') }}" required autofocus />
-            <label for="name" class="font-body-md">Nom complet</label>
+        <div>
+            <label for="name" class="field-label">Nom ou nom de la boutique</label>
+            <input type="text" name="name" id="name" value="{{ old('name') }}" autocomplete="name" required autofocus class="field" @error('name') aria-invalid="true" @enderror />
+            @error('name') <p class="field-error">{{ $message }}</p> @enderror
         </div>
-        @error('name')
-            <p class="-mt-4 text-error font-label-sm text-label-sm">{{ $message }}</p>
-        @enderror
 
-        <div class="relative-input-group">
-            <input type="email" name="email" id="email" class="input-underline font-body-md text-body-md text-on-surface h-10" placeholder=" " value="{{ old('email') }}" required />
-            <label for="email" class="font-body-md">Adresse email</label>
-        </div>
-        @error('email')
-            <p class="-mt-4 text-error font-label-sm text-label-sm">{{ $message }}</p>
-        @enderror
-
-        <div class="relative-input-group flex items-end">
-            <div class="flex items-center border-b border-outline-variant pb-2 mr-4 text-on-surface-variant font-body-md h-10">
-                <span class="mr-1 mt-1">🇬🇦</span>
-                <span>+241</span>
+        <div>
+            <label for="phone" class="field-label">Téléphone</label>
+            <div class="flex items-stretch rounded-xl border border-outline-variant bg-surface-container-lowest focus-within:border-primary focus-within:ring-3 focus-within:ring-primary/15 @error('phone') !border-error @enderror">
+                <span class="flex items-center gap-1.5 px-3 border-r border-outline-variant text-[14px] font-semibold text-on-surface-variant">🇬🇦 +241</span>
+                <input type="tel" name="phone" id="phone" value="{{ old('phone') }}" inputmode="tel" autocomplete="tel-national" placeholder="077 12 34 56" required class="flex-1 min-w-0 bg-transparent border-0 px-3 py-2.5 text-[15px] focus:outline-none focus:ring-0" />
             </div>
-            <div class="flex-grow relative">
-                <input type="tel" name="phone" id="phone" class="input-underline font-body-md text-body-md text-on-surface h-10" placeholder=" " value="{{ old('phone') }}" />
-                <label for="phone" class="font-body-md">Numéro de téléphone</label>
+            @error('phone') <p class="field-error">{{ $message }}</p> @enderror
+        </div>
+
+        <div>
+            <label for="email" class="field-label">Email</label>
+            <input type="email" name="email" id="email" value="{{ old('email') }}" autocomplete="email" required class="field" @error('email') aria-invalid="true" @enderror />
+            @error('email') <p class="field-error">{{ $message }}</p> @enderror
+        </div>
+
+        <div>
+            <label for="city_id" class="field-label">Ville <span class="font-normal text-on-surface-variant">(facultatif)</span></label>
+            <select id="city_id" name="city_id" class="field">
+                <option value="">—</option>
+                @foreach($cities as $city)
+                    <option value="{{ $city->id }}" @selected((int) old('city_id') === $city->id)>{{ $city->name }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+                <label for="password" class="field-label">Mot de passe</label>
+                <input type="password" name="password" id="password" autocomplete="new-password" required class="field" @error('password') aria-invalid="true" @enderror />
+            </div>
+            <div>
+                <label for="password_confirmation" class="field-label">Confirmation</label>
+                <input type="password" name="password_confirmation" id="password_confirmation" autocomplete="new-password" required class="field" />
             </div>
         </div>
+        @error('password') <p class="field-error -mt-2">{{ $message }}</p> @enderror
 
-        <div class="relative-input-group">
-            <input type="password" name="password" id="password" class="input-underline font-body-md text-body-md text-on-surface h-10" placeholder=" " required />
-            <label for="password" class="font-body-md">Mot de passe</label>
-        </div>
-        @error('password')
-            <p class="-mt-4 text-error font-label-sm text-label-sm">{{ $message }}</p>
-        @enderror
+        <label class="flex items-center gap-2 text-[14px] text-on-surface">
+            <input type="checkbox" name="is_pro" value="1" @checked(old('is_pro')) class="w-4 h-4 rounded accent-[var(--color-primary)]" />
+            Je suis un professionnel (boutique, garage, agence…)
+        </label>
 
-        <div class="relative-input-group">
-            <input type="password" name="password_confirmation" id="password_confirmation" class="input-underline font-body-md text-body-md text-on-surface h-10" placeholder=" " required />
-            <label for="password_confirmation" class="font-body-md">Confirmer le mot de passe</label>
-        </div>
+        <label class="flex items-start gap-2 text-[14px] text-on-surface">
+            <input type="checkbox" name="terms" value="1" @checked(old('terms')) required class="mt-0.5 w-4 h-4 rounded accent-[var(--color-primary)]" />
+            <span>J’accepte les <a href="{{ route('pages.terms') }}" target="_blank" class="font-semibold text-secondary underline">conditions d’utilisation</a> et la <a href="{{ route('pages.privacy') }}" target="_blank" class="font-semibold text-secondary underline">politique de confidentialité</a>.</span>
+        </label>
+        @error('terms') <p class="field-error -mt-2">{{ $message }}</p> @enderror
 
-        <button type="submit" class="w-full bg-primary text-on-primary h-12 rounded-full font-label-lg text-label-lg uppercase tracking-widest hover:bg-primary-container transition-colors">
-            Créer mon compte
-        </button>
+        <button type="submit" class="btn btn-primary w-full h-12">Créer mon compte</button>
     </form>
 
-    <p class="mt-8 text-center font-body-md text-body-md text-on-surface-variant">
-        Déjà client ?
-        <a href="{{ route('login') }}" class="text-primary font-bold hover:underline">Se connecter</a>
+    <p class="mt-6 text-center text-[14px] text-on-surface-variant">
+        Déjà inscrit ?
+        <a href="{{ route('login') }}" class="font-bold text-primary hover:underline">Se connecter</a>
     </p>
 </x-layouts.guest>

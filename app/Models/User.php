@@ -16,7 +16,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Activitylog\Traits\CausesActivity;
 
-#[Fillable(['name', 'email', 'password', 'phone', 'role_id'])]
+#[Fillable(['name', 'email', 'password', 'phone', 'role_id', 'city_id', 'is_pro'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -34,6 +34,8 @@ class User extends Authenticatable
     protected $attributes = [
         'is_super_admin' => false,
         'is_active' => true,
+        'is_pro' => false,
+        'is_verified' => false,
     ];
 
     protected function casts(): array
@@ -44,6 +46,8 @@ class User extends Authenticatable
             'is_super_admin' => 'boolean',
             'is_active' => 'boolean',
             'last_login_at' => 'datetime',
+            'is_pro' => 'boolean',
+            'is_verified' => 'boolean',
         ];
     }
 
@@ -76,6 +80,28 @@ class User extends Authenticatable
         return $this->relationLoaded('permissions')
             ? $this->permissions->contains('slug', $slug)
             : $this->permissions()->where('slug', $slug)->exists();
+    }
+
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
+    }
+
+    public function listings(): HasMany
+    {
+        return $this->hasMany(Listing::class);
+    }
+
+    public function favoriteListings(): BelongsToMany
+    {
+        return $this->belongsToMany(Listing::class, 'listing_favorites')->withTimestamps();
+    }
+
+    public function hasFavorited(Listing $listing): bool
+    {
+        return $listing->relationLoaded('favoritedBy')
+            ? $listing->favoritedBy->contains($this->id)
+            : $this->favoriteListings()->whereKey($listing->id)->exists();
     }
 
     public function addresses(): HasMany

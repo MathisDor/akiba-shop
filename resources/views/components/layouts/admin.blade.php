@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ $title ? $title.' — Admin AkibaShop' : 'Dashboard — Admin AkibaShop' }}</title>
     <meta name="robots" content="noindex" />
-    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any" />
-    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}" />
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml" />
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="32x32" />
     <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Manrope:wght@200..800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
@@ -25,8 +25,7 @@
             :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
         >
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 mb-10">
-                <img src="{{ asset('logo/logo1.PNG') }}" alt="AkibaShop" class="h-9 w-9 rounded object-cover" />
-                <span class="font-headline-md text-headline-md text-inverse-on-surface">AkibaShop</span>
+                <x-logo inverse />
             </a>
 
             <nav class="flex-1 flex flex-col gap-1 overflow-y-auto">
@@ -34,15 +33,10 @@
                     $currentAdmin = auth('admin')->user();
                     $links = [
                         ['route' => 'admin.dashboard', 'key' => 'dashboard', 'icon' => 'space_dashboard', 'label' => 'Tableau de bord', 'permission' => null],
-                        ['route' => 'admin.products.index', 'key' => 'products', 'icon' => 'apparel', 'label' => 'Produits', 'permission' => 'products.manage'],
+                        ['route' => 'admin.listings.index', 'key' => 'listings', 'icon' => 'listings', 'label' => 'Annonces', 'permission' => 'listings.moderate', 'badge' => \App\Models\Listing::where('status', 'en_attente')->count()],
+                        ['route' => 'admin.reports.index', 'key' => 'reports', 'icon' => 'report', 'label' => 'Signalements', 'permission' => 'reports.manage', 'badge' => \App\Models\ListingReport::where('status', 'ouvert')->count()],
                         ['route' => 'admin.categories.index', 'key' => 'categories', 'icon' => 'category', 'label' => 'Catégories', 'permission' => 'categories.manage'],
-                        ['route' => 'admin.collections.index', 'key' => 'collections', 'icon' => 'style', 'label' => 'Collections', 'permission' => 'collections.manage'],
-                        ['route' => 'admin.orders.index', 'key' => 'orders', 'icon' => 'shopping_bag', 'label' => 'Commandes', 'permission' => 'orders.manage'],
-                        ['route' => 'admin.customers.index', 'key' => 'customers', 'icon' => 'group', 'label' => 'Clients', 'permission' => 'customers.view'],
-                        ['route' => 'admin.promotions.index', 'key' => 'promotions', 'icon' => 'sell', 'label' => 'Promotions', 'permission' => 'promotions.manage'],
-                        ['route' => 'admin.coupons.index', 'key' => 'coupons', 'icon' => 'confirmation_number', 'label' => 'Coupons', 'permission' => 'coupons.manage'],
-                        ['route' => 'admin.delivery-zones.index', 'key' => 'delivery', 'icon' => 'local_shipping', 'label' => 'Livraison', 'permission' => 'delivery.manage'],
-                        ['route' => 'admin.reviews.index', 'key' => 'reviews', 'icon' => 'star', 'label' => 'Avis clients', 'permission' => 'reviews.moderate'],
+                        ['route' => 'admin.users.index', 'key' => 'users', 'icon' => 'group', 'label' => 'Utilisateurs', 'permission' => 'users.manage'],
                     ];
                 @endphp
 
@@ -53,7 +47,10 @@
                         class="flex items-center gap-3 px-4 py-3 rounded-lg font-body-md text-body-md transition-colors {{ $active === $link['key'] ? 'bg-primary text-on-primary' : 'text-inverse-on-surface/70 hover:bg-inverse-on-surface/10 hover:text-inverse-on-surface' }}"
                     >
                         <x-icon :name="$link['icon']" class="text-[20px]" />
-                        {{ $link['label'] }}
+                        <span class="flex-1">{{ $link['label'] }}</span>
+                        @if(($link['badge'] ?? 0) > 0)
+                            <span class="min-w-6 h-6 px-1.5 rounded-full bg-tertiary text-on-tertiary text-[12px] font-bold flex items-center justify-center">{{ $link['badge'] }}</span>
+                        @endif
                     </a>
                 @endforeach
 
@@ -74,8 +71,8 @@
 
             <div class="mt-auto pt-4 border-t border-inverse-on-surface/10 flex flex-col gap-2">
                 <a href="{{ route('home') }}" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-lg font-body-md text-body-md text-inverse-on-surface/70 hover:bg-inverse-on-surface/10 hover:text-inverse-on-surface transition-colors">
-                    <x-icon name="storefront" class="text-[20px]" />
-                    Voir la boutique
+                    <x-icon name="home" class="text-[20px]" />
+                    Voir le site
                 </a>
                 <form method="POST" action="{{ route('admin.logout') }}">
                     @csrf

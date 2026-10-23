@@ -1,29 +1,35 @@
-@php($active = $active ?? null)
+@php
+    $active = $active ?? null;
+    $items = [
+        ['route' => route('home'), 'key' => 'home', 'icon' => 'home', 'label' => 'Accueil'],
+        ['route' => route('listings.index'), 'key' => 'listings', 'icon' => 'search', 'label' => 'Annonces'],
+        null, // "Publier" slot
+        ['route' => route('account.favorites'), 'key' => 'favorites', 'icon' => 'favorite', 'label' => 'Favoris'],
+        ['route' => auth()->check() ? route('account.profile') : route('login'), 'key' => 'account', 'icon' => 'person', 'label' => 'Compte'],
+    ];
+@endphp
 
 <nav
-    class="fixed left-3 right-3 z-50 mx-auto max-w-[420px] md:hidden rounded-full bg-surface/75 backdrop-blur-xl border border-outline-variant/40 shadow-[0_10px_30px_rgba(0,0,0,0.15)]"
-    style="bottom: max(0.75rem, env(safe-area-inset-bottom));"
+    aria-label="Navigation principale"
+    class="fixed inset-x-0 bottom-0 z-40 md:hidden bg-surface-container-lowest border-t border-surface-variant"
+    style="padding-bottom: env(safe-area-inset-bottom);"
 >
-    <div class="flex items-center justify-around gap-0.5 px-1.5 py-2">
-        <a href="{{ route('home') }}" class="flex flex-1 flex-col items-center justify-center gap-0.5 py-1.5 rounded-full transition-all duration-200 {{ $active === 'home' ? 'text-primary font-bold' : 'text-on-surface-variant opacity-70 hover:opacity-100' }}">
-            <x-icon name="home" class="text-[22px]" :filled="$active === 'home'" />
-            <span class="font-label-sm text-[10px] leading-none">Accueil</span>
-        </a>
-        <a href="{{ route('categories.index') }}" class="flex flex-1 flex-col items-center justify-center gap-0.5 py-1.5 rounded-full transition-all duration-200 {{ $active === 'catalog' ? 'text-primary font-bold' : 'text-on-surface-variant opacity-70 hover:opacity-100' }}">
-            <x-icon name="grid_view" class="text-[22px]" :filled="$active === 'catalog'" />
-            <span class="font-label-sm text-[10px] leading-none">Catégories</span>
-        </a>
-        <a href="{{ route('catalog.index', ['sort' => 'nouveautes']) }}" class="flex flex-1 flex-col items-center justify-center gap-0.5 py-1.5 rounded-full transition-all duration-200 {{ $active === 'nouveautes' ? 'text-primary font-bold' : 'text-on-surface-variant opacity-70 hover:opacity-100' }}">
-            <x-icon name="auto_awesome" class="text-[22px]" :filled="$active === 'nouveautes'" />
-            <span class="font-label-sm text-[10px] leading-none">Nouveautés</span>
-        </a>
-        <a href="{{ route('account.favorites') }}" class="flex flex-1 flex-col items-center justify-center gap-0.5 py-1.5 rounded-full transition-all duration-200 {{ $active === 'favorites' ? 'text-primary font-bold' : 'text-on-surface-variant opacity-70 hover:opacity-100' }}">
-            <x-icon name="favorite" class="text-[22px]" :filled="$active === 'favorites'" />
-            <span class="font-label-sm text-[10px] leading-none">Favoris</span>
-        </a>
-        <a href="{{ auth()->check() ? route('account.profile') : route('login') }}" class="flex flex-1 flex-col items-center justify-center gap-0.5 py-1.5 rounded-full transition-all duration-200 {{ $active === 'account' ? 'text-primary font-bold' : 'text-on-surface-variant opacity-70 hover:opacity-100' }}">
-            <x-icon name="person" class="text-[22px]" :filled="$active === 'account'" />
-            <span class="font-label-sm text-[10px] leading-none">Compte</span>
-        </a>
+    <div class="grid grid-cols-5 h-16">
+        @foreach($items as $item)
+            @if($item === null)
+                <a href="{{ route('listings.create') }}" class="flex flex-col items-center justify-center gap-0.5 -mt-5" aria-label="Déposer une annonce">
+                    <span class="w-14 h-14 rounded-2xl bg-tertiary text-on-tertiary flex items-center justify-center shadow-[0_6px_16px_rgba(0,0,0,0.18)] ring-4 ring-surface-container-lowest">
+                        <x-icon name="add" class="text-[28px]" :stroke-width="2.5" />
+                    </span>
+                    <span class="text-[11px] font-bold leading-none text-on-surface">Publier</span>
+                </a>
+            @else
+                @php($isActive = $active === $item['key'])
+                <a href="{{ $item['route'] }}" class="flex flex-col items-center justify-center gap-1 {{ $isActive ? 'text-primary' : 'text-on-surface-variant' }}" @if($isActive) aria-current="page" @endif>
+                    <x-icon :name="$item['icon']" class="text-[22px]" :filled="$isActive && $item['icon'] !== 'search'" />
+                    <span class="text-[11px] leading-none {{ $isActive ? 'font-bold' : 'font-medium' }}">{{ $item['label'] }}</span>
+                </a>
+            @endif
+        @endforeach
     </div>
 </nav>

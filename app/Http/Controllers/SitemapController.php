@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Models\Product;
+use App\Models\Listing;
+use App\Models\ListingCategory;
 use Illuminate\Http\Response;
 
 class SitemapController extends Controller
@@ -12,22 +12,25 @@ class SitemapController extends Controller
     {
         $urls = collect([
             ['loc' => route('home'), 'priority' => '1.0'],
-            ['loc' => route('catalog.index'), 'priority' => '0.9'],
-            ['loc' => route('catalog.gender', 'femme'), 'priority' => '0.8'],
-            ['loc' => route('catalog.gender', 'homme'), 'priority' => '0.8'],
+            ['loc' => route('listings.index'), 'priority' => '0.9'],
+            ['loc' => route('categories.index'), 'priority' => '0.8'],
         ]);
 
-        Category::where('is_active', true)->get()->each(function (Category $category) use ($urls) {
-            $urls->push(['loc' => route('catalog.category', [$category->gender, $category->slug]), 'priority' => '0.7']);
+        ListingCategory::active()->get()->each(function (ListingCategory $category) use ($urls) {
+            $urls->push(['loc' => route('categories.show', $category), 'priority' => $category->parent_id ? '0.6' : '0.8']);
         });
 
-        Product::where('is_active', true)->get()->each(function (Product $product) use ($urls) {
+        Listing::visible()->latest('published_at')->take(5000)->get(['slug', 'updated_at'])->each(function (Listing $listing) use ($urls) {
             $urls->push([
-                'loc' => route('products.show', $product),
-                'priority' => '0.6',
-                'lastmod' => $product->updated_at->toAtomString(),
+                'loc' => route('listings.show', $listing),
+                'priority' => '0.7',
+                'lastmod' => $listing->updated_at->toAtomString(),
             ]);
         });
+
+        foreach (['pages.about', 'pages.contact', 'pages.safety', 'pages.terms', 'pages.privacy'] as $page) {
+            $urls->push(['loc' => route($page), 'priority' => '0.3']);
+        }
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
         $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";

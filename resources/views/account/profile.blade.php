@@ -1,103 +1,80 @@
-@php($user = auth()->user())
+@php($phone = old('phone', $user->phone ? \App\Support\GabonPhone::format($user->phone) : ''))
 
-<x-layouts.app active="account" title="Mon Compte — AkibaShop">
-    <div class="px-margin-mobile md:px-margin-desktop pt-8 pb-16 max-w-container-max mx-auto w-full flex flex-col gap-16" x-data="{ editing: false }">
-
-        @session('status')
-            <div class="rounded-lg bg-primary-container/10 text-primary px-4 py-3 font-body-md text-body-md text-center">
-                {{ $value }}
+<x-layouts.app active="account" title="Mon compte — AkibaShop">
+    <div class="max-w-4xl mx-auto px-margin-mobile md:px-margin-desktop pt-6">
+        <div class="flex items-center gap-4 mb-5">
+            <span class="w-14 h-14 rounded-full bg-primary-fixed text-on-primary-fixed-variant flex items-center justify-center text-[22px] font-extrabold">{{ mb_strtoupper(mb_substr($user->name, 0, 1)) }}</span>
+            <div class="min-w-0">
+                <h1 class="text-headline-md md:text-headline-lg text-on-surface truncate">{{ $user->name }}</h1>
+                <a href="{{ route('sellers.show', $user) }}" class="text-[13px] font-semibold text-secondary hover:underline">Voir mon profil public</a>
             </div>
-        @endsession
+        </div>
 
-        <section class="flex flex-col items-center justify-center text-center gap-6">
-            <div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-primary text-on-primary flex items-center justify-center text-4xl font-headline-lg font-headline-lg shadow-[0_8px_30px_rgba(0,0,0,0.06)] ring-4 ring-surface-container-lowest">
-                {{ strtoupper(substr($user->name, 0, 1)) }}
-            </div>
+        @include('account.partials.nav', ['current' => 'profile'])
 
-            <div class="flex flex-col gap-2 items-center" x-show="!editing">
-                <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">{{ $user->name }}</h1>
-                <p class="font-body-md text-body-md text-on-surface-variant">{{ $user->email }}</p>
-                @if($user->phone)
-                    <p class="font-body-md text-body-md text-on-surface-variant">{{ $user->phone }}</p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            @foreach([
+                ['En ligne', $stats['online'], route('account.listings')],
+                ['En validation', $stats['pending'], route('account.listings')],
+                ['Vues totales', $stats['views'], null],
+                ['Favoris', $stats['favorites'], route('account.favorites')],
+            ] as [$label, $value, $link])
+                @if($link)
+                    <a href="{{ $link }}" class="card p-4 hover:border-primary transition-colors">
+                        <p class="text-[24px] font-extrabold text-on-surface">{{ number_format($value, 0, ',', ' ') }}</p>
+                        <p class="text-[13px] text-on-surface-variant">{{ $label }}</p>
+                    </a>
+                @else
+                    <div class="card p-4">
+                        <p class="text-[24px] font-extrabold text-on-surface">{{ number_format($value, 0, ',', ' ') }}</p>
+                        <p class="text-[13px] text-on-surface-variant">{{ $label }}</p>
+                    </div>
                 @endif
-            </div>
+            @endforeach
+        </div>
 
-            <button @click="editing = !editing" type="button" x-show="!editing" class="mt-2 px-8 py-3 rounded-full bg-primary text-on-primary font-label-sm text-label-sm uppercase tracking-widest hover:bg-primary-container hover:text-on-primary-container transition-colors duration-300 min-h-[48px] shadow-sm">
-                Éditer le profil
-            </button>
-
-            <form method="POST" action="{{ route('account.profile.update') }}" x-show="editing" x-cloak class="w-full max-w-md flex flex-col gap-4 text-left mt-2">
+        <section class="card p-5 md:p-6">
+            <h2 class="text-[17px] font-extrabold text-on-surface mb-4">Mes informations</h2>
+            <form method="POST" action="{{ route('account.profile.update') }}" class="grid sm:grid-cols-2 gap-4">
                 @csrf
                 @method('PUT')
                 <div>
-                    <label class="font-label-sm text-label-sm text-on-surface-variant">Nom complet</label>
-                    <input type="text" name="name" value="{{ old('name', $user->name) }}" class="w-full bg-surface border-b border-outline-variant py-2 focus:border-primary focus:ring-0 font-body-md text-body-md" />
+                    <label for="name" class="field-label">Nom affiché</label>
+                    <input id="name" name="name" type="text" value="{{ old('name', $user->name) }}" required class="field" />
+                    @error('name') <p class="field-error">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="font-label-sm text-label-sm text-on-surface-variant">Email</label>
-                    <input type="email" name="email" value="{{ old('email', $user->email) }}" class="w-full bg-surface border-b border-outline-variant py-2 focus:border-primary focus:ring-0 font-body-md text-body-md" />
+                    <label for="email" class="field-label">Email</label>
+                    <input id="email" name="email" type="email" value="{{ old('email', $user->email) }}" required class="field" />
+                    @error('email') <p class="field-error">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="font-label-sm text-label-sm text-on-surface-variant">Téléphone</label>
-                    <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" class="w-full bg-surface border-b border-outline-variant py-2 focus:border-primary focus:ring-0 font-body-md text-body-md" />
+                    <label for="phone" class="field-label">Téléphone (+241)</label>
+                    <input id="phone" name="phone" type="tel" inputmode="tel" value="{{ $phone }}" placeholder="077 12 34 56" required class="field" />
+                    @error('phone') <p class="field-error">{{ $message }}</p> @enderror
                 </div>
-                <div class="flex gap-3 mt-2 justify-center">
-                    <button type="submit" class="px-8 py-3 rounded-full bg-primary text-on-primary font-label-sm text-label-sm uppercase tracking-widest">Enregistrer</button>
-                    <button type="button" @click="editing = false" class="px-8 py-3 rounded-full border border-outline text-on-surface-variant font-label-sm text-label-sm uppercase tracking-widest">Annuler</button>
+                <div>
+                    <label for="city_id" class="field-label">Ville</label>
+                    <select id="city_id" name="city_id" class="field">
+                        <option value="">—</option>
+                        @foreach($cities as $city)
+                            <option value="{{ $city->id }}" @selected((int) old('city_id', $user->city_id) === $city->id)>{{ $city->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <label class="sm:col-span-2 flex items-center gap-3 text-[14px] text-on-surface">
+                    <input type="checkbox" name="is_pro" value="1" @checked(old('is_pro', $user->is_pro)) class="w-5 h-5 rounded accent-[var(--color-primary)]" />
+                    Je vends en tant que professionnel (boutique, garage, agence…)
+                </label>
+                <div class="sm:col-span-2 flex flex-wrap gap-3 justify-between items-center pt-2">
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
                 </div>
             </form>
         </section>
 
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-gutter max-w-4xl w-full mx-auto">
-            <a href="{{ route('account.orders') }}" class="flex items-center gap-6 p-6 md:p-8 bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 group">
-                <div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
-                    <x-icon name="local_shipping" />
-                </div>
-                <div class="flex-grow">
-                    <h3 class="font-headline-md text-headline-md text-on-surface mb-1">Mes Commandes</h3>
-                    <p class="font-body-md text-body-md text-on-surface-variant text-sm">Suivre et gérer vos achats</p>
-                </div>
-                <x-icon name="chevron_right" class="text-outline group-hover:text-primary transition-colors" />
-            </a>
-            <a href="{{ route('account.addresses') }}" class="flex items-center gap-6 p-6 md:p-8 bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 group">
-                <div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
-                    <x-icon name="location_on" />
-                </div>
-                <div class="flex-grow">
-                    <h3 class="font-headline-md text-headline-md text-on-surface mb-1">Mes Adresses</h3>
-                    <p class="font-body-md text-body-md text-on-surface-variant text-sm">Carnet d'adresses de livraison</p>
-                </div>
-                <x-icon name="chevron_right" class="text-outline group-hover:text-primary transition-colors" />
-            </a>
-            <a href="{{ route('account.favorites') }}" class="flex items-center gap-6 p-6 md:p-8 bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 group">
-                <div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
-                    <x-icon name="favorite_border" />
-                </div>
-                <div class="flex-grow">
-                    <h3 class="font-headline-md text-headline-md text-on-surface mb-1">Favoris</h3>
-                    <p class="font-body-md text-body-md text-on-surface-variant text-sm">Vos articles sauvegardés</p>
-                </div>
-                <x-icon name="chevron_right" class="text-outline group-hover:text-primary transition-colors" />
-            </a>
-            <div class="flex items-center gap-6 p-6 md:p-8 bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] opacity-60 cursor-not-allowed">
-                <div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
-                    <x-icon name="settings" />
-                </div>
-                <div class="flex-grow">
-                    <h3 class="font-headline-md text-headline-md text-on-surface mb-1">Paramètres</h3>
-                    <p class="font-body-md text-body-md text-on-surface-variant text-sm">Bientôt disponible</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="flex justify-center max-w-4xl w-full mx-auto -mt-8">
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="flex items-center gap-3 px-8 py-4 rounded-xl text-error hover:bg-error-container/50 transition-colors duration-300 w-full md:w-auto justify-center min-h-[48px]">
-                    <x-icon name="logout" />
-                    <span class="font-label-sm text-label-sm uppercase tracking-widest">Se déconnecter</span>
-                </button>
-            </form>
-        </section>
+        <form method="POST" action="{{ route('logout') }}" class="mt-6">
+            @csrf
+            <button type="submit" class="btn btn-outline text-error"><x-icon name="logout" class="text-[18px]" /> Se déconnecter</button>
+        </form>
     </div>
 </x-layouts.app>

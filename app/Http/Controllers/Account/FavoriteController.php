@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
+use App\Models\Listing;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -12,27 +14,21 @@ class FavoriteController extends Controller
 {
     public function index(): View
     {
-        $products = Auth::guard('web')->user()
-            ->favoriteProducts()
-            ->with(['images', 'variants', 'colors', 'promotions', 'favoritedBy'])
+        $listings = Auth::guard('web')->user()
+            ->favoriteListings()
+            ->with(['images', 'city', 'district', 'user', 'favoritedBy'])
+            ->latest('listing_favorites.created_at')
             ->get();
 
-        $recommended = Product::recommended(
-            excludeIds: $products->pluck('id'),
-            categoryIds: $products->pluck('category_id'),
-        );
-
-        return view('account.favorites', compact('products', 'recommended'));
+        return view('account.favorites', compact('listings'));
     }
 
-    public function toggle(Product $product): RedirectResponse
+    public function toggle(Request $request, Listing $listing): RedirectResponse|JsonResponse
     {
-        $user = Auth::guard('web')->user();
+        $result = Auth::guard('web')->user()->favoriteListings()->toggle($listing->id);
 
-        if ($user->favoriteProducts()->where('product_id', $product->id)->exists()) {
-            $user->favoriteProducts()->detach($product->id);
-        } else {
-            $user->favoriteProducts()->attach($product->id);
+        if ($request->wantsJson()) {
+            return response()->json(['favorited' => $result['attached'] !== []]);
         }
 
         return back();

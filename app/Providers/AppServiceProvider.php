@@ -2,14 +2,18 @@
 
 namespace App\Providers;
 
+use App\Models\City;
+use App\Models\ListingCategory;
 use App\Services\CartService;
 use App\Services\Payments\EbillingPaymentGateway;
 use App\Services\Payments\ManualPaymentGateway;
 use App\Services\Payments\PaymentGatewayInterface;
 use Illuminate\Filesystem\LocalFilesystemAdapter;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use League\Flysystem\Filesystem as Flysystem;
 use League\Flysystem\Local\LocalFilesystemAdapter as LocalAdapter;
@@ -38,6 +42,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
+
+        // Relative dates ("il y a 2 heures") are shown to visitors in French.
+        Carbon::setLocale('fr');
+
+        View::composer(['layouts.partials.header', 'layouts.partials.footer'], function ($view) {
+            $view->with('navCategories', once(fn () => ListingCategory::active()->roots()->get()));
+            $view->with('navCities', once(fn () => City::orderBy('sort_order')->get()));
+        });
 
         if (! extension_loaded('fileinfo')) {
             $this->registerLocalDriverWithoutFileinfo();

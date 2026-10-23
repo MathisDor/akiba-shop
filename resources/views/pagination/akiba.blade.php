@@ -1,9 +1,9 @@
 @if ($paginator->hasPages())
     <nav class="flex items-center gap-2" role="navigation" aria-label="Pagination">
         @if ($paginator->onFirstPage())
-            <span class="px-4 py-2 rounded-full border border-outline-variant text-outline font-label-sm text-label-sm uppercase tracking-widest cursor-not-allowed">Précédent</span>
+            <span class="px-4 py-2 rounded-[10px] border border-outline-variant text-outline text-[14px] font-semibold cursor-not-allowed">Précédent</span>
         @else
-            <a href="{{ $paginator->previousPageUrl() }}" class="px-4 py-2 rounded-full border border-primary text-primary font-label-sm text-label-sm uppercase tracking-widest hover:bg-primary hover:text-on-primary transition-colors">Précédent</a>
+            <a href="{{ $paginator->previousPageUrl() }}" class="px-4 py-2 rounded-[10px] border border-outline-variant bg-surface-container-lowest text-on-surface text-[14px] font-semibold hover:border-primary hover:text-primary transition-colors">Précédent</a>
         @endif
 
         @foreach ($elements as $element)
@@ -14,18 +14,18 @@
             @if (is_array($element))
                 @foreach ($element as $page => $url)
                     @if ($page == $paginator->currentPage())
-                        <span class="w-10 h-10 flex items-center justify-center rounded-full bg-primary text-on-primary font-label-sm text-label-sm">{{ $page }}</span>
+                        <span class="w-10 h-10 flex items-center justify-center rounded-[10px] bg-primary text-on-primary text-[14px] font-bold">{{ $page }}</span>
                     @else
-                        <a href="{{ $url }}" class="w-10 h-10 flex items-center justify-center rounded-full border border-outline-variant text-on-surface font-label-sm text-label-sm hover:border-primary transition-colors">{{ $page }}</a>
+                        <a href="{{ $url }}" class="w-10 h-10 flex items-center justify-center rounded-[10px] border border-outline-variant bg-surface-container-lowest text-on-surface text-[14px] font-semibold hover:border-primary transition-colors">{{ $page }}</a>
                     @endif
                 @endforeach
             @endif
         @endforeach
 
         @if ($paginator->hasMorePages())
-            <a href="{{ $paginator->nextPageUrl() }}" class="px-4 py-2 rounded-full border border-primary text-primary font-label-sm text-label-sm uppercase tracking-widest hover:bg-primary hover:text-on-primary transition-colors">Suivant</a>
+            <a href="{{ $paginator->nextPageUrl() }}" class="px-4 py-2 rounded-[10px] border border-outline-variant bg-surface-container-lowest text-on-surface text-[14px] font-semibold hover:border-primary hover:text-primary transition-colors">Suivant</a>
         @else
-            <span class="px-4 py-2 rounded-full border border-outline-variant text-outline font-label-sm text-label-sm uppercase tracking-widest cursor-not-allowed">Suivant</span>
+            <span class="px-4 py-2 rounded-[10px] border border-outline-variant text-outline text-[14px] font-semibold cursor-not-allowed">Suivant</span>
         @endif
     </nav>
 @endif

@@ -11,14 +11,13 @@ class AdminPermissionsTest extends TestCase
 {
     use RefreshDatabase, SeedsShopData;
 
-    public function test_an_admin_with_only_the_products_permission_can_reach_products_but_not_orders(): void
+    public function test_an_admin_with_only_the_moderation_permission_can_reach_listings_but_not_users(): void
     {
         $admin = $this->makeAdmin();
-        $permission = Permission::create(['slug' => 'products.manage', 'name' => 'Produits', 'group' => 'Boutique']);
-        $admin->permissions()->attach($permission->id);
+        $admin->permissions()->attach(Permission::where('slug', 'listings.moderate')->value('id'));
 
-        $this->actingAs($admin, 'admin')->get('/admin/produits')->assertOk();
-        $this->actingAs($admin, 'admin')->get('/admin/commandes')->assertForbidden();
+        $this->actingAs($admin, 'admin')->get('/admin/annonces')->assertOk();
+        $this->actingAs($admin, 'admin')->get('/admin/utilisateurs')->assertForbidden();
     }
 
     public function test_a_regular_admin_cannot_reach_admin_management_but_a_super_admin_can(): void

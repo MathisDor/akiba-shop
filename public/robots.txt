@@ -1,9 +1,8 @@
 User-agent: *
 Disallow: /compte
-Disallow: /panier
-Disallow: /checkout
+Disallow: /publier
 Disallow: /admin
 Disallow: /connexion
 Disallow: /inscription
 
-Sitemap: /sitemap.xml
+Sitemap: https://www.akibashop.ga/sitemap.xml
