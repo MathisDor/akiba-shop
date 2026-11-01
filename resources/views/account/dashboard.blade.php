@@ -1,32 +1,9 @@
 <x-layouts.app active="dashboard" title="Tableau de bord — AkibaShop">
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-4 md:pt-6">
 
-        <div class="flex items-center justify-between gap-3">
-            <div class="min-w-0">
-                <p class="text-[13px] text-on-surface-variant">Bonjour,</p>
-                <h1 class="text-headline-md md:text-headline-lg text-on-surface truncate">{{ \Illuminate\Support\Str::before($user->name, ' ') ?: $user->name }} 👋</h1>
-            </div>
-            <a href="{{ route('listings.create') }}" class="btn btn-accent btn-sm shrink-0"><x-icon name="add" class="text-[18px]" /> Publier</a>
-        </div>
-
-        {{-- Activity --}}
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mt-4">
-            @foreach([
-                ['En ligne', $stats['online'], 'check_circle', route('account.listings'), false],
-                ['En validation', $stats['pending'], 'clock', route('account.listings'), false],
-                ['Messages non lus', $stats['unread'], 'chat', route('account.conversations.index'), $stats['unread'] > 0],
-                ['Favoris', $stats['favorites'], 'favorite', route('account.favorites'), false],
-            ] as [$label, $value, $icon, $link, $highlight])
-                <a href="{{ $link }}" class="card p-3 md:p-4 flex items-center gap-3 hover:border-primary transition-colors {{ $highlight ? '!bg-primary-fixed !border-primary-fixed-dim' : '' }}">
-                    <span class="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center {{ $highlight ? 'bg-primary text-on-primary' : 'bg-surface-container-low text-primary' }}">
-                        <x-icon :name="$icon" class="text-[20px]" />
-                    </span>
-                    <span class="min-w-0">
-                        <span class="block text-[20px] leading-6 font-extrabold text-on-surface">{{ number_format($value, 0, ',', ' ') }}</span>
-                        <span class="block text-[12px] leading-4 text-on-surface-variant truncate">{{ $label }}</span>
-                    </span>
-                </a>
-            @endforeach
+        <div class="min-w-0">
+            <p class="text-[13px] text-on-surface-variant">Bonjour,</p>
+            <h1 class="text-headline-md md:text-headline-lg text-on-surface truncate">{{ \Illuminate\Support\Str::before($user->name, ' ') ?: $user->name }} 👋</h1>
         </div>
 
         {{-- Search --}}
