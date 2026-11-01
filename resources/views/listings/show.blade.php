@@ -37,17 +37,6 @@
             </div>
         @endif
 
-        <nav aria-label="Fil d’Ariane" class="text-[13px] text-on-surface-variant mb-3">
-            <ol class="flex flex-wrap items-center gap-1">
-                <li><a href="{{ route('home') }}" class="hover:text-primary">Accueil</a></li>
-                @if($listing->category->parent)
-                    <li aria-hidden="true">›</li>
-                    <li><a href="{{ route('categories.show', $listing->category->parent) }}" class="hover:text-primary">{{ $listing->category->parent->name }}</a></li>
-                @endif
-                <li aria-hidden="true">›</li>
-                <li><a href="{{ route('categories.show', $listing->category) }}" class="hover:text-primary">{{ $listing->category->name }}</a></li>
-            </ol>
-        </nav>
 
         <div class="grid lg:grid-cols-[1fr_360px] gap-6 items-start">
             <div class="flex flex-col gap-4 min-w-0">

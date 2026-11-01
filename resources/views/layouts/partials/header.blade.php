@@ -1,10 +1,14 @@
-@php($active = $active ?? null)
+@php
+    $active = $active ?? null;
+    // Filters applied on the listings page, shown as a badge on the mobile filter button.
+    $appliedFilters = collect(['province', 'ville', 'prix_min', 'prix_max', 'etat'])->filter(fn ($key) => request()->filled($key))->count();
+@endphp
 
 <header class="sticky top-0 z-40 bg-surface-container-lowest/95 backdrop-blur border-b border-surface-variant">
     <div class="brand-band"></div>
 
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-        <div class="flex items-center gap-3 md:gap-6 h-[60px] md:h-[72px]">
+        <div class="{{ auth()->check() ? 'hidden md:flex' : 'flex' }} items-center gap-3 md:gap-6 h-[60px] md:h-[72px]">
             <a href="{{ auth()->check() ? route('listings.index') : route('home') }}" aria-label="AkibaShop — accueil" class="shrink-0">
                 <x-logo />
             </a>
@@ -61,18 +65,39 @@
             </div>
         </div>
 
-        {{-- Mobile search (the home page has its own in the hero) --}}
+        {{-- Mobile search (the home page has its own in the hero): logo for members on the left, filters on the right --}}
         @unless($active === 'home')
-        <form method="GET" action="{{ route('listings.index') }}" role="search" class="md:hidden pb-3">
-            <label for="header-q-mobile" class="sr-only">Que recherchez-vous ?</label>
-            <div class="flex items-center gap-2 h-11 px-3 rounded-xl bg-surface-container-low border border-transparent focus-within:border-primary focus-within:bg-surface-container-lowest transition-colors">
-                <x-icon name="search" class="text-[20px] text-on-surface-variant" />
-                <input id="header-q-mobile" type="search" name="q" value="{{ request('q') }}" placeholder="Rechercher sur AkibaShop" class="w-full min-w-0 bg-transparent border-0 p-0 text-[15px] focus:outline-none focus:ring-0 placeholder:text-outline" />
-                @if(request('province'))
-                    <input type="hidden" name="province" value="{{ request('province') }}" />
-                @endif
-            </div>
-        </form>
+        <div class="md:hidden flex items-center gap-2 {{ auth()->check() ? 'py-3' : 'pb-3' }}">
+            @auth
+                <a href="{{ route('listings.index') }}" aria-label="AkibaShop — annonces" class="shrink-0">
+                    <x-logo mark-only />
+                </a>
+            @endauth
+            <form method="GET" action="{{ route('listings.index') }}" role="search" class="flex-1 min-w-0">
+                <label for="header-q-mobile" class="sr-only">Que recherchez-vous ?</label>
+                <div class="flex items-center gap-2 h-11 pl-3 pr-1 rounded-xl bg-surface-container-low border border-transparent focus-within:border-primary focus-within:bg-surface-container-lowest transition-colors">
+                    <x-icon name="search" class="text-[20px] text-on-surface-variant" />
+                    <input id="header-q-mobile" type="search" name="q" value="{{ request('q') }}" placeholder="Rechercher sur AkibaShop" enterkeyhint="search" class="w-full min-w-0 bg-transparent border-0 p-0 text-[15px] focus:outline-none focus:ring-0 placeholder:text-outline" />
+                    @foreach(['province', 'ville', 'prix_min', 'prix_max', 'etat', 'tri'] as $kept)
+                        @if(request()->filled($kept))
+                            <input type="hidden" name="{{ $kept }}" value="{{ request($kept) }}" />
+                        @endif
+                    @endforeach
+                    {{-- Opens the filter sheet on listing pages, or goes to the listings with it open --}}
+                    <button
+                        type="button"
+                        onclick="document.querySelector('[data-filters]') ? window.dispatchEvent(new CustomEvent('open-filters')) : (window.location.href = @js(route('listings.index').'#filtres'))"
+                        class="relative shrink-0 w-9 h-9 flex items-center justify-center rounded-lg text-on-surface hover:bg-surface-container"
+                        aria-label="Filtres{{ $appliedFilters ? ' ('.$appliedFilters.' actifs)' : '' }}"
+                    >
+                        <x-icon name="filters" class="text-[20px]" />
+                        @if($appliedFilters)
+                            <span class="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-primary text-on-primary text-[10px] font-bold flex items-center justify-center">{{ $appliedFilters }}</span>
+                        @endif
+                    </button>
+                </div>
+            </form>
+        </div>
         @endunless
     </div>
 

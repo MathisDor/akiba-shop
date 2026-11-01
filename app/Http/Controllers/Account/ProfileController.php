@@ -23,6 +23,7 @@ class ProfileController extends Controller
             'pending' => $user->listings()->where('status', ListingStatus::EnAttente->value)->count(),
             'views' => (int) $user->listings()->sum('views'),
             'favorites' => $user->favoriteListings()->count(),
+            'unread' => $user->unreadMessagesCount(),
         ];
 
         return view('account.profile', [

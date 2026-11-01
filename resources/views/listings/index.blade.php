@@ -8,20 +8,8 @@
 @endphp
 
 <x-layouts.app :active="$active" :title="$pageTitle" :description="'Découvrez '.number_format($listings->total(), 0, ',', ' ').' annonces '.mb_strtolower($currentCategory?->name ?? 'de particuliers et de professionnels').$where.' sur AkibaShop. Contact direct par WhatsApp.'">
-    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-4 md:pt-6" x-data="{ filtersOpen: false }">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-4 md:pt-6" x-data="{ filtersOpen: window.location.hash === '#filtres' }" @open-filters.window="filtersOpen = true" data-filters>
 
-        {{-- Breadcrumb --}}
-        <nav aria-label="Fil d’Ariane" class="text-[13px] text-on-surface-variant mb-2">
-            <ol class="flex flex-wrap items-center gap-1">
-                <li><a href="{{ route('home') }}" class="hover:text-primary">Accueil</a></li>
-                <li aria-hidden="true">›</li>
-                @if($currentCategory?->parent)
-                    <li><a href="{{ route('categories.show', $currentCategory->parent) }}" class="hover:text-primary">{{ $currentCategory->parent->name }}</a></li>
-                    <li aria-hidden="true">›</li>
-                @endif
-                <li class="text-on-surface font-semibold" aria-current="page">{{ $currentCategory?->name ?? 'Annonces' }}</li>
-            </ol>
-        </nav>
 
         <div class="flex flex-wrap items-end justify-between gap-2 mb-4">
             <h1 class="text-headline-md md:text-headline-lg text-on-surface">{{ $heading }}<span class="text-on-surface-variant font-semibold">{{ $where }}</span></h1>
@@ -39,28 +27,6 @@
             </div>
         @endif
 
-        {{-- Mobile sticky toolbar --}}
-        <div class="md:hidden sticky top-[121px] z-30 -mx-margin-mobile px-margin-mobile py-2 bg-background/95 backdrop-blur flex gap-2 mb-3">
-            <button type="button" @click="filtersOpen = true" class="btn btn-outline btn-sm flex-1">
-                <x-icon name="filters" class="text-[18px]" /> Filtres
-                @if($activeFilterCount)
-                    <span class="ml-1 min-w-5 h-5 px-1.5 rounded-full bg-primary text-on-primary text-[11px] flex items-center justify-center">{{ $activeFilterCount }}</span>
-                @endif
-            </button>
-            <form method="GET" action="{{ url()->current() }}" class="flex-1">
-                @foreach(request()->except(['tri', 'page']) as $key => $value)
-                    @if(is_string($value))
-                        <input type="hidden" name="{{ $key }}" value="{{ $value }}" />
-                    @endif
-                @endforeach
-                <label for="sort-mobile" class="sr-only">Trier</label>
-                <select id="sort-mobile" name="tri" onchange="this.form.submit()" class="field !min-h-[38px] !py-1.5 !rounded-[10px] text-[14px] font-semibold">
-                    @foreach($sorts as $value => $label)
-                        <option value="{{ $value }}" @selected(request('tri', 'recent') === $value)>{{ $label }}</option>
-                    @endforeach
-                </select>
-            </form>
-        </div>
 
         <div class="grid md:grid-cols-[260px_1fr] gap-6 items-start">
             {{-- Filters: sidebar on desktop, bottom sheet on mobile --}}
@@ -137,7 +103,7 @@
                         </div>
                     </fieldset>
 
-                    <div class="hidden md:block">
+                    <div>
                         <label for="f-sort" class="field-label">Trier par</label>
                         <select id="f-sort" name="tri" class="field">
                             @foreach($sorts as $value => $label)

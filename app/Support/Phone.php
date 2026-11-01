@@ -48,7 +48,7 @@ class Phone
         return $match;
     }
 
-    /** "+33612345678" → "+33 6 12 34 56 78" */
+    /** "+33612345678" → "+33 6 12 34 56 78", "+241074112233" → "+241 074 11 22 33" */
     public static function format(string $e164): string
     {
         $country = self::countryOf($e164);
@@ -56,9 +56,11 @@ class Phone
             return $e164;
         }
 
-        $dial = config("countries.$country.1");
+        [, $dial, $keepsZero] = config("countries.$country");
         $rest = substr(ltrim($e164, '+'), strlen($dial));
-        $head = strlen($rest) % 2 === 1 ? substr($rest, 0, 1) : '';
+        // Where the leading 0 is part of the number, it's read together with the operator prefix.
+        $headLength = strlen($rest) % 2 === 1 ? ($keepsZero && strlen($rest) > 3 ? 3 : 1) : 0;
+        $head = substr($rest, 0, $headLength);
         $pairs = str_split(substr($rest, strlen($head)), 2);
 
         return trim('+'.$dial.' '.$head.' '.implode(' ', $pairs));

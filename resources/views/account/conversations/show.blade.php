@@ -2,7 +2,7 @@
 
 <x-layouts.app active="chat" :title="'Discussion avec '.($other?->name ?? 'un membre').' — AkibaShop'" hide-footer>
     <div
-        class="max-w-3xl mx-auto md:px-margin-desktop md:pt-6 flex flex-col h-[calc(100dvh-121px-4rem)] md:h-[calc(100dvh-121px-3rem)]"
+        class="max-w-3xl mx-auto md:px-margin-desktop md:pt-6 flex flex-col h-[calc(100dvh-71px-4rem)] md:h-[calc(100dvh-121px-3rem)]"
         x-data="chat({
             messages: @js($messages),
             pollUrl: @js(route('account.conversations.poll', $conversation)),

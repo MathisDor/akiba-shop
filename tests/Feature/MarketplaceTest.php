@@ -203,6 +203,7 @@ class MarketplaceTest extends TestCase
         $this->assertNull(Phone::normalize('12345', 'FR'));
         $this->assertSame('FR', Phone::countryOf('+33612345678'));
         $this->assertSame('+33 6 12 34 56 78', Phone::format('+33612345678'));
+        $this->assertSame('+241 074 11 22 33', Phone::format('+241074112233'));
         $this->assertSame('0612345678', Phone::national('+33612345678'));
         $this->assertSame('https://wa.me/33612345678', Phone::whatsappUrl('+33612345678'));
     }
