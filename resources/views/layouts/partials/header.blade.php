@@ -61,7 +61,8 @@
             </div>
         </div>
 
-        {{-- Mobile search --}}
+        {{-- Mobile search (the home page has its own in the hero) --}}
+        @unless($active === 'home')
         <form method="GET" action="{{ route('listings.index') }}" role="search" class="md:hidden pb-3">
             <label for="header-q-mobile" class="sr-only">Que recherchez-vous ?</label>
             <div class="flex items-center gap-2 h-11 px-3 rounded-xl bg-surface-container-low border border-transparent focus-within:border-primary focus-within:bg-surface-container-lowest transition-colors">
@@ -72,6 +73,7 @@
                 @endif
             </div>
         </form>
+        @endunless
     </div>
 
     {{-- Category strip (desktop) --}}
