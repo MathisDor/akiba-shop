@@ -224,6 +224,18 @@
                         <a href="{{ route('sellers.show', $seller) }}" class="text-[13px] font-semibold text-secondary hover:underline">{{ $seller->visible_listings_count }} annonce{{ $seller->visible_listings_count > 1 ? 's' : '' }} en ligne</a>
                     </div>
 
+                    @unless($isOwner)
+                        @auth
+                            <button type="button" onclick="window.dispatchEvent(new CustomEvent('open-message'))" class="hidden md:inline-flex btn btn-primary w-full h-12 text-[16px]">
+                                <x-icon name="chat" class="text-[20px]" /> Envoyer un message
+                            </button>
+                        @else
+                            <a href="{{ route('login') }}" class="hidden md:inline-flex btn btn-primary w-full h-12 text-[16px]">
+                                <x-icon name="chat" class="text-[20px]" /> Envoyer un message
+                            </a>
+                        @endauth
+                    @endunless
+
                     <div class="hidden md:flex flex-col gap-2" x-data="{ reveal: false }">
                         @if($listing->accepts_whatsapp)
                             <a href="{{ $listing->whatsappUrl() }}" target="_blank" rel="noopener" class="btn btn-whatsapp w-full h-12 text-[16px]">
@@ -270,15 +282,51 @@
         @endif
     </div>
 
-    {{-- Mobile contact bar, sits right above the bottom navigation --}}
+    {{-- Mobile contact bar, right above the members' bottom navigation (or the screen edge for visitors) --}}
     @unless($isOwner)
-        <div class="md:hidden fixed inset-x-0 z-30 bg-surface-container-lowest border-t border-surface-variant px-margin-mobile py-2 flex gap-2" style="bottom: calc(4rem + env(safe-area-inset-bottom));">
+        <div class="md:hidden fixed inset-x-0 z-30 bg-surface-container-lowest border-t border-surface-variant px-margin-mobile py-2 flex gap-2" style="bottom: {{ auth()->check() ? 'calc(4rem + env(safe-area-inset-bottom))' : 'env(safe-area-inset-bottom)' }};">
+            @auth
+                <button type="button" onclick="window.dispatchEvent(new CustomEvent('open-message'))" class="btn btn-outline !px-3" aria-label="Envoyer un message"><x-icon name="chat" class="text-[20px]" /></button>
+            @else
+                <a href="{{ route('login') }}" class="btn btn-outline !px-3" aria-label="Envoyer un message"><x-icon name="chat" class="text-[20px]" /></a>
+            @endauth
             <a href="{{ $listing->telUrl() }}" class="btn btn-outline flex-1"><x-icon name="phone" class="text-[18px]" /> Appeler</a>
             @if($listing->accepts_whatsapp)
                 <a href="{{ $listing->whatsappUrl() }}" target="_blank" rel="noopener" class="btn btn-whatsapp flex-[1.4]"><x-icon name="whatsapp" class="text-[18px]" /> WhatsApp</a>
             @endif
         </div>
         <div class="md:hidden h-16" aria-hidden="true"></div>
+
+        @auth
+            {{-- First message to the seller; the conversation then continues in Chat --}}
+            <div
+                x-data="{ open: @js($errors->has('body')) }"
+                @open-message.window="open = true; $nextTick(() => $refs.body.focus())"
+                @keydown.escape.window="open = false"
+                x-show="open"
+                x-cloak
+                class="fixed inset-0 z-50 flex items-end md:items-center justify-center"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="message-title"
+            >
+                <div class="absolute inset-0 bg-black/40" @click="open = false"></div>
+                <form method="POST" action="{{ route('listings.contact', $listing) }}" class="relative w-full md:max-w-lg card rounded-b-none md:rounded-2xl p-5 flex flex-col gap-3" style="padding-bottom: max(1.25rem, env(safe-area-inset-bottom));">
+                    @csrf
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <h2 id="message-title" class="text-[17px] font-extrabold text-on-surface">Message à {{ $seller->name }}</h2>
+                            <p class="text-[13px] text-on-surface-variant truncate">{{ $listing->title }} · {{ $listing->formattedPrice() }}</p>
+                        </div>
+                        <button type="button" @click="open = false" class="w-9 h-9 shrink-0 flex items-center justify-center rounded-full hover:bg-surface-container-low" aria-label="Fermer"><x-icon name="close" class="text-[20px]" /></button>
+                    </div>
+                    <label for="message-body" class="sr-only">Votre message</label>
+                    <textarea id="message-body" x-ref="body" name="body" rows="4" maxlength="2000" required class="field">{{ old('body', 'Bonjour, votre annonce « '.$listing->title.' » est-elle toujours disponible ?') }}</textarea>
+                    @error('body') <p class="field-error">{{ $message }}</p> @enderror
+                    <button type="submit" class="btn btn-primary"><x-icon name="chat" class="text-[18px]" /> Envoyer</button>
+                </form>
+            </div>
+        @endauth
     @endunless
 
     @push('head')

@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
-use App\Support\Countries;
 use App\Support\Phone;
+use App\Support\Provinces;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,18 +18,18 @@ class RegisteredUserController extends Controller
 {
     public function create()
     {
-        return view('auth.register', ['countries' => Countries::options()]);
+        return view('auth.register', ['provinces' => Provinces::options()]);
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $request->merge(['phone' => Phone::normalize($request->input('phone'), $request->input('phone_country') ?: $request->input('country_code')) ?? $request->input('phone')]);
+        $request->merge(['phone' => Phone::normalize($request->input('phone'), $request->input('phone_country')) ?? $request->input('phone')]);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'phone' => ['required', 'regex:/^\+\d{8,15}$/', 'unique:users,phone'],
-            'country_code' => ['required', Rule::in(array_keys(config('countries')))],
+            'province' => ['nullable', Rule::in(array_keys(config('marketplace.provinces')))],
             'city' => ['nullable', 'string', 'max:100'],
             'password' => ['required', 'confirmed', Password::defaults()],
             'terms' => ['accepted'],
@@ -44,7 +44,8 @@ class RegisteredUserController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'],
-            'country_code' => $validated['country_code'],
+            'country_code' => 'GA',
+            'province' => $validated['province'] ?? null,
             'city' => $validated['city'] ?? null,
             'is_pro' => $request->boolean('is_pro'),
             'password' => $validated['password'],
@@ -55,6 +56,6 @@ class RegisteredUserController extends Controller
 
         Auth::guard('web')->login($user);
 
-        return redirect()->intended(route('home'));
+        return redirect()->intended(route('dashboard'));
     }
 }

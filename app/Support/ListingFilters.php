@@ -31,12 +31,12 @@ class ListingFilters
             : null;
     }
 
-    /** ISO country code from ?pays=, when it is a known country. */
-    public function country(): ?string
+    /** Province slug from ?province=, when it is a known province. */
+    public function province(): ?string
     {
-        $code = strtoupper((string) $this->request->query('pays'));
+        $slug = (string) $this->request->query('province');
 
-        return Countries::exists($code) ? $code : null;
+        return Provinces::exists($slug) ? $slug : null;
     }
 
     /** Free-text city from ?ville=. */
@@ -62,8 +62,8 @@ class ListingFilters
             $query->whereIn('listing_category_id', $category->selfAndChildrenIds());
         }
 
-        if ($country = $this->country()) {
-            $query->where('country_code', $country);
+        if ($province = $this->province()) {
+            $query->where('province', $province);
         }
 
         if ($city = $this->city()) {
@@ -99,7 +99,7 @@ class ListingFilters
     /** Number of filters the visitor applied (badge on the mobile "Filtres" button). */
     public function activeCount(): int
     {
-        return collect(['pays', 'ville', 'prix_min', 'prix_max', 'etat'])
+        return collect(['province', 'ville', 'prix_min', 'prix_max', 'etat'])
             ->filter(fn ($key) => $this->request->filled($key))
             ->count();
     }

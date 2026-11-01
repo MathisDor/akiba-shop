@@ -53,10 +53,11 @@
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label for="country_code" class="field-label">Pays</label>
-                        <select id="country_code" name="country_code" class="field" required>
-                            @foreach($countries as $code => $countryName)
-                                <option value="{{ $code }}" @selected(old('country_code', $user->country_code ?? config('marketplace.default_country')) === $code)>{{ $countryName }}</option>
+                        <label for="province" class="field-label">Province</label>
+                <select id="province" name="province" class="field">
+                            <option value="">—</option>
+                            @foreach($navProvinces as $slug => $provinceName)
+                                <option value="{{ $slug }}" @selected(old('province', $user->province) === $slug)>{{ $provinceName }}</option>
                             @endforeach
                         </select>
                     </div>

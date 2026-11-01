@@ -4,9 +4,9 @@ namespace App\Models;
 
 use App\Enums\ListingCondition;
 use App\Enums\ListingStatus;
-use App\Support\Countries;
 use App\Support\Phone;
 use App\Support\Price;
+use App\Support\Provinces;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
 
 #[Fillable([
     'user_id', 'listing_category_id', 'title', 'slug', 'description', 'price', 'is_negotiable',
-    'condition', 'specs', 'country_code', 'city', 'contact_phone', 'accepts_whatsapp',
+    'condition', 'specs', 'country_code', 'province', 'city', 'contact_phone', 'accepts_whatsapp',
     'status', 'rejection_reason', 'boosted_until', 'published_at', 'expires_at',
 ])]
 class Listing extends Model
@@ -65,6 +65,11 @@ class Listing extends Model
     public function favoritedBy(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'listing_favorites')->withTimestamps();
+    }
+
+    public function conversations(): HasMany
+    {
+        return $this->hasMany(Conversation::class);
     }
 
     public function reports(): HasMany
@@ -124,7 +129,7 @@ class Listing extends Model
 
     public function location(): string
     {
-        return collect([$this->city, Countries::name($this->country_code)])->filter()->implode(', ');
+        return collect([$this->city, Provinces::name($this->province)])->filter()->unique()->implode(', ');
     }
 
     public function coverImage(): ?ListingImage

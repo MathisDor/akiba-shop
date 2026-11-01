@@ -24,7 +24,7 @@ class ListingController extends Controller
         return view('listings.index', [
             'listings' => $filters->paginate($category),
             'currentCategory' => $category?->loadMissing('parent', 'children'),
-            'currentCountry' => $filters->country(),
+            'currentProvince' => $filters->province(),
             'currentCity' => $filters->city(),
             'activeFilterCount' => $filters->activeCount(),
             'categories' => ListingCategory::active()->roots()->with('children')->get(),

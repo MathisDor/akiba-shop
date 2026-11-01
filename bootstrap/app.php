@@ -19,6 +19,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // Read client-side for the data-saver toggle, so it can't be encrypted.
         $middleware->encryptCookies(except: ['eco']);
 
+        // Signed-in people landing on a guest-only page (login, sign-up) go to their home.
+        $middleware->redirectUsersTo(fn (Request $request) => $request->is('admin/*') ? route('admin.dashboard') : route('dashboard'));
+
         $middleware->alias([
             'admin' => EnsureUserIsAdmin::class,
             'super_admin' => EnsureSuperAdmin::class,

@@ -1,7 +1,7 @@
 @php
     $editing = $listing->exists;
     $selectedCategoryId = (int) old('listing_category_id', $listing->listing_category_id);
-    $selectedCountry = old('country_code', $listing->country_code ?? config('marketplace.default_country'));
+    $selectedProvince = old('province', $listing->province);
 
     $categoryTree = $categories->map(fn ($root) => [
         'id' => $root->id,
@@ -14,7 +14,7 @@
     $stepFields = [
         1 => ['listing_category_id'],
         2 => ['title', 'description', 'price', 'condition', 'specs'],
-        3 => ['photos', 'remove_images', 'country_code', 'city', 'contact_phone'],
+        3 => ['photos', 'remove_images', 'province', 'city', 'contact_phone'],
     ];
     $initialStep = 1;
     if ($errors->any()) {
@@ -260,17 +260,18 @@
 
                 <div class="grid sm:grid-cols-2 gap-4 border-t border-surface-variant pt-5">
                     <div>
-                        <label for="country_code" class="field-label">Pays</label>
-                        <select id="country_code" name="country_code" class="field" required data-message="Choisissez un pays." @error('country_code') aria-invalid="true" @enderror>
-                            @foreach($countries as $code => $countryName)
-                                <option value="{{ $code }}" @selected($selectedCountry === $code)>{{ $countryName }}</option>
+                        <label for="province" class="field-label">Province</label>
+                        <select id="province" name="province" class="field" required data-message="Choisissez une province." @error('province') aria-invalid="true" @enderror>
+                            <option value="">Choisissez…</option>
+                            @foreach($navProvinces as $slug => $provinceName)
+                                <option value="{{ $slug }}" @selected($selectedProvince === $slug)>{{ $provinceName }}</option>
                             @endforeach
                         </select>
-                        @error('country_code') <p class="field-error">{{ $message }}</p> @enderror
+                        @error('province') <p class="field-error">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label for="city" class="field-label">Ville</label>
-                        <input id="city" name="city" type="text" required minlength="2" maxlength="100" value="{{ old('city', $listing->city) }}" placeholder="Ex. : Lyon, Dakar, Montréal…" autocomplete="address-level2" class="field" data-message="Indiquez la ville." @error('city') aria-invalid="true" @enderror />
+                        <input id="city" name="city" type="text" required minlength="2" maxlength="100" value="{{ old('city', $listing->city) }}" placeholder="Ex. : Libreville, Owendo, Port-Gentil…" autocomplete="address-level2" class="field" data-message="Indiquez la ville." @error('city') aria-invalid="true" @enderror />
                         @error('city') <p class="field-error">{{ $message }}</p> @enderror
                     </div>
                 </div>

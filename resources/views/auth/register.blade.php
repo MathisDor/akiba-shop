@@ -25,13 +25,13 @@
 
         <div class="grid grid-cols-2 gap-3">
             <div>
-                <label for="country_code" class="field-label">Pays</label>
-                <select id="country_code" name="country_code" class="field" required>
-                    @foreach($countries as $code => $countryName)
-                        <option value="{{ $code }}" @selected(old('country_code', config('marketplace.default_country')) === $code)>{{ $countryName }}</option>
-                    @endforeach
-                </select>
-                @error('country_code') <p class="field-error">{{ $message }}</p> @enderror
+                <label for="province" class="field-label">Province</label>
+                <select id="province" name="province" class="field">
+                            <option value="">—</option>
+                            @foreach($navProvinces as $slug => $provinceName)
+                                <option value="{{ $slug }}" @selected(old('province') === $slug)>{{ $provinceName }}</option>
+                            @endforeach
+                        </select>
             </div>
             <div>
                 <label for="city" class="field-label">Ville <span class="font-normal text-on-surface-variant">(facultatif)</span></label>

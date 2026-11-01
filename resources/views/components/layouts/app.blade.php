@@ -38,7 +38,7 @@
 <body class="antialiased min-h-screen flex flex-col bg-background text-on-background">
     @include('layouts.partials.header', ['active' => $active])
 
-    <main class="flex-1 pb-24 md:pb-0">
+    <main class="flex-1 {{ auth()->check() ? 'pb-24 md:pb-0' : '' }}">
         @session('status')
             <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-4">
                 <div role="status" class="flex items-start gap-3 rounded-xl bg-primary-fixed text-on-primary-fixed px-4 py-3 text-[14px] leading-5">
@@ -55,7 +55,9 @@
         @include('layouts.partials.footer')
     @endunless
 
-    @include('layouts.partials.bottom-nav', ['active' => $active])
+    @auth
+        @include('layouts.partials.bottom-nav', ['active' => $active])
+    @endauth
 
     @livewireScripts
     @stack('scripts')

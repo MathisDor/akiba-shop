@@ -18,11 +18,11 @@
                 <p class="text-body-lg text-on-surface-variant max-w-xl">Voitures, logements, téléphones, meubles, emplois… Publiez gratuitement et discutez directement avec les vendeurs sur WhatsApp.</p>
 
                 <form method="GET" action="{{ route('listings.index') }}" role="search" class="md:hidden flex flex-col gap-2 mt-1">
-                    <label for="hero-country" class="sr-only">Pays</label>
-                    <select id="hero-country" name="pays" class="field">
-                        <option value="">Tous les pays</option>
-                        @foreach($navCountries as $code => $name)
-                            <option value="{{ $code }}">{{ $name }}</option>
+                    <label for="hero-province" class="sr-only">Province</label>
+                    <select id="hero-province" name="province" class="field">
+                        <option value="">Toutes les provinces</option>
+                        @foreach($navProvinces as $slug => $provinceName)
+                            <option value="{{ $slug }}">{{ $provinceName }}</option>
                         @endforeach
                     </select>
                     <button type="submit" class="btn btn-primary">

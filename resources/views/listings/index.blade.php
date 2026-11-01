@@ -1,6 +1,6 @@
 @php
     $heading = $currentCategory?->name ?? (request('q') ? 'Résultats pour « '.request('q').' »' : 'Toutes les annonces');
-    $place = collect([$currentCity, \App\Support\Countries::name($currentCountry)])->filter()->implode(', ');
+    $place = collect([$currentCity, \App\Support\Provinces::name($currentProvince)])->filter()->implode(', ');
     $where = $place !== '' ? ' — '.$place : '';
     $pageTitle = ($currentCategory?->name ?? 'Petites annonces').$where.' — AkibaShop';
     $rootCategory = $currentCategory?->parent ?? $currentCategory;
@@ -101,11 +101,11 @@
                     </div>
 
                     <div>
-                        <label for="f-country" class="field-label">Pays</label>
-                        <select id="f-country" name="pays" class="field">
-                            <option value="">Tous les pays</option>
-                            @foreach($navCountries as $code => $name)
-                                <option value="{{ $code }}" @selected($currentCountry === $code)>{{ $name }}</option>
+                        <label for="f-province" class="field-label">Province</label>
+                        <select id="f-province" name="province" class="field">
+                            <option value="">Toutes les provinces</option>
+                            @foreach($navProvinces as $slug => $provinceName)
+                                <option value="{{ $slug }}" @selected($currentProvince === $slug)>{{ $provinceName }}</option>
                             @endforeach
                         </select>
                     </div>

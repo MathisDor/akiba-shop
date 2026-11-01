@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
                 'name' => 'Admin AkibaShop',
                 'password' => 'password',
                 'role_id' => $adminRole->id,
-                'phone' => '+33600000001',
+                'phone' => '+241077000001',
                 'email_verified_at' => now(),
             ]
         );
@@ -34,7 +34,7 @@ class UserSeeder extends Seeder
                 'name' => 'Jean-Marc Obiang',
                 'password' => 'password',
                 'role_id' => $clientRole->id,
-                'phone' => '+33612000000',
+                'phone' => '+241077123456',
                 'email_verified_at' => now(),
             ]
         );

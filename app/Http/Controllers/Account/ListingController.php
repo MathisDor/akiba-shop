@@ -9,7 +9,7 @@ use App\Http\Requests\ListingRequest;
 use App\Models\Listing;
 use App\Models\ListingCategory;
 use App\Services\ListingImageStore;
-use App\Support\Countries;
+use App\Support\Provinces;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -35,7 +35,7 @@ class ListingController extends Controller
         $user = Auth::guard('web')->user();
 
         return $this->form(new Listing([
-            'country_code' => $user->country_code ?? config('marketplace.default_country'),
+            'province' => $user->province,
             'city' => $user->city,
             'contact_phone' => $user->phone,
             'accepts_whatsapp' => true,
@@ -141,7 +141,7 @@ class ListingController extends Controller
         return view('listings.form', [
             'listing' => $listing,
             'categories' => ListingCategory::active()->roots()->with(['children' => fn ($q) => $q->active()])->get(),
-            'countries' => Countries::options(),
+            'provinces' => Provinces::options(),
             'conditions' => ListingCondition::cases(),
             'categoryFields' => config('marketplace.category_fields'),
         ]);

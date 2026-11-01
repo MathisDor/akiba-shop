@@ -5,7 +5,7 @@
 
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
         <div class="flex items-center gap-3 md:gap-6 h-[60px] md:h-[72px]">
-            <a href="{{ route('home') }}" aria-label="AkibaShop — accueil" class="shrink-0">
+            <a href="{{ auth()->check() ? route('dashboard') : route('home') }}" aria-label="AkibaShop — accueil" class="shrink-0">
                 <x-logo />
             </a>
 
@@ -16,13 +16,13 @@
                     <x-icon name="search" class="text-[20px] text-on-surface-variant" />
                     <input id="header-q" type="search" name="q" value="{{ request('q') }}" placeholder="Que recherchez-vous ? Voiture, téléphone, studio…" class="w-full min-w-0 bg-transparent border-0 p-0 text-[15px] focus:outline-none focus:ring-0 placeholder:text-outline" />
                 </div>
-                <label for="header-country" class="sr-only">Pays</label>
+                <label for="header-province" class="sr-only">Province</label>
                 <div class="flex items-center gap-1 border-l border-outline-variant pl-3 pr-1">
                     <x-icon name="location_on" class="text-[18px] text-on-surface-variant" />
-                    <select id="header-country" name="pays" class="max-w-[160px] bg-transparent border-0 py-0 pl-1 pr-6 text-[14px] font-semibold text-on-surface focus:outline-none focus:ring-0 cursor-pointer">
-                        <option value="">Tous les pays</option>
-                        @foreach($navCountries as $code => $name)
-                            <option value="{{ $code }}" @selected(strtoupper((string) request('pays')) === $code)>{{ $name }}</option>
+                    <select id="header-province" name="province" class="max-w-[180px] bg-transparent border-0 py-0 pl-1 pr-6 text-[14px] font-semibold text-on-surface focus:outline-none focus:ring-0 cursor-pointer">
+                        <option value="">Toutes les provinces</option>
+                        @foreach($navProvinces as $slug => $provinceName)
+                            <option value="{{ $slug }}" @selected(request('province') === $slug)>{{ $provinceName }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -36,6 +36,14 @@
                     <x-icon name="add_circle" class="text-[20px]" />
                     Déposer une annonce
                 </a>
+                @auth
+                    <a href="{{ route('account.conversations.index') }}" class="relative hidden md:flex w-11 h-11 items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-colors {{ $active === 'chat' ? 'text-primary' : '' }}" aria-label="Messages{{ $unreadMessages ? ' ('.$unreadMessages.' non lus)' : '' }}">
+                        <x-icon name="chat" class="text-[22px]" />
+                        @if($unreadMessages)
+                            <span class="absolute top-1 right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-error text-on-error text-[10px] font-bold flex items-center justify-center">{{ $unreadMessages > 99 ? '99+' : $unreadMessages }}</span>
+                        @endif
+                    </a>
+                @endauth
                 <a href="{{ route('account.favorites') }}" class="hidden md:flex w-11 h-11 items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-colors {{ $active === 'favorites' ? 'text-primary' : '' }}" aria-label="Mes favoris">
                     <x-icon name="favorite" class="text-[22px]" />
                 </a>
@@ -59,8 +67,8 @@
             <div class="flex items-center gap-2 h-11 px-3 rounded-xl bg-surface-container-low border border-transparent focus-within:border-primary focus-within:bg-surface-container-lowest transition-colors">
                 <x-icon name="search" class="text-[20px] text-on-surface-variant" />
                 <input id="header-q-mobile" type="search" name="q" value="{{ request('q') }}" placeholder="Rechercher sur AkibaShop" class="w-full min-w-0 bg-transparent border-0 p-0 text-[15px] focus:outline-none focus:ring-0 placeholder:text-outline" />
-                @if(request('pays'))
-                    <input type="hidden" name="pays" value="{{ request('pays') }}" />
+                @if(request('province'))
+                    <input type="hidden" name="province" value="{{ request('province') }}" />
                 @endif
             </div>
         </form>

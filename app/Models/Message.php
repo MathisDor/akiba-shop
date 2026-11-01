@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+#[Fillable(['conversation_id', 'sender_id', 'body', 'read_at'])]
+class Message extends Model
+{
+    protected function casts(): array
+    {
+        return [
+            'read_at' => 'datetime',
+        ];
+    }
+
+    public function conversation(): BelongsTo
+    {
+        return $this->belongsTo(Conversation::class);
+    }
+
+    public function sender(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'sender_id');
+    }
+
+    /** Shape used by the chat page's polling endpoint. */
+    public function toChatArray(User $viewer): array
+    {
+        return [
+            'id' => $this->id,
+            'body' => $this->body,
+            'mine' => $this->sender_id === $viewer->id,
+            'time' => $this->created_at->format('H:i'),
+            'date' => $this->created_at->translatedFormat('d F Y'),
+        ];
+    }
+}

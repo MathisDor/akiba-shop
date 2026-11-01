@@ -28,8 +28,8 @@ class MarketplaceTest extends TestCase
             $this->get($url)->assertOk();
         }
 
-        $this->get('/annonces?q=Corolla&pays=FR&ville=lyon')->assertOk()->assertSee('Toyota Corolla 2014');
-        $this->get('/annonces?pays=BE')->assertOk()->assertDontSee('Toyota Corolla 2014');
+        $this->get('/annonces?q=Corolla&province=estuaire&ville=libre')->assertOk()->assertSee('Toyota Corolla 2014');
+        $this->get('/annonces?province=nyanga')->assertOk()->assertDontSee('Toyota Corolla 2014');
     }
 
     public function test_pending_and_suspended_listings_are_hidden_from_visitors(): void
@@ -59,10 +59,12 @@ class MarketplaceTest extends TestCase
 
         $listing = Listing::firstOrFail();
         $this->assertSame(ListingStatus::EnAttente, $listing->status);
-        $this->assertSame(14900, $listing->price);
-        $this->assertSame('+32470123456', $listing->contact_phone);
-        $this->assertSame('BE', $listing->country_code);
-        $this->assertSame('Bruxelles', $listing->city);
+        $this->assertSame(8900000, $listing->price);
+        $this->assertSame('+241066445566', $listing->contact_phone);
+        $this->assertSame('GA', $listing->country_code);
+        $this->assertSame('ogooue-maritime', $listing->province);
+        $this->assertSame('Port-Gentil', $listing->city);
+        $this->assertSame('8 900 000 FCFA', $listing->formattedPrice());
         // Only fields belonging to the category are kept.
         $this->assertSame(['marque' => 'Hyundai', 'annee' => '2017'], $listing->specs);
         $this->assertCount(1, $listing->images);
@@ -77,8 +79,8 @@ class MarketplaceTest extends TestCase
         $parent = ListingCategory::where('slug', 'vehicules')->value('id');
 
         $this->actingAs($this->makeClient())
-            ->post('/publier', $this->listingPayload(['listing_category_id' => $parent, 'contact_phone' => '12', 'city' => '']))
-            ->assertSessionHasErrors(['listing_category_id', 'contact_phone', 'city']);
+            ->post('/publier', $this->listingPayload(['listing_category_id' => $parent, 'contact_phone' => '12', 'city' => '', 'province' => 'nowhere']))
+            ->assertSessionHasErrors(['listing_category_id', 'contact_phone', 'city', 'province']);
 
         $this->assertSame(0, Listing::count());
     }
@@ -156,7 +158,7 @@ class MarketplaceTest extends TestCase
     {
         $member = $this->makeClient(['phone' => '+221771234567', 'password' => 'secret-pass']);
 
-        $this->post('/connexion', ['login' => '+221 77 123 45 67', 'password' => 'secret-pass'])->assertRedirect();
+        $this->post('/connexion', ['login' => '+221 77 123 45 67', 'password' => 'secret-pass'])->assertRedirect(route('dashboard'));
         $this->assertAuthenticatedAs($member);
 
         // A local number without dialling code is matched when unambiguous.
@@ -180,16 +182,16 @@ class MarketplaceTest extends TestCase
         $this->post('/inscription', [
             'name' => 'Claire Martin',
             'email' => 'claire@example.com',
-            'country_code' => 'FR',
-            'city' => 'Lyon',
-            'phone_country' => 'FR',
-            'phone' => '06 12 34 56 78',
+            'province' => 'estuaire',
+            'city' => 'Libreville',
+            'phone_country' => 'GA',
+            'phone' => '077 12 34 56',
             'password' => 'password1234',
             'password_confirmation' => 'password1234',
             'terms' => '1',
         ])->assertRedirect();
 
-        $this->assertDatabaseHas('users', ['email' => 'claire@example.com', 'phone' => '+33612345678', 'country_code' => 'FR', 'city' => 'Lyon']);
+        $this->assertDatabaseHas('users', ['email' => 'claire@example.com', 'phone' => '+241077123456', 'country_code' => 'GA', 'province' => 'estuaire']);
     }
 
     public function test_phone_helper(): void

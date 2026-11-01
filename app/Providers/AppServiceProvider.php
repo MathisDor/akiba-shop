@@ -7,10 +7,11 @@ use App\Services\CartService;
 use App\Services\Payments\EbillingPaymentGateway;
 use App\Services\Payments\ManualPaymentGateway;
 use App\Services\Payments\PaymentGatewayInterface;
-use App\Support\Countries;
+use App\Support\Provinces;
 use Illuminate\Filesystem\LocalFilesystemAdapter;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
@@ -50,8 +51,12 @@ class AppServiceProvider extends ServiceProvider
             $view->with('navCategories', once(fn () => ListingCategory::active()->roots()->get()));
         });
 
-        // Country pickers appear in the header, home page and search filters.
-        View::share('navCountries', Countries::options());
+        View::composer(['layouts.partials.header', 'layouts.partials.bottom-nav'], function ($view) {
+            $view->with('unreadMessages', once(fn () => Auth::guard('web')->user()?->unreadMessagesCount() ?? 0));
+        });
+
+        // Province pickers appear in the header, home page, search filters and forms.
+        View::share('navProvinces', Provinces::options());
 
         if (! extension_loaded('fileinfo')) {
             $this->registerLocalDriverWithoutFileinfo();

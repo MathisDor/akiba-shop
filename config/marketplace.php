@@ -27,13 +27,29 @@ return [
      * `symbol_first` puts the symbol before the amount ($ 1 200) instead of after (1 200 €).
      */
     'currency' => [
-        'code' => env('MARKETPLACE_CURRENCY', 'EUR'),
-        'symbol' => env('MARKETPLACE_CURRENCY_SYMBOL', '€'),
+        'code' => env('MARKETPLACE_CURRENCY', 'XAF'),
+        'symbol' => env('MARKETPLACE_CURRENCY_SYMBOL', 'FCFA'),
         'symbol_first' => (bool) env('MARKETPLACE_CURRENCY_SYMBOL_FIRST', false),
     ],
 
-    // Pre-selected country in forms and the default dialling code for phone numbers.
-    'default_country' => env('MARKETPLACE_DEFAULT_COUNTRY', 'FR'),
+    // Default dialling code for phone numbers (listings themselves are located in Gabon).
+    'default_country' => env('MARKETPLACE_DEFAULT_COUNTRY', 'GA'),
+
+    // Listings are located by Gabonese province (slug => name) plus a free-text city.
+    'provinces' => [
+        'estuaire' => 'Estuaire',
+        'haut-ogooue' => 'Haut-Ogooué',
+        'moyen-ogooue' => 'Moyen-Ogooué',
+        'ngounie' => 'Ngounié',
+        'nyanga' => 'Nyanga',
+        'ogooue-ivindo' => 'Ogooué-Ivindo',
+        'ogooue-lolo' => 'Ogooué-Lolo',
+        'ogooue-maritime' => 'Ogooué-Maritime',
+        'woleu-ntem' => 'Woleu-Ntem',
+    ],
+
+    // Seconds between two checks for new chat messages while a conversation is open.
+    'chat_poll_seconds' => 5,
 
     // Shown on /contact when set.
     'contact_email' => env('CONTACT_EMAIL'),

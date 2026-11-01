@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Account\ConversationController;
+use App\Http\Controllers\Account\DashboardController as MemberDashboardController;
 use App\Http\Controllers\Account\FavoriteController;
 use App\Http\Controllers\Account\ListingController as AccountListingController;
 use App\Http\Controllers\Account\ProfileController;
@@ -75,6 +77,15 @@ Route::middleware('auth')->post('/deconnexion', [AuthenticatedSessionController:
 */
 
 Route::middleware('auth')->group(function () {
+    Route::get('/tableau-de-bord', MemberDashboardController::class)->name('dashboard');
+
+    Route::get('/messages', [ConversationController::class, 'index'])->name('account.conversations.index');
+    Route::get('/messages/non-lus', [ConversationController::class, 'unread'])->name('account.conversations.unread');
+    Route::get('/messages/{conversation}', [ConversationController::class, 'show'])->name('account.conversations.show');
+    Route::get('/messages/{conversation}/nouveaux', [ConversationController::class, 'poll'])->name('account.conversations.poll');
+    Route::post('/messages/{conversation}', [ConversationController::class, 'send'])->middleware('throttle:30,1')->name('account.conversations.send');
+    Route::post('/annonce/{listing}/contacter', [ConversationController::class, 'start'])->middleware('throttle:10,1')->name('listings.contact');
+
     Route::get('/publier', [AccountListingController::class, 'create'])->name('listings.create');
     Route::post('/publier', [AccountListingController::class, 'store'])->middleware('throttle:20,60')->name('listings.store');
 

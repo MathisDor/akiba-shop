@@ -3,7 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Support\Countries;
+use App\Support\Provinces;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -17,7 +17,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Activitylog\Traits\CausesActivity;
 
-#[Fillable(['name', 'email', 'password', 'phone', 'role_id', 'country_code', 'city', 'is_pro'])]
+#[Fillable(['name', 'email', 'password', 'phone', 'role_id', 'country_code', 'province', 'city', 'is_pro'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -83,10 +83,25 @@ class User extends Authenticatable
             : $this->permissions()->where('slug', $slug)->exists();
     }
 
-    /** "Lyon, France" — empty when the member gave no location. */
+    /** "Libreville, Estuaire" — empty when the member gave no location. */
     public function location(): string
     {
-        return collect([$this->city, Countries::name($this->country_code)])->filter()->implode(', ');
+        return collect([$this->city, Provinces::name($this->province)])->filter()->unique()->implode(', ');
+    }
+
+    /** Chat threads the member takes part in, as buyer or seller. */
+    public function conversations()
+    {
+        return Conversation::query()->involving($this);
+    }
+
+    public function unreadMessagesCount(): int
+    {
+        return Message::query()
+            ->whereIn('conversation_id', $this->conversations()->select('id'))
+            ->where('sender_id', '!=', $this->id)
+            ->whereNull('read_at')
+            ->count();
     }
 
     public function listings(): HasMany

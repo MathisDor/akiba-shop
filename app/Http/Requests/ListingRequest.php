@@ -24,7 +24,8 @@ class ListingRequest extends FormRequest
 
         $this->merge([
             'price' => $price === '' ? null : $price,
-            'contact_phone' => Phone::normalize($this->input('contact_phone'), $this->input('contact_phone_country') ?: $this->input('country_code')) ?? $this->input('contact_phone'),
+            'contact_phone' => Phone::normalize($this->input('contact_phone'), $this->input('contact_phone_country')) ?? $this->input('contact_phone'),
+            'country_code' => 'GA',
             'city' => trim((string) $this->input('city')),
             'is_negotiable' => $this->boolean('is_negotiable'),
             'accepts_whatsapp' => $this->boolean('accepts_whatsapp'),
@@ -51,7 +52,8 @@ class ListingRequest extends FormRequest
             'price' => ['nullable', 'integer', 'min:0', 'max:99999999999'],
             'is_negotiable' => ['boolean'],
             'condition' => ['nullable', Rule::enum(ListingCondition::class)],
-            'country_code' => ['required', Rule::in(array_keys(config('countries')))],
+            'country_code' => ['required', 'in:GA'],
+            'province' => ['required', Rule::in(array_keys(config('marketplace.provinces')))],
             'city' => ['required', 'string', 'min:2', 'max:100'],
             'contact_phone' => ['required', 'regex:/^\+\d{8,15}$/'],
             'accepts_whatsapp' => ['boolean'],
@@ -76,7 +78,7 @@ class ListingRequest extends FormRequest
             'description.required' => 'Décrivez ce que vous proposez.',
             'description.min' => 'La description doit faire au moins 20 caractères.',
             'listing_category_id.required' => 'Choisissez une catégorie.',
-            'country_code.required' => 'Choisissez un pays.',
+            'province.required' => 'Choisissez une province.',
             'city.required' => 'Indiquez la ville.',
             'contact_phone.required' => 'Indiquez un numéro de téléphone.',
             'contact_phone.regex' => 'Numéro de téléphone invalide pour ce pays.',
