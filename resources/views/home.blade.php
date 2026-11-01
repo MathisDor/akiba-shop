@@ -4,14 +4,13 @@
     <section class="bg-surface-container-lowest border-b border-surface-variant">
         <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-5 pb-6 md:py-14 grid md:grid-cols-[1.2fr_1fr] gap-6 md:gap-12 items-center">
             <div class="flex flex-col gap-3 md:gap-4 min-w-0">
-                <p class="inline-flex self-start items-center gap-2 rounded-full bg-primary-fixed text-on-primary-fixed-variant px-3 py-1 text-[12px] font-bold">
-                    <span class="w-2 h-2 rounded-full bg-brand"></span>
-                    @if($listingCount > 0)
-                        {{ number_format($listingCount, 0, ',', ' ') }} annonce{{ $listingCount > 1 ? 's' : '' }} en ligne
-                    @else
-                        Petites annonces gratuites
-                    @endif
-                </p>
+                {{-- The listing counter only shows once the number is worth showing off --}}
+                @if($listingCount > 500)
+                    <p class="inline-flex self-start items-center gap-2 rounded-full bg-primary-fixed text-on-primary-fixed-variant px-3 py-1 text-[12px] font-bold">
+                        <span class="w-2 h-2 rounded-full bg-brand"></span>
+                        {{ number_format($listingCount, 0, ',', ' ') }} annonces en ligne
+                    </p>
+                @endif
                 <h1 class="text-[28px] leading-[34px] font-extrabold tracking-tight sm:text-display-lg-mobile sm:leading-[38px] md:text-display-lg md:leading-[56px] text-on-surface">
                     Achetez et vendez <span class="text-primary">près de chez vous</span>.
                 </h1>
