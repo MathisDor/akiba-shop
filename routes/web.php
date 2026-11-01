@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Account\ConversationController;
-use App\Http\Controllers\Account\DashboardController as MemberDashboardController;
 use App\Http\Controllers\Account\FavoriteController;
 use App\Http\Controllers\Account\ListingController as AccountListingController;
 use App\Http\Controllers\Account\ProfileController;
@@ -77,7 +76,8 @@ Route::middleware('auth')->post('/deconnexion', [AuthenticatedSessionController:
 */
 
 Route::middleware('auth')->group(function () {
-    Route::get('/tableau-de-bord', MemberDashboardController::class)->name('dashboard');
+    // The former member dashboard; members now land on the full listings page.
+    Route::permanentRedirect('/tableau-de-bord', '/annonces');
 
     Route::get('/messages', [ConversationController::class, 'index'])->name('account.conversations.index');
     Route::get('/messages/non-lus', [ConversationController::class, 'unread'])->name('account.conversations.unread');

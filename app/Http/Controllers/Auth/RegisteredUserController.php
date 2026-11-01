@@ -56,6 +56,6 @@ class RegisteredUserController extends Controller
 
         Auth::guard('web')->login($user);
 
-        return redirect()->intended(route('dashboard'));
+        return redirect()->intended(route('listings.index'));
     }
 }

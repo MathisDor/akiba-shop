@@ -158,7 +158,7 @@ class MarketplaceTest extends TestCase
     {
         $member = $this->makeClient(['phone' => '+221771234567', 'password' => 'secret-pass']);
 
-        $this->post('/connexion', ['login' => '+221 77 123 45 67', 'password' => 'secret-pass'])->assertRedirect(route('dashboard'));
+        $this->post('/connexion', ['login' => '+221 77 123 45 67', 'password' => 'secret-pass'])->assertRedirect(route('listings.index'));
         $this->assertAuthenticatedAs($member);
 
         // A local number without dialling code is matched when unambiguous.

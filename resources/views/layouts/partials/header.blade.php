@@ -5,7 +5,7 @@
 
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
         <div class="flex items-center gap-3 md:gap-6 h-[60px] md:h-[72px]">
-            <a href="{{ auth()->check() ? route('dashboard') : route('home') }}" aria-label="AkibaShop — accueil" class="shrink-0">
+            <a href="{{ auth()->check() ? route('listings.index') : route('home') }}" aria-label="AkibaShop — accueil" class="shrink-0">
                 <x-logo />
             </a>
 

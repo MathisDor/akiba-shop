@@ -20,7 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: ['eco']);
 
         // Signed-in people landing on a guest-only page (login, sign-up) go to their home.
-        $middleware->redirectUsersTo(fn (Request $request) => $request->is('admin/*') ? route('admin.dashboard') : route('dashboard'));
+        $middleware->redirectUsersTo(fn (Request $request) => $request->is('admin/*') ? route('admin.dashboard') : route('listings.index'));
 
         $middleware->alias([
             'admin' => EnsureUserIsAdmin::class,

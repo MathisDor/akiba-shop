@@ -17,20 +17,19 @@ class ChatAndNavigationTest extends TestCase
         $this->get('/')->assertOk()->assertDontSee('Navigation principale');
 
         $member = $this->makeClient();
-        $this->actingAs($member)->get('/tableau-de-bord')->assertOk()
+        $this->actingAs($member)->get('/annonces')->assertOk()
             ->assertSee('Navigation principale')
             ->assertSee('Chat');
     }
 
-    public function test_signed_in_members_are_sent_to_the_dashboard_from_guest_pages(): void
+    public function test_signed_in_members_are_sent_to_the_listings_from_guest_pages(): void
     {
-        $this->actingAs($this->makeClient())->get('/connexion')->assertRedirect(route('dashboard'));
-        $this->get('/tableau-de-bord')->assertOk();
+        $this->actingAs($this->makeClient())->get('/connexion')->assertRedirect(route('listings.index'));
+        $this->get('/tableau-de-bord')->assertRedirect('/annonces');
     }
 
-    public function test_guests_cannot_reach_the_dashboard_or_chat(): void
+    public function test_guests_cannot_reach_the_chat(): void
     {
-        $this->get('/tableau-de-bord')->assertRedirect(route('login'));
         $this->get('/messages')->assertRedirect(route('login'));
     }
 
