@@ -4,12 +4,11 @@
     $cover = $listing->coverImage();
     $photoCount = $listing->images->count();
     $isFavorite = auth()->check() && $listing->favoritedBy->contains(auth()->id());
-    $dataSaver = request()->cookie('eco') === '1';
 @endphp
 
 <article class="group relative flex flex-col h-full card overflow-hidden hover:border-outline-variant hover:shadow-[0_8px_24px_-12px_rgba(20,38,27,0.25)] transition-shadow">
     <div class="relative aspect-[4/3] bg-surface-container-low overflow-hidden">
-        @if($cover && ! $dataSaver)
+        @if($cover)
             <img
                 src="{{ $cover->url() }}"
                 alt=""
@@ -18,11 +17,8 @@
                 class="absolute inset-0 w-full h-full object-cover skeleton"
             />
         @else
-            <div class="absolute inset-0 flex flex-col items-center justify-center gap-1 text-outline">
-                <x-icon :name="$cover ? 'data_saver' : 'image'" class="text-[28px]" />
-                @if($cover)
-                    <span class="text-[11px] font-medium">Photo masquée</span>
-                @endif
+            <div class="absolute inset-0 flex items-center justify-center text-outline">
+                <x-icon name="image" class="text-[28px]" />
             </div>
         @endif
 

@@ -11,7 +11,7 @@
     </ul>
 
     <h2>Léger et économe</h2>
-    <p>Les photos sont compressées automatiquement et le mode « Économie de données » (en bas de chaque page) masque les images des listes pour consommer moins de forfait.</p>
+    <p>Les photos sont compressées automatiquement pour que les pages se chargent vite et consomment peu de forfait.</p>
 
     <p><a href="{{ route('listings.create') }}">Déposer ma première annonce</a></p>
 </x-page>

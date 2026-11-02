@@ -4,7 +4,6 @@
 
     $seller = $listing->user;
     $images = $listing->images;
-    $dataSaver = request()->cookie('eco') === '1';
     $shareText = $listing->title.' — '.$listing->formattedPrice().' sur AkibaShop';
     $shareUrl = route('listings.show', $listing);
 @endphp
@@ -45,48 +44,40 @@
                 @if($images->isNotEmpty())
                     <section
                         aria-label="Photos"
-                        x-data="{ index: 0, count: {{ $images->count() }}, show: @js(! $dataSaver) }"
+                        x-data="{ index: 0, count: {{ $images->count() }} }"
                         class="card overflow-hidden"
                     >
                         <div class="relative aspect-[4/3] md:aspect-[16/10] bg-inverse-surface">
-                            <template x-if="show">
-                                <div class="absolute inset-0">
-                                    @foreach($images as $i => $image)
-                                        <img
-                                            x-show="index === {{ $i }}"
-                                            @if($i > 0) x-cloak @endif
-                                            src="{{ $image->url() }}"
-                                            alt="{{ $listing->title }} — photo {{ $i + 1 }}"
-                                            loading="{{ $i === 0 ? 'eager' : 'lazy' }}"
-                                            decoding="async"
-                                            class="absolute inset-0 w-full h-full object-contain"
-                                        />
-                                    @endforeach
-                                </div>
-                            </template>
-
-                            <div x-show="!show" class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-inverse-on-surface">
-                                <x-icon name="data_saver" class="text-[32px]" />
-                                <p class="text-[14px]">Économie de données activée</p>
-                                <button type="button" @click="show = true" class="btn btn-accent btn-sm">Afficher les {{ $images->count() }} photo{{ $images->count() > 1 ? 's' : '' }}</button>
+                            <div class="absolute inset-0">
+                                @foreach($images as $i => $image)
+                                    <img
+                                        x-show="index === {{ $i }}"
+                                        @if($i > 0) x-cloak @endif
+                                        src="{{ $image->url() }}"
+                                        alt="{{ $listing->title }} — photo {{ $i + 1 }}"
+                                        loading="{{ $i === 0 ? 'eager' : 'lazy' }}"
+                                        decoding="async"
+                                        class="absolute inset-0 w-full h-full object-contain"
+                                    />
+                                @endforeach
                             </div>
 
                             @if($images->count() > 1)
-                                <button type="button" x-show="show" @click="index = (index - 1 + count) % count" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 text-on-surface flex items-center justify-center shadow" aria-label="Photo précédente">
+                                <button type="button" @click="index = (index - 1 + count) % count" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 text-on-surface flex items-center justify-center shadow" aria-label="Photo précédente">
                                     <x-icon name="chevron_left" class="text-[22px]" />
                                 </button>
-                                <button type="button" x-show="show" @click="index = (index + 1) % count" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 text-on-surface flex items-center justify-center shadow" aria-label="Photo suivante">
+                                <button type="button" @click="index = (index + 1) % count" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 text-on-surface flex items-center justify-center shadow" aria-label="Photo suivante">
                                     <x-icon name="chevron_right" class="text-[22px]" />
                                 </button>
-                                <span x-show="show" class="absolute bottom-3 right-3 rounded-md bg-black/60 text-white px-2 py-0.5 text-[12px] font-semibold" x-text="(index + 1) + ' / ' + count"></span>
+                                <span class="absolute bottom-3 right-3 rounded-md bg-black/60 text-white px-2 py-0.5 text-[12px] font-semibold" x-text="(index + 1) + ' / ' + count"></span>
                             @endif
                         </div>
 
                         @if($images->count() > 1)
-                            <div x-show="show" class="flex gap-2 p-2 overflow-x-auto hide-scrollbar">
+                            <div class="flex gap-2 p-2 overflow-x-auto hide-scrollbar">
                                 @foreach($images as $i => $image)
                                     <button type="button" @click="index = {{ $i }}" class="shrink-0 w-16 h-12 md:w-20 md:h-14 rounded-lg overflow-hidden ring-2 transition" :class="index === {{ $i }} ? 'ring-primary' : 'ring-transparent opacity-70 hover:opacity-100'" aria-label="Voir la photo {{ $i + 1 }}">
-                                        <template x-if="show"><img src="{{ $image->url() }}" alt="" loading="lazy" class="w-full h-full object-cover" /></template>
+                                        <img src="{{ $image->url() }}" alt="" loading="lazy" class="w-full h-full object-cover" />
                                     </button>
                                 @endforeach
                             </div>

@@ -103,26 +103,8 @@
             </form>
         </section>
 
-        {{-- Preferences & help --}}
+        {{-- Help --}}
         <section class="card divide-y divide-surface-variant overflow-hidden">
-            <div x-data="{ eco: document.documentElement.classList.contains('eco') }" class="flex items-center gap-3 px-4 min-h-[56px]">
-                <span class="w-9 h-9 shrink-0 rounded-xl bg-surface-container-low text-on-surface flex items-center justify-center"><x-icon name="data_saver" class="text-[18px]" /></span>
-                <span class="flex-1 min-w-0">
-                    <span id="eco-label" class="block text-[15px] font-semibold text-on-surface">Économie de données</span>
-                    <span class="block text-[12px] text-on-surface-variant">Masque les photos dans les listes</span>
-                </span>
-                <button
-                    type="button"
-                    role="switch"
-                    aria-labelledby="eco-label"
-                    :aria-checked="eco.toString()"
-                    @click="eco = !eco; document.cookie = 'eco=' + (eco ? '1' : '0') + ';path=/;max-age=31536000;samesite=lax'; window.location.reload()"
-                    class="relative w-11 h-6 shrink-0 rounded-full transition-colors"
-                    :class="eco ? 'bg-primary' : 'bg-surface-container-highest'"
-                >
-                    <span class="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform" :class="eco ? 'translate-x-5' : ''"></span>
-                </button>
-            </div>
             @foreach([
                 [route('pages.safety'), 'warning', 'Conseils de sécurité'],
                 [route('pages.contact'), 'mail', 'Aide & contact'],

@@ -4,7 +4,7 @@
     $pageDescription = $description ?? 'AkibaShop, les petites annonces gratuites : véhicules, immobilier, téléphones, maison, mode, emploi… Achetez et vendez près de chez vous, entre particuliers et professionnels.';
 @endphp
 <!DOCTYPE html>
-<html lang="fr" class="{{ request()->cookie('eco') === '1' ? 'eco' : '' }}">
+<html lang="fr">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
