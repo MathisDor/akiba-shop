@@ -17,12 +17,15 @@
                     @endphp
                     <li>
                         <a href="{{ route('account.conversations.show', $conversation) }}" class="flex items-center gap-3 p-3 md:p-4 hover:bg-surface-container-low transition-colors {{ $unread ? 'bg-primary-fixed/40' : '' }}">
-                            <span class="relative w-14 h-14 shrink-0 rounded-xl overflow-hidden bg-surface-container-low flex items-center justify-center">
-                                @if($cover)
-                                    <img src="{{ $cover->url() }}" alt="" loading="lazy" class="w-full h-full object-cover" />
-                                @else
-                                    <x-icon name="image" class="text-[22px] text-outline" />
-                                @endif
+                            <span class="relative w-14 h-14 shrink-0">
+                                <span class="w-14 h-14 rounded-xl overflow-hidden bg-surface-container-low flex items-center justify-center">
+                                    @if($cover)
+                                        <img src="{{ $cover->url() }}" alt="" loading="lazy" class="w-full h-full object-cover" />
+                                    @else
+                                        <x-icon name="image" class="text-[22px] text-outline" />
+                                    @endif
+                                </span>
+                                <x-avatar :user="$other" size="w-7 h-7 text-[11px]" class="absolute -right-1.5 -bottom-1.5 ring-2 ring-surface-container-lowest" />
                             </span>
                             <span class="flex-1 min-w-0">
                                 <span class="flex items-baseline justify-between gap-2">

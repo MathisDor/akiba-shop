@@ -180,7 +180,7 @@
             <aside class="flex flex-col gap-4 lg:sticky lg:top-[136px]">
                 <section class="card p-4 md:p-5 flex flex-col gap-4">
                     <a href="{{ route('sellers.show', $seller) }}" class="flex items-center gap-3 group">
-                        <span class="w-12 h-12 rounded-full bg-primary-fixed text-on-primary-fixed-variant flex items-center justify-center text-[18px] font-extrabold shrink-0">{{ mb_strtoupper(mb_substr($seller->name, 0, 1)) }}</span>
+                        <x-avatar :user="$seller" size="w-12 h-12 text-[18px]" />
                         <span class="min-w-0">
                             <span class="flex items-center gap-1.5">
                                 <span class="text-[16px] font-bold text-on-surface truncate group-hover:text-primary">{{ $seller->name }}</span>
@@ -201,7 +201,10 @@
                         @if($seller->is_pro)
                             <span class="rounded-md bg-secondary-container text-on-secondary-container px-2 py-0.5 text-[12px] font-bold">Pro</span>
                         @endif
-                        <a href="{{ route('sellers.show', $seller) }}" class="text-[13px] font-semibold text-secondary hover:underline">{{ $seller->visible_listings_count }} annonce{{ $seller->visible_listings_count > 1 ? 's' : '' }} en ligne</a>
+                        @if($seller->delivers)
+                            <span class="inline-flex items-center gap-1 rounded-md bg-primary-fixed text-on-primary-fixed-variant px-2 py-0.5 text-[12px] font-bold" title="{{ $seller->delivery_note }}"><x-icon name="local_shipping" class="text-[13px]" /> Livraison possible</span>
+                        @endif
+                        <a href="{{ route('sellers.show', $seller) }}" class="text-[13px] font-semibold text-secondary hover:underline">Voir la boutique ({{ $seller->visible_listings_count }})</a>
                     </div>
 
                     @unless($isOwner)

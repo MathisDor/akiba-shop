@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use RuntimeException;
 
 /**
- * Re-encodes listing photos with GD (downscaled, WebP when available) so pages
+ * Re-encodes listing and shop photos with GD (downscaled, WebP when available) so pages
  * stay light on slow mobile connections. Deliberately avoids anything that needs
  * ext-fileinfo (UploadedFile::store(), the "image"/"mimes" rules): the production
  * host doesn't ship it.
@@ -28,13 +28,21 @@ class ListingImageStore
 
     public function store(UploadedFile $file, Listing $listing, int $sortOrder): ListingImage
     {
+        $path = $this->storeResized($file, 'listings/'.$listing->id, (int) config('marketplace.image_max_dimension'));
+
+        return $listing->images()->create(['path' => $path, 'sort_order' => $sortOrder]);
+    }
+
+    /** Re-encodes any photo (listing, shop avatar or cover) into $directory; returns its public-disk path. */
+    public function storeResized(UploadedFile $file, string $directory, int $maxDimension): string
+    {
         $image = @imagecreatefromstring((string) file_get_contents($file->getRealPath()));
         if ($image === false) {
             throw new RuntimeException('Image illisible.');
         }
 
         $image = $this->applyExifOrientation($image, $file->getRealPath());
-        $image = $this->downscale($image, (int) config('marketplace.image_max_dimension'));
+        $image = $this->downscale($image, $maxDimension);
 
         // Best format this GD build supports (production has WebP).
         $quality = (int) config('marketplace.image_quality');
@@ -48,16 +56,23 @@ class ListingImageStore
         $bytes = (string) ob_get_clean();
         imagedestroy($image);
 
-        $path = 'listings/'.$listing->id.'/'.Str::random(32).'.'.$extension;
+        $path = trim($directory, '/').'/'.Str::random(32).'.'.$extension;
         Storage::disk('public')->put($path, $bytes);
 
-        return $listing->images()->create(['path' => $path, 'sort_order' => $sortOrder]);
+        return $path;
     }
 
     public function delete(ListingImage $image): void
     {
         Storage::disk('public')->delete($image->path);
         $image->delete();
+    }
+
+    public function deletePath(?string $path): void
+    {
+        if ($path) {
+            Storage::disk('public')->delete($path);
+        }
     }
 
     private function downscale(\GdImage $image, int $maxDimension): \GdImage

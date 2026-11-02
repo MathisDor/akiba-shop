@@ -4,6 +4,7 @@ use App\Http\Controllers\Account\ConversationController;
 use App\Http\Controllers\Account\FavoriteController;
 use App\Http\Controllers\Account\ListingController as AccountListingController;
 use App\Http\Controllers\Account\ProfileController;
+use App\Http\Controllers\Account\ShopController;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\Auth\AdminAuthenticatedSessionController;
@@ -94,6 +95,9 @@ Route::middleware('auth')->group(function () {
     Route::prefix('compte')->name('account.')->group(function () {
         Route::get('/', [ProfileController::class, 'show'])->name('profile');
         Route::put('/', [ProfileController::class, 'update'])->name('profile.update');
+
+        Route::get('/boutique', [ShopController::class, 'edit'])->name('shop.edit');
+        Route::put('/boutique', [ShopController::class, 'update'])->name('shop.update');
 
         Route::get('/annonces', [AccountListingController::class, 'index'])->name('listings');
         Route::get('/annonces/{listing}/modifier', [AccountListingController::class, 'edit'])->name('listings.edit');

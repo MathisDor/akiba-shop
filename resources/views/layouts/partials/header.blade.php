@@ -53,7 +53,7 @@
                 </a>
                 @auth
                     <a href="{{ route('account.profile') }}" class="flex items-center gap-2 h-11 pl-1 pr-1 md:pr-3 rounded-xl hover:bg-surface-container-low transition-colors" aria-label="Mon compte">
-                        <span class="w-9 h-9 rounded-full bg-primary-fixed text-on-primary-fixed-variant flex items-center justify-center font-bold text-[14px]">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span>
+                        <x-avatar :user="auth()->user()" size="w-9 h-9 text-[14px]" />
                         <span class="hidden lg:inline text-[14px] font-semibold text-on-surface max-w-[120px] truncate">{{ \Illuminate\Support\Str::before(auth()->user()->name, ' ') }}</span>
                     </a>
                 @else

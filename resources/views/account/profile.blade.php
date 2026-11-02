@@ -4,7 +4,7 @@
         {{-- Identity --}}
         <section class="card p-4 md:p-5">
             <div class="flex items-center gap-4">
-                <span class="w-16 h-16 shrink-0 rounded-full bg-primary-fixed text-on-primary-fixed-variant flex items-center justify-center text-[26px] font-extrabold">{{ mb_strtoupper(mb_substr($user->name, 0, 1)) }}</span>
+                <x-avatar :user="$user" size="w-16 h-16 text-[26px]" />
                 <div class="min-w-0 flex-1">
                     <h1 class="text-[20px] leading-7 font-extrabold text-on-surface truncate">{{ $user->name }}</h1>
                     <p class="text-[13px] text-on-surface-variant truncate">
@@ -29,12 +29,16 @@
                 @endforeach
             </div>
 
-            <a href="{{ route('sellers.show', $user) }}" class="btn btn-outline btn-sm w-full mt-3">Voir mon profil public</a>
+            <div class="grid grid-cols-2 gap-2 mt-3">
+                <a href="{{ route('account.shop.edit') }}" class="btn btn-primary btn-sm"><x-icon name="edit" class="text-[15px]" /> Modifier ma boutique</a>
+                <a href="{{ route('sellers.show', $user) }}" class="btn btn-outline btn-sm">Voir ma boutique</a>
+            </div>
         </section>
 
         {{-- Activity --}}
         <nav aria-label="Mon activité" class="card divide-y divide-surface-variant overflow-hidden">
             @foreach([
+                [route('account.shop.edit'), 'storefront', 'Ma boutique', $user->avatar_path && $user->bio ? null : 'À compléter', null],
                 [route('account.listings'), 'listings', 'Mes annonces', $stats['online'] ? $stats['online'].' en ligne' : null, null],
                 [route('account.conversations.index'), 'chat', 'Messages', null, $stats['unread']],
                 [route('account.favorites'), 'favorite', 'Mes favoris', $stats['favorites'] ?: null, null],

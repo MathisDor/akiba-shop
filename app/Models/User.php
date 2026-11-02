@@ -14,10 +14,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Activitylog\Traits\CausesActivity;
 
-#[Fillable(['name', 'email', 'password', 'phone', 'role_id', 'country_code', 'province', 'city', 'is_pro'])]
+#[Fillable([
+    'name', 'email', 'password', 'phone', 'role_id', 'country_code', 'province', 'city', 'is_pro',
+    'avatar_path', 'cover_path', 'bio', 'address', 'delivers', 'delivery_note', 'opening_hours',
+])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -37,6 +41,7 @@ class User extends Authenticatable
         'is_active' => true,
         'is_pro' => false,
         'is_verified' => false,
+        'delivers' => false,
     ];
 
     protected function casts(): array
@@ -49,6 +54,7 @@ class User extends Authenticatable
             'last_login_at' => 'datetime',
             'is_pro' => 'boolean',
             'is_verified' => 'boolean',
+            'delivers' => 'boolean',
         ];
     }
 
@@ -84,6 +90,22 @@ class User extends Authenticatable
     }
 
     /** "Libreville, Estuaire" — empty when the member gave no location. */
+    public function avatarUrl(): ?string
+    {
+        return $this->avatar_path ? Storage::disk('public')->url($this->avatar_path) : null;
+    }
+
+    public function coverUrl(): ?string
+    {
+        return $this->cover_path ? Storage::disk('public')->url($this->cover_path) : null;
+    }
+
+    /** Phone of the seller's latest online listing — already public, unlike the account phone. */
+    public function publicContactPhone(): ?string
+    {
+        return $this->listings()->visible()->latest('published_at')->value('contact_phone');
+    }
+
     public function location(): string
     {
         return collect([$this->city, Provinces::name($this->province)])->filter()->unique()->implode(', ');

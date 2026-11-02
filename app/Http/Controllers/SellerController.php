@@ -16,6 +16,7 @@ class SellerController extends Controller
         return view('sellers.show', [
             'seller' => $user,
             'listings' => (new ListingFilters($request))->paginate(userId: $user->id),
+            'contactPhone' => $user->publicContactPhone(),
         ]);
     }
 }
