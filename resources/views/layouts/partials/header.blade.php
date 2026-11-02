@@ -101,7 +101,8 @@
         @endunless
     </div>
 
-    {{-- Category strip (desktop) --}}
+    {{-- Category strip (desktop) — listing pages show their own category rail --}}
+    @unless($active === 'listings' || str_starts_with((string) $active, 'cat-'))
     <nav aria-label="Catégories" class="hidden md:block border-t border-surface-variant">
         <div class="max-w-container-max mx-auto px-margin-desktop flex items-center gap-1 overflow-x-auto hide-scrollbar h-11">
             @foreach($navCategories as $category)
@@ -111,4 +112,5 @@
             @endforeach
         </div>
     </nav>
+    @endunless
 </header>
