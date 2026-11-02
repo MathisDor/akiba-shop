@@ -58,7 +58,7 @@ return [
     /*
      * Extra fields per root category (keyed by the root category slug). Values are
      * stored in listings.specs and shown as a key/value list on the listing page.
-     * Types: text, number, select.
+     * Types: text, number, select. A text field may list 'suggestions' (offered, not enforced).
      */
     'category_fields' => [
         'vehicules' => [
@@ -79,6 +79,11 @@ return [
             ['key' => 'modele', 'label' => 'Modèle', 'type' => 'text'],
         ],
         'mode-beaute' => [
+            ['key' => 'marque', 'label' => 'Marque', 'type' => 'text', 'placeholder' => 'Zara, Nike, L’Oréal…', 'suggestions' => [
+                'Adidas', 'Nike', 'Puma', 'New Balance', 'Zara', 'H&M', 'Shein', 'Mango', 'Lacoste', 'Tommy Hilfiger', 'Ralph Lauren', 'Levi’s',
+                'Gucci', 'Louis Vuitton', 'Dior', 'Chanel', 'Versace', 'Michael Kors', 'Casio', 'Rolex',
+                'L’Oréal', 'Maybelline', 'Nivea', 'Fenty Beauty', 'MAC', 'Yves Saint Laurent', 'Lancôme', 'Garnier', 'Dove', 'Fait main / artisanal',
+            ]],
             ['key' => 'taille', 'label' => 'Taille / pointure', 'type' => 'text', 'placeholder' => 'M, 42…'],
         ],
         'emploi-services' => [

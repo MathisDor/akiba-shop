@@ -35,7 +35,7 @@ class Listing extends Model
             'accepts_whatsapp' => 'boolean',
             'condition' => ListingCondition::class,
             'status' => ListingStatus::class,
-            'specs' => 'array',
+            'specs' => 'json:unicode', // unescaped so a search for "Lancôme" matches
             'boosted_until' => 'datetime',
             'published_at' => 'datetime',
             'expires_at' => 'datetime',

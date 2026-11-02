@@ -222,4 +222,24 @@ class MarketplaceTest extends TestCase
         $this->get('/femme')->assertRedirect(route('categories.show', 'mode-beaute'));
         $this->get('/catalogue')->assertRedirect('/annonces');
     }
+
+    public function test_fashion_and_beauty_listings_have_a_searchable_brand(): void
+    {
+        $seller = $this->makeClient();
+        $category = ListingCategory::where('slug', 'cosmetiques-parfums')->firstOrFail();
+
+        $this->actingAs($seller)->post('/publier', $this->listingPayload([
+            'listing_category_id' => $category->id,
+            'title' => 'Mascara volume neuf',
+            'specs' => ['marque' => ' Lancôme ', 'taille' => '10 ml', 'annee' => '2020'],
+        ]))->assertRedirect(route('account.listings'));
+
+        $listing = Listing::firstOrFail();
+        $this->assertSame(['marque' => 'Lancôme', 'taille' => '10 ml'], $listing->specs);
+        $listing->update(['status' => ListingStatus::Publiee, 'published_at' => now()]);
+
+        $this->get('/annonces?q=lancôme')->assertOk()->assertSee('Mascara volume neuf')->assertSee('Lancôme');
+        $this->get(route('listings.show', $listing))->assertSee('Marque');
+        $this->get('/annonces?q=dior')->assertDontSee('Mascara volume neuf');
+    }
 }

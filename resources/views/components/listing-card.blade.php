@@ -42,6 +42,9 @@
                 <span class="mt-0.5 shrink-0 rounded bg-secondary-container text-on-secondary-container px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide">Pro</span>
             @endif
         </div>
+        @if(filled($listing->specs['marque'] ?? null))
+            <p class="text-[11px] leading-4 font-bold uppercase tracking-wide text-secondary truncate">{{ $listing->specs['marque'] }}</p>
+        @endif
         <h3 class="text-[14px] leading-5 text-on-surface line-clamp-2">
             {{-- Stretched link: the whole card is clickable, the favourite button sits above it --}}
             <a href="{{ route('listings.show', $listing) }}" class="after:absolute after:inset-0 focus:outline-none focus-visible:after:ring-2 focus-visible:after:ring-primary focus-visible:after:rounded-2xl">{{ $listing->title }}</a>

@@ -73,7 +73,8 @@ class ListingFilters
         $term = trim((string) $this->request->query('q', ''));
         if ($term !== '') {
             $like = '%'.addcslashes($term, '%_\\').'%';
-            $query->where(fn ($q) => $q->where('title', 'like', $like)->orWhere('description', 'like', $like));
+            // specs covers brand/model, e.g. "nike" finds a listing whose brand field says Nike.
+            $query->where(fn ($q) => $q->where('title', 'like', $like)->orWhere('description', 'like', $like)->orWhere('specs', 'like', $like));
         }
 
         if ($this->request->filled('prix_min')) {

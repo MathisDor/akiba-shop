@@ -191,9 +191,17 @@
                                             value="{{ $value }}"
                                             placeholder="{{ $field['placeholder'] ?? '' }}"
                                             maxlength="100"
+                                            @isset($field['suggestions']) list="spec-{{ $rootSlug }}-{{ $field['key'] }}-options" autocomplete="off" @endisset
                                             class="field {{ isset($field['suffix']) ? 'pr-12' : '' }}"
                                             :disabled="!root || root.slug !== @js($rootSlug)"
                                         />
+                                        @isset($field['suggestions'])
+                                            <datalist id="spec-{{ $rootSlug }}-{{ $field['key'] }}-options">
+                                                @foreach($field['suggestions'] as $suggestion)
+                                                    <option value="{{ $suggestion }}"></option>
+                                                @endforeach
+                                            </datalist>
+                                        @endisset
                                         @isset($field['suffix'])
                                             <span class="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] font-semibold text-on-surface-variant">{{ $field['suffix'] }}</span>
                                         @endisset
